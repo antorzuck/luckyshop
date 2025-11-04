@@ -1,14 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import * 
-
+from django.contrib.auth import authenticate, login, logout
 
 def home(request):
+    return render(request, 'home.html')
+
+def dashboard(request):
     return render(request, 'dashboard.html')
-
-
-
-
-
 
 
 def handle_reg(request):
@@ -65,7 +63,7 @@ def handle_reg(request):
             pass
         login(request, c)
 
-        return redirect(dashboard)
+        return redirect('/dashboard')
 
 
 
@@ -73,7 +71,7 @@ def handle_reg(request):
 
 def handle_login(request):
     if request.user.is_authenticated:
-        return redirect(dashboard)
+        return redirect('/dashboard')
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
