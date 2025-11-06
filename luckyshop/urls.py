@@ -10,5 +10,6 @@ urlpatterns = [
     path('', home),
     path('login', handle_login),
     path('register', handle_reg),
-    path('dashboard', dashboard)
+    path('dashboard', dashboard),
+    path('create-lottery', create_lottery)
 ]

@@ -101,21 +101,32 @@
             e.preventDefault();
             const phone = document.getElementById('phone-input').value;
             const quantity = document.getElementById('quantity-input').value;
-            const prize = document.getElementById('prize-input').value;
-
-            // Show success message
-            const successMsg = document.getElementById('success-message');
-            document.getElementById('success-text').textContent = 
-                `Lottery created for ${phone} with ${quantity} entries and ₹${prize} prize!`;
+           
+           
+          fetch(`/create-lottery?phone=${encodeURIComponent(phone)}&quantity=${encodeURIComponent(quantity)}`)
+        .then(response => response.json())  // assuming Django returns JSON
+        .then(data => {
+ const successMsg = document.getElementById('success-message');
+ document.getElementById('success-text').textContent = `Lottery created for ${JSON.stringify(data)}`
             successMsg.classList.remove('hidden');
-
-            // Reset form
+          
             this.reset();
+     
 
-            // Hide success message after 3 seconds
-            setTimeout(() => {
+        setTimeout(() => {
                 successMsg.classList.add('hidden');
             }, 3000);
+
+
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        });
+
+
+
+    
+        
         });
 
         // Handle Withdraw Form

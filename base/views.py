@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import * 
 from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+
 
 def home(request):
     return render(request, 'home.html')
@@ -88,4 +90,41 @@ def handle_login(request):
 def handle_logout(request):
     logout(request)
     return redirect(handle_login)
+
+
+
+from django.http import JsonResponse
+from .models import (
+    HonorableFund, AdminFund, ShopkeeperFund,
+    GovernmentFund, OrganizerFund, UnemploymentFund,
+    ScholarshipFund, LuckyGift, PoorFund
+)
+
+def create_lottery(request):
+    phone = request.GET.get('phone')
+    quantity = request.GET.get('quantity')
+
+    try:
+        quantity = int(quantity)
+    except (TypeError, ValueError):
+        quantity = 1  # fallback if quantity missing or invalid
+
+    # list of all your fund models
+    fund_models = [
+        HonorableFund, AdminFund, ShopkeeperFund,
+        GovernmentFund, OrganizerFund, UnemploymentFund,
+        ScholarshipFund, LuckyGift, PoorFund
+    ]
+
+    for model in fund_models:
+        fund, created = model.objects.get_or_create(id=1)  # single global fund record
+        fund.amount += quantity
+        fund.save()
+
+    return JsonResponse({
+        'status': 'success',
+        'message': f'All funds increased by {quantity}',
+        'phone': phone,
+        'quantity': quantity,
+    })
 
