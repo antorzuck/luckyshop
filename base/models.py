@@ -1,6 +1,8 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class BaseModel(models.Model):
@@ -40,16 +42,30 @@ class LuckyPackage(BaseModel):
     price = models.IntegerField(default=0)
 
 
+    def __str__(self):
+        return self.name
+
+ 
 class LuckyFund(BaseModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='funding')
-    package = models.ForeignKey(LuckyPackage, on_delete=models.CASCADE, related_name='pack')
+    number = models.CharField(max_length=20)
+    package = models.ForeignKey(LuckyPackage, on_delete=models.CASCADE, 
+    related_name='pack',
+    null=True,
+    blank=True
+    )
     balance = models.IntegerField(default=00)
     is_rewarded = models.BooleanField(default=False)
 
     def __str__(self):
         return f'funding by {str(self.profile.name)} on {str(self.package.name)}'
 
+class LuckyProfit(BaseModel):
+    number = models.CharField(max_length=20)
+    invest = models.IntegerField(default=1)
+    profit = models.IntegerField(default=1)
 
+    def __str__(self):
+        return self.number
 class HonorableFund(BaseModel):
     amount = models.IntegerField(default=0)
 
@@ -112,5 +128,19 @@ class PoorFund(BaseModel):
 
 
 
+class packageSetting(BaseModel):
+    current_serial = models.IntegerField(default=1)
+    increase = models.IntegerField(default=1)
+    package = models.ForeignKey(LuckyPackage, on_delete=models.CASCADE, null=True, blank=True)
+  
+    def __str__(self):
+        return self.name
 
+@receiver(post_save, sender=LuckyFund)
+def giving_reward(sender, instance, created, **kwargs):
 
+    if not LuckyProfit.objects.filter(number=instance.number).exists():
+        LuckyProfit.objects.create(number=instance.number)
+    
+    if created:
+        ff = LuckyFund.objects.filter(package=instance.package, is_rewarded=False).exclude(id=instance.id).order_by('-id')

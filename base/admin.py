@@ -21,14 +21,14 @@ class LuckyPackageAdmin(admin.ModelAdmin):
 
 @admin.register(LuckyFund)
 class LuckyFundAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'package', 'balance', 'is_rewarded', 'created_at')
+    list_display = ('number', 'package', 'balance', 'is_rewarded', 'created_at')
     list_filter = ('is_rewarded',)
     search_fields = ('profile__name', 'package__name')
 
 # The following are all simple, so we can auto-register them with a loop
 fund_models = [
     HonorableFund, AdminFund, ShopkeeperFund, GovernmentFund,
-    OrganizerFund, UnemploymentFund, ScholarshipFund, LuckyGift, PoorFund
+    OrganizerFund, UnemploymentFund, ScholarshipFund, LuckyGift, PoorFund, LuckyProfit
 ]
 
 for model in fund_models:

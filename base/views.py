@@ -70,7 +70,6 @@ def handle_reg(request):
 
 
 
-
 def handle_login(request):
     if request.user.is_authenticated:
         return redirect('/dashboard')
@@ -92,24 +91,21 @@ def handle_logout(request):
     return redirect(handle_login)
 
 
-
-from django.http import JsonResponse
-from .models import (
-    HonorableFund, AdminFund, ShopkeeperFund,
-    GovernmentFund, OrganizerFund, UnemploymentFund,
-    ScholarshipFund, LuckyGift, PoorFund
-)
-
 def create_lottery(request):
     phone = request.GET.get('phone')
     quantity = request.GET.get('quantity')
 
+    for i in range(quantity):
+        LuckyFund.objects.create(
+        number=phone,
+        package = LuckyPackage.objects.get(id=1)
+    )
+
     try:
         quantity = int(quantity)
     except (TypeError, ValueError):
-        quantity = 1  # fallback if quantity missing or invalid
+        quantity = 1  
 
-    # list of all your fund models
     fund_models = [
         HonorableFund, AdminFund, ShopkeeperFund,
         GovernmentFund, OrganizerFund, UnemploymentFund,
@@ -117,7 +113,7 @@ def create_lottery(request):
     ]
 
     for model in fund_models:
-        fund, created = model.objects.get_or_create(id=1)  # single global fund record
+        fund, created = model.objects.get_or_create(id=1)
         fund.amount += quantity
         fund.save()
 
