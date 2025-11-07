@@ -57,7 +57,7 @@ class LuckyFund(BaseModel):
     is_rewarded = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'funding by {str(self.profile.name)} on {str(self.package.name)}'
+        return f'funding by {str(self.number)} on {str(self.package.name)}'
 
 class LuckyProfit(BaseModel):
     number = models.CharField(max_length=20)
@@ -134,7 +134,7 @@ class packageSetting(BaseModel):
     package = models.ForeignKey(LuckyPackage, on_delete=models.CASCADE, null=True, blank=True)
   
     def __str__(self):
-        return self.name
+        return self.package.name
 
 @receiver(post_save, sender=LuckyFund)
 def giving_reward(sender, instance, created, **kwargs):
@@ -143,4 +143,27 @@ def giving_reward(sender, instance, created, **kwargs):
         LuckyProfit.objects.create(number=instance.number)
     
     if created:
-        ff = LuckyFund.objects.filter(package=instance.package, is_rewarded=False).exclude(id=instance.id).order_by('-id')
+        try:
+            ff = LuckyFund.objects.filter(package=instance.package, is_rewarded=False).exclude(id=instance.id).order_by('-id')
+            xxx = packageSetting.objects.get(package=instance.package)
+            get_rwrd_id = ff[xxx.current_serial]
+            fx = LuckyFund.objects.get(id=get_rwrd_id.id)
+            fx.balance = fx.balance + instance.package.price
+            fx.is_rewarded = True
+            fx.save()
+            xxx.current_serial = xxx.current_serial + xxx.increase
+            xxx.save()
+
+            pro = LuckyProfit.objects.get(number=get_rwrd_id.number)
+            print("this nigga", pro)
+            pro.invest = pro.invest + instance.package.price 
+            pro.profit = pro.profit + instance.package.price
+            pro.save()
+            id = instance.package.id
+
+            #transfer_fund_auto(pid=id, user=get_rwrd_id.profle)
+            print("fun called")
+        except Exception as e:
+            print(e, "while rewqrd")
+            if not packageSetting.objects.filter(package=instance.package).exists():
+                packageSetting.objects.create(package=instance.package)
