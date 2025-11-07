@@ -31,7 +31,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm opacity-90">Honorable Fund</p>
-                                <p class="text-3xl font-bold">৳1.2K</p>
+                                <p class="text-3xl font-bold">৳{{honorable_fund.amount}}</p>
                             </div>
                             <i class="fas fa-chart-line text-3xl opacity-50"></i>
                         </div>
@@ -40,7 +40,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm opacity-90">Shopkeeper Fund</p>
-                                <p class="text-3xl font-bold">৳45K</p>
+                                <p class="text-3xl font-bold">৳{{shopkeeper_fund.amount}}</p>
                             </div>
                             <i class="fas fa-wallet text-3xl opacity-50"></i>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm opacity-90">Government Fund</p>
-                                <p class="text-3xl font-bold">৳45K</p>
+                                <p class="text-3xl font-bold">৳{{government_fund.amount}}</p>
                             </div>
                             <i class="fas fa-wallet text-3xl opacity-50"></i>
                         </div>
@@ -62,7 +62,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm opacity-90">Poor Fund</p>
-                                <p class="text-3xl font-bold">৳45K</p>
+                                <p class="text-3xl font-bold">৳{{poor_fund.amount}}</p>
                             </div>
                             <i class="fas fa-wallet text-3xl opacity-50"></i>
                         </div>
@@ -72,7 +72,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm opacity-90">Organizer Fund</p>
-                                <p class="text-3xl font-bold">৳45K</p>
+                                <p class="text-3xl font-bold">৳{{organizer_fund.amount}}</p>
                             </div>
                             <i class="fas fa-wallet text-3xl opacity-50"></i>
                         </div>
@@ -82,7 +82,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm opacity-90">Unemployment Fund</p>
-                                <p class="text-3xl font-bold">৳45K</p>
+                                <p class="text-3xl font-bold">৳{{unemployment_fund.amount}}</p>
                             </div>
                             <i class="fas fa-wallet text-3xl opacity-50"></i>
                         </div>
@@ -90,7 +90,7 @@
 
                 </div>
 
-                <!-- Recent Lotteries -->
+                <!-- Recent Lotteries 
                 <div class="bg-white rounded-lg shadow p-4">
                     <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <i class="fas fa-history text-blue-600"></i> Recent Lotteries
@@ -118,7 +118,7 @@
                             <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Completed</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- Create Lottery Section -->
@@ -135,11 +135,11 @@
                             <input 
                                 type="tel" 
                                 id="phone-input"
-                                placeholder="Enter phone number (e.g., +91 98765 43210)"
+                                placeholder="Enter phone number (e.g., 01736638632)"
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition"
                                 required
                             >
-                            <p class="text-xs text-gray-500 mt-1">Include country code for international numbers</p>
+                            <p class="text-xs text-gray-500 mt-1">Without country code.</p>
                         </div>
 
                         <!-- Quantity Input -->
@@ -150,7 +150,7 @@
                             <input 
                                 type="number" 
                                 id="quantity-input"
-                                placeholder="Enter quantity (e.g., 50)"
+                                placeholder="Enter quantity (e.g., 10)"
                                 min="1"
                                 max="1000"
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition"

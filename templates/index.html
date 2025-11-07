@@ -25,13 +25,38 @@
 <body class="bg-gray-100">
     <div class="mobile-container bg-white shadow-lg">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-ticket-alt text-2xl"></i>
-                <h1 class="text-xl font-bold">LuckyShopping</h1>
-            </div>
-            <i class="fas fa-bell text-xl cursor-pointer hover:scale-110 transition"></i>
-        </div>
+       <!-- Header -->
+<div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 flex items-center justify-between">
+    <!-- Left: Menu Icon + Brand -->
+    <div class="flex items-center gap-3">
+        <!-- Hamburger Menu -->
+        <button id="menu-btn" class="text-2xl focus:outline-none hover:scale-110 transition">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <h1 class="text-xl font-bold">LuckyShopping</h1>
+    </div>
+
+    <!-- Right: Notification -->
+    <i class="fas fa-bell text-xl cursor-pointer hover:scale-110 transition"></i>
+</div>
+
+<!-- Hidden Mobile Navigation -->
+<div id="mobile-nav"
+    class="hidden fixed top-0 left-0 w-64 h-full bg-white text-gray-800 shadow-lg z-50 transform -translate-x-full transition-transform duration-300">
+    <div class="p-4 flex justify-between items-center border-b">
+        <h2 class="text-lg font-bold">Menu</h2>
+        <button id="close-btn" class="text-2xl">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <ul class="p-4 space-y-3">
+        <li><a href="/dashboard" class="block py-2 hover:text-blue-600">Dashboard</a></li>
+        <li><a href="/logout" class="block py-2 hover:text-blue-600">Logout</a></li>
+        <li><a href="/agents" class="block py-2 hover:text-blue-600">Agents</a></li>
+        
+    </ul>
+</div>
 
 
 
@@ -76,6 +101,10 @@
     </div>
 
     <script>
+
+
+
+
         function showSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
@@ -129,13 +158,48 @@
         
         });
 
-        // Handle Withdraw Form
+ 
         document.getElementById('withdraw-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const amount = document.getElementById('withdraw-amount').value;
             alert(`Withdrawal request of ₹${amount} submitted successfully! You will receive it within 2-3 business days.`);
             this.reset();
         });
+
+
+
+  const menuBtn = document.getElementById('menu-btn');
+    const closeBtn = document.getElementById('close-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const overlay = document.getElementById('overlay');
+
+    menuBtn.addEventListener('click', () => {
+        mobileNav.classList.remove('hidden');
+        setTimeout(() => {
+            mobileNav.classList.remove('-translate-x-full');
+        }, 10);
+        overlay.classList.remove('hidden');
+    });
+
+    const closeMenu = () => {
+        mobileNav.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        setTimeout(() => {
+            mobileNav.classList.add('hidden');
+        }, 300);
+    };
+
+    closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+
+
+
+
+
+
+
+
+
     </script>
 </body>
 </html>

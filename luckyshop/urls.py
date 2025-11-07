@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
     path('login', handle_login),
+    path('logout', handle_logout),
     path('register', handle_reg),
     path('dashboard', dashboard),
     path('create-lottery', create_lottery)

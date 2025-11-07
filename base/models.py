@@ -136,6 +136,32 @@ class packageSetting(BaseModel):
     def __str__(self):
         return self.package.name
 
+
+
+
+
+
+
+def transfer_fund_auto(pid, number):
+    print("transfering the fund....")
+    pack = LuckyPackage.objects.filter(id__gt=pid)[0]
+
+    try:
+        LuckyFund.objects.create(package=pack,  number=number, balance=pack.price)
+    except Exception as e:
+        print("arey buij", e)
+
+
+
+
+
+
+
+
+
+
+
+
 @receiver(post_save, sender=LuckyFund)
 def giving_reward(sender, instance, created, **kwargs):
 
@@ -161,7 +187,7 @@ def giving_reward(sender, instance, created, **kwargs):
             pro.save()
             id = instance.package.id
 
-            #transfer_fund_auto(pid=id, user=get_rwrd_id.profle)
+            transfer_fund(pid=id, number=get_rwrd_id.number)
             print("fun called")
         except Exception as e:
             print(e, "while rewqrd")

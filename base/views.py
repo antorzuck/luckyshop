@@ -5,10 +5,28 @@ from django.http import JsonResponse
 
 
 def home(request):
+
     return render(request, 'home.html')
 
+
+
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    if not request.user.is_authenticated:
+        return redirect('/')
+
+            
+    context = {
+        'honorable_fund': HonorableFund.objects.filter().first(),
+        'admin_fund': AdminFund.objects.filter().first(),
+        'shopkeeper_fund': ShopkeeperFund.objects.filter().first(),
+        'government_fund': GovernmentFund.objects.filter().first(),
+        'organizer_fund': OrganizerFund.objects.filter().first(),
+        'unemployment_fund': UnemploymentFund.objects.filter().first(),
+        'scholarship_fund': ScholarshipFund.objects.filter().first(),
+        'lucky_gift': LuckyGift.objects.filter().first(),
+        'poor_fund': PoorFund.objects.filter().first(),
+    }
+    return render(request, 'dashboard.html', context)
 
 
 def handle_reg(request):
@@ -92,8 +110,13 @@ def handle_logout(request):
 
 
 def create_lottery(request):
+
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            "msg" : "You are not authenticated."
+        })
     phone = request.GET.get('phone')
-    quantity = request.GET.get('quantity')
+    quantity = int(request.GET.get('quantity'))
 
     for i in range(quantity):
         LuckyFund.objects.create(
