@@ -1,281 +1,173 @@
-
 {% extends 'index.html' %}
 
 {% block body %}
+        <!-- Welcome Section -->
+        <div class="mb-6">
+            <h2 class="text-3xl font-bold text-black mb-1">Welcome back, {{ request.user.username }}</h2>
+      
+        </div>
 
-<!-- Dashboard Section -->
-            <div id="dashboard-section" class="section p-4">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard</h2>
+       
+        <!-- Funds Grid -->
+        <div>
+            <h3 class="text-lg font-bold text-black mb-4">All Funds</h3>
+
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Honorable Fund -->
+                {% if honorable_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-blue-50 text-blue-600">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Honorable Fund</h3>
                 
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="bg-gradient-to-br from-green-400 to-green-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Total Lotteries</p>
-                                <p class="text-3xl font-bold">100K</p>
-                            </div>
-                            <i class="fas fa-list text-3xl opacity-50"></i>
+                    <div class="flex items-end justify-between">
+                        <div>
+                     
+                            <p class="text-lg font-bold text-green-600">৳ {{ honorable_fund.amount|default:"0" }}</p>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-purple-400 to-purple-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Saving Fund</p>
-                                <p class="text-3xl font-bold">৳28K</p>
-                            </div>
-                            <i class="fas fa-users text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-                    <div class="bg-gradient-to-br from-orange-400 to-orange-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Honorable Fund</p>
-                                <p class="text-3xl font-bold">৳{{honorable_fund.amount}}</p>
-                            </div>
-                            <i class="fas fa-chart-line text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-                    <div class="bg-gradient-to-br from-red-400 to-red-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Shopkeeper Fund</p>
-                                <p class="text-3xl font-bold">৳{{shopkeeper_fund.amount}}</p>
-                            </div>
-                            <i class="fas fa-wallet text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-
-
-
-  <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Government Fund</p>
-                                <p class="text-3xl font-bold">৳{{government_fund.amount}}</p>
-                            </div>
-                            <i class="fas fa-wallet text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-
-                      <div class="bg-gradient-to-br from-pink-400 to-pink-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Poor Fund</p>
-                                <p class="text-3xl font-bold">৳{{poor_fund.amount}}</p>
-                            </div>
-                            <i class="fas fa-wallet text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-
-  <div class="bg-gradient-to-br from-red-400 to-red-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Organizer Fund</p>
-                                <p class="text-3xl font-bold">৳{{organizer_fund.amount}}</p>
-                            </div>
-                            <i class="fas fa-wallet text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-
-  <div class="bg-gradient-to-br from-cyan-400 to-cyan-600 text-white p-4 rounded-lg shadow">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm opacity-90">Unemployment Fund</p>
-                                <p class="text-3xl font-bold">৳{{unemployment_fund.amount}}</p>
-                            </div>
-                            <i class="fas fa-wallet text-3xl opacity-50"></i>
-                        </div>
-                    </div>
-
                 </div>
+                {% endif %}
 
-                <!-- Recent Lotteries 
-                <div class="bg-white rounded-lg shadow p-4">
-                    <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                        <i class="fas fa-history text-blue-600"></i> Recent Lotteries
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4 border-blue-600">
-                            <div>
-                                <p class="font-semibold text-gray-800">+91 98765 43210</p>
-                                <p class="text-sm text-gray-600">50 entries</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Active</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4 border-purple-600">
-                            <div>
-                                <p class="font-semibold text-gray-800">+91 87654 32109</p>
-                                <p class="text-sm text-gray-600">75 entries</p>
-                            </div>
-                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">Pending</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4 border-green-600">
-                            <div>
-                                <p class="font-semibold text-gray-800">+91 76543 21098</p>
-                                <p class="text-sm text-gray-600">100 entries</p>
-                            </div>
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Completed</span>
-                        </div>
+                <!-- Admin Fund -->
+                {% if admin_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-purple-50 text-purple-600">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                </div> -->
-            </div>
-
-            <!-- Create Lottery Section -->
-            <div id="create-lottery-section" class="section hidden p-4">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Create New Lottery</h2>
-                
-                <div class="bg-white rounded-lg shadow p-6">
-                    <form id="lottery-form" class="space-y-4">
-                        <!-- Phone Number Input -->
+                    <h3 class="font-semibold text-black mb-1">Admin Fund</h3>
+                  
+                    <div class="flex items-end justify-between">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-phone text-blue-600 mr-2"></i>User Phone Number
-                            </label>
-                            <input 
-                                type="tel" 
-                                id="phone-input"
-                                placeholder="Enter phone number (e.g., 01736638632)"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition"
-                                required
-                            >
-                            <p class="text-xs text-gray-500 mt-1">Without country code.</p>
-                        </div>
-
-                        <!-- Quantity Input -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-box text-blue-600 mr-2"></i>Number of Entries
-                            </label>
-                            <input 
-                                type="number" 
-                                id="quantity-input"
-                                placeholder="Enter quantity (e.g., 10)"
-                                min="1"
-                                max="1000"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 transition"
-                                required
-                            >
-                            <p class="text-xs text-gray-500 mt-1">Maximum 1000 entries per lottery</p>
-                        </div>
-
                         
-                        <!-- Lottery Type -->
-                       
-
-                        <!-- Submit Button -->
-                        <button 
-                            type="submit"
-                            class="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold py-3 rounded-lg hover:shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2"
-                        >
-                            <i class="fas fa-plus"></i> Create Lottery
-                        </button>
-                    </form>
-
-                    <!-- Success Message -->
-                    <div id="success-message" class="hidden mt-4 p-4 bg-green-100 border-l-4 border-green-600 text-green-800 rounded">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        <span id="success-text">Lottery created successfully!</span>
+                            <p class="text-lg font-bold text-green-600">৳ {{ admin_fund.amount|default:"0" }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {% endif %}
 
-            <!-- Withdraw Section -->
-            <div id="withdraw-section" class="section hidden p-4">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Withdraw Funds</h2>
+                <!-- Shopkeeper Fund -->
+                {% if shopkeeper_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-orange-50 text-orange-600">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Shopkeeper Fund</h3>
+                 
+                    <div class="flex items-end justify-between">
+                        <div>
+                        
+                            <p class="text-lg font-bold text-green-600">৳ {{ shopkeeper_fund.amount|default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Government Fund -->
+                {% if government_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-red-50 text-red-600">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Government Fund</h3>
+                 
+                    <div class="flex items-end justify-between">
+                        <div>
+                          
+                            <p class="text-lg font-bold text-green-600">৳ {{ government_fund.amount|default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Organizer Fund -->
+                {% if organizer_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-indigo-50 text-indigo-600">
+                        <i class="fas fa-sitemap"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Organizer Fund</h3>
                 
-                <!-- Balance Card -->
-                <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-lg shadow mb-6">
-                    <p class="text-sm opacity-90 mb-2">Available Balance</p>
-                    <p class="text-4xl font-bold">₹45,250</p>
-                    <p class="text-xs opacity-75 mt-2">Last updated: Today at 2:30 PM</p>
-                </div>
-
-                <!-- Withdrawal Form -->
-                <div class="bg-white rounded-lg shadow p-6 mb-6">
-                    <h3 class="font-bold text-gray-800 mb-4">Request Withdrawal</h3>
-                    <form id="withdraw-form" class="space-y-4">
-                        <!-- Amount -->
+                    <div class="flex items-end justify-between">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-money-bill text-green-600 mr-2"></i>Withdrawal Amount (₹)
-                            </label>
-                            <input 
-                                type="number" 
-                                id="withdraw-amount"
-                                placeholder="Enter amount (Min: ₹500)"
-                                min="500"
-                                max="45250"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600 transition"
-                                required
-                            >
-                        </div>
-
-                        <!-- Bank Account -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-university text-green-600 mr-2"></i>Bank Account
-                            </label>
-                            <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600 transition">
-                                <option>Select Bank Account</option>
-                                <option>HDFC - 1234567890</option>
-                                <option>ICICI - 0987654321</option>
-                                <option>SBI - 5555555555</option>
-                            </select>
-                        </div>
-
-                        <!-- Payment Method -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-credit-card text-green-600 mr-2"></i>Payment Method
-                            </label>
-                            <div class="space-y-2">
-                                <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" name="payment" value="bank" checked class="mr-3">
-                                    <span class="font-semibold text-gray-700">Bank Transfer</span>
-                                </label>
-                                <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" name="payment" value="upi" class="mr-3">
-                                    <span class="font-semibold text-gray-700">UPI</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button 
-                            type="submit"
-                            class="w-full bg-gradient-to-r from-green-600 to-green-800 text-white font-bold py-3 rounded-lg hover:shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2"
-                        >
-                            <i class="fas fa-arrow-up"></i> Request Withdrawal
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Recent Withdrawals -->
-                <div class="bg-white rounded-lg shadow p-4">
-                    <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                        <i class="fas fa-history text-green-600"></i> Withdrawal History
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-semibold text-gray-800">₹10,000</p>
-                                <p class="text-sm text-gray-600">Oct 25, 2024</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Completed</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-semibold text-gray-800">₹5,000</p>
-                                <p class="text-sm text-gray-600">Oct 20, 2024</p>
-                            </div>
-                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">Processing</span>
+                           
+                            <p class="text-lg font-bold text-green-600">৳ {{ organizer_fund.amount|default:"0" }}</p>
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
+                <!-- Unemployment Fund -->
+                {% if unemployment_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-cyan-50 text-cyan-600">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Unemployment Fund</h3>
+              
+                    <div class="flex items-end justify-between">
+                        <div>
+                          
+                            <p class="text-lg font-bold text-green-600">৳ {{ unemployment_fund.amount|default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Scholarship Fund -->
+                {% if scholarship_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-yellow-50 text-yellow-600">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Scholarship Fund</h3>
+             
+                    <div class="flex items-end justify-between">
+                        <div>
+                         
+                            <p class="text-lg font-bold text-green-600">৳ {{ scholarship_fund.amount|default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Lucky Gift -->
+                {% if lucky_gift %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-pink-50 text-pink-600">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Lucky Gift</h3>
+               
+                    <div class="flex items-end justify-between">
+                        <div>
+                      
+                            <p class="text-lg font-bold text-green-600">৳ {{ lucky_gift.amount|default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Poor Fund -->
+                {% if poor_fund %}
+                <div class="fund-card">
+                    <div class="fund-icon bg-green-50 text-green-600">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h3 class="font-semibold text-black mb-1">Poor Fund</h3>
+                 
+                    <div class="flex items-end justify-between">
+                        <div>
+                          
+                            <p class="text-lg font-bold text-green-600">৳ {{ poor_fund.amount|default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
 
-
-{% endblock %}
+        {% endblock %}
+       

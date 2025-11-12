@@ -37,6 +37,76 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.user.username)
 
+
+    def total_refer(self):
+        return Referral.objects.filter(referrer=self, generation=1).count()
+
+    def total_team(self):
+        return Referral.objects.filter(referrer=self).count()
+        
+    def totalwithdraw(self):
+        w = Withdraw.objects.filter(profile=self)
+        money = sum([i.amount for i in w])
+        
+        print(money)
+        return money
+        
+        
+    
+    def total_refer_income(self):
+        tf = Referral.objects.filter(referrer=self, generation=1).count()
+        return 40 * tf
+
+
+    def total_gen_income(self):
+      
+        referrals = Referral.objects.filter(referrer=self, generation__lte=10)
+        generation_counts = {i: 0 for i in range(1, 11)}
+        
+        for referral in referrals:
+            generation_counts[referral.generation] += 1
+        
+        multipliers = {
+            1: 10,
+            2: 5,
+            3: 4,
+            4: 3,
+            5: 2,
+            6: 2,
+            7: 1,
+            8: 1,
+            9: 1,
+            10: 1,
+                }
+        sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
+
+        return sums
+        
+    def lti(self):
+        if self.balance == 0:
+            return 00
+        referrals = Referral.objects.filter(referrer=self, generation__lte=10)
+        generation_counts = {i: 0 for i in range(1, 11)}
+        
+        for referral in referrals:
+            generation_counts[referral.generation] += 1
+        
+        multipliers = {
+            1: 50,
+            2: 5,
+            3: 4,
+            4: 3,
+            5: 2,
+            6: 2,
+            7: 1,
+            8: 1,
+            9: 1,
+            10: 1,
+                }
+        sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
+        return sums
+
+
 class LuckyPackage(BaseModel):
     name = models.CharField(max_length=50)
     price = models.IntegerField(default=0)
@@ -153,7 +223,54 @@ def transfer_fund_auto(pid, number):
 
 
 
+class Referral(models.Model):
+    referrer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='referrals_made')
+    referred_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='referrals_received')
+    generation = models.PositiveIntegerField()
 
+    def __str__(self):
+        return f"{self.referrer} referred {self.referred_user} (Generation {self.generation})"
+
+
+
+
+@receiver(post_save, sender=Profile)
+def create_referral(sender, instance, created, **kwargs):
+    print("i just fenned")
+    # Ensure this code runs only when a Profile is newly verified
+    if not created and instance.is_verified:
+        referrer_user = instance.referred_by
+
+        reward = {
+            1: 50, 2: 5, 3: 4, 4: 3, 5: 2,
+            6: 2, 7: 1, 8: 1, 9: 1, 10: 1
+        }
+
+        generation = 1  # Initialize generation counter
+
+        while referrer_user and generation <= 10:
+            try:
+                referrer_profile = Profile.objects.get(user=referrer_user)
+            except Profile.DoesNotExist:
+                break  # No valid referrer profile, stop the loop
+
+            # Create a referral record if not exists
+            referral, created = Referral.objects.get_or_create(
+                referrer=referrer_profile,
+                referred_user=instance,
+                generation=generation
+            )
+
+            if created:
+                # Update the balance for the current generation
+                referrer_profile.balance += reward[generation]
+                referrer_profile.save()
+
+            # Move up one generation
+            referrer_user = referrer_profile.referred_by
+
+            # Increment generation counter
+            generation += 1
 
 
 

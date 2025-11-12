@@ -3,203 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuckyShopping - Lucky Lottery</title>
+    <title>LuckyShoppings - Fund Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
         }
-        .sidebar-active {
-            @apply bg-blue-600 text-white;
-        }
-        .mobile-container {
-            max-width: 480px;
-            margin: 0 auto;
+
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
             height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-item {
+            color: #6b7280;
+            padding: 12px 16px;
+            margin: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .sidebar-item:hover {
+            background: #f3f4f6;
+            color: #000000;
+        }
+
+        .sidebar-item.active {
+            background: #dcfce7;
+            color: #16a34a;
+            font-weight: 500;
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .fund-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+
+        .fund-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .stat-box {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #16a34a;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+@media (max-width: 768px) {
+            .sidebar {
+                left: -100%;
+                width: 100%;
+                max-width: 256px;
+                z-index: 50;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sidebar.active {
+                left: 0;
+                background: #ffffff;
+            }
+
+            .main-content.sidebar-open {
+                margin-left: 0;
+            }
+
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.3);
+                display: none;
+                z-index: 40;
+            }
+
+            .overlay.active {
+                display: block;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="mobile-container bg-white shadow-lg">
-        <!-- Header -->
-       <!-- Header -->
-<div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 flex items-center justify-between">
-    <!-- Left: Menu Icon + Brand -->
-    <div class="flex items-center gap-3">
-        <!-- Hamburger Menu -->
-        <button id="menu-btn" class="text-2xl focus:outline-none hover:scale-110 transition">
-            <i class="fas fa-bars"></i>
-        </button>
+<body>
+    <!-- Completely redesigned with minimal white/green/black theme -->
+    
+    <!-- Sidebar -->
+   <aside id="sidebar" class="sidebar w-64 flex md:flex flex-col bg-white">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-shopping-bag text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-black">LuckyShoppings</h1>
+                    <p class="text-xs text-gray-500">Fund Manager</p>
+                </div>
+            </div>
+        </div>
 
-        <h1 class="text-xl font-bold">LuckyShopping</h1>
+        <nav class="flex-1 px-3 py-4">
+            <a href="#" class="sidebar-item active">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-piggy-bank w-5"></i>
+                <span>All Funds</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-history w-5"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-cog w-5"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200">
+            <form action="/logout" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-black rounded-md transition text-sm font-medium flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Mobile Overlay -->
+    <div id="overlay" class="overlay">
+            <nav class="flex-1 px-3 py-4">
+            <a href="#" class="sidebar-item active">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-piggy-bank w-5"></i>
+                <span>All Funds</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-history w-5"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-cog w-5"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
     </div>
 
-    <!-- Right: Notification -->
-    <i class="fas fa-bell text-xl cursor-pointer hover:scale-110 transition"></i>
-</div>
+    <!-- Header -->
+    <header class="header md:ml-64">
+        <div class="flex items-center justify-between px-4 md:px-6 py-4">
+            <button id="sidebarToggle" class="md:hidden text-gray-600 text-xl">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="flex-1 hidden md:flex items-center gap-2 bg-gray-50 rounded-md px-3 py-2 border border-gray-200 max-w-md">
+                <i class="fas fa-search text-gray-400"></i>
+                <input type="text" placeholder="Search funds..." class="bg-transparent outline-none flex-1 text-sm placeholder-gray-400">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-3">
+                    <button class="text-gray-600 hover:text-green-600 transition">
+                        <i class="fas fa-bell text-lg"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 border-l border-gray-200 pl-4">
+                    <div class="w-9 h-9 bg-green-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                    <div class="hidden md:block">
+                        <p class="text-sm font-medium text-black">{{ request.user.username }}</p>
+                        <p class="text-xs text-gray-500">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<!-- Hidden Mobile Navigation -->
-<div id="mobile-nav"
-    class="hidden fixed top-0 left-0 w-64 h-full bg-white text-gray-800 shadow-lg z-50 transform -translate-x-full transition-transform duration-300">
-    <div class="p-4 flex justify-between items-center border-b">
-        <h2 class="text-lg font-bold">Menu</h2>
-        <button id="close-btn" class="text-2xl">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    <ul class="p-4 space-y-3">
-        <li><a href="/dashboard" class="block py-2 hover:text-blue-600">Dashboard</a></li>
-        <li><a href="/logout" class="block py-2 hover:text-blue-600">Logout</a></li>
-        <li><a href="/agents" class="block py-2 hover:text-blue-600">Agents</a></li>
-        
-    </ul>
-</div>
-
-
-
-   
-        
-
-        <!-- Main Content Area -->
-        <div class="flex-1 overflow-y-auto">
-
+    <!-- Main Content -->
+    <main class="main-content md:ml-64 pt-20 md:pt-0 p-4 md:p-6">
 
         {% block body %}
-
+        
         {% endblock %}
-            
-        <!-- Bottom Navigation Sidebar -->
-        <div class="bg-white border-t-2 border-gray-200 grid grid-cols-3 gap-0 fixed bottom-0 w-full">
-            <button 
-                onclick="showSection('dashboard-section')"
-                class="nav-btn sidebar-active py-4 px-3 text-center hover:bg-blue-50 transition flex flex-col items-center gap-2"
-                data-section="dashboard"
-            >
-                <i class="fas fa-chart-pie text-xl"></i>
-                <span class="text-xs font-semibold">Dashboard</span>
-            </button>
-            <button 
-                onclick="showSection('create-lottery-section')"
-                class="nav-btn py-4 px-3 text-center hover:bg-blue-50 transition flex flex-col items-center gap-2 text-gray-600"
-                data-section="create-lottery"
-            >
-                <i class="fas fa-plus-circle text-xl"></i>
-                <span class="text-xs font-semibold">Create</span>
-            </button>
-            <button 
-                onclick="showSection('withdraw-section')"
-                class="nav-btn py-4 px-3 text-center hover:bg-blue-50 transition flex flex-col items-center gap-2 text-gray-600"
-                data-section="withdraw"
-            >
-                <i class="fas fa-wallet text-xl"></i>
-                <span class="text-xs font-semibold">Withdraw</span>
-            </button>
-        </div>
-    </div>
-
-    <script>
-
-
-
-
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.add('hidden');
-            });
-
-            // Show selected section
-            document.getElementById(sectionId).classList.remove('hidden');
-
-            // Update nav buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('sidebar-active', 'text-blue-600');
-                btn.classList.add('text-gray-600');
-            });
-
-            // Highlight active button
-            event.target.closest('.nav-btn').classList.add('sidebar-active', 'text-blue-600');
-            event.target.closest('.nav-btn').classList.remove('text-gray-600');
-        }
-
-        // Handle Create Lottery Form
-        document.getElementById('lottery-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const phone = document.getElementById('phone-input').value;
-            const quantity = document.getElementById('quantity-input').value;
-           
-           
-          fetch(`/create-lottery?phone=${encodeURIComponent(phone)}&quantity=${encodeURIComponent(quantity)}`)
-        .then(response => response.json())  // assuming Django returns JSON
-        .then(data => {
- const successMsg = document.getElementById('success-message');
- document.getElementById('success-text').textContent = `Lottery created for ${JSON.stringify(data)}`
-            successMsg.classList.remove('hidden');
-          
-            this.reset();
-     
-
-        setTimeout(() => {
-                successMsg.classList.add('hidden');
-            }, 3000);
-
-
-        })
-        .catch(error => {
-            alert('Error: ' + error);
-        });
 
 
 
     
-        
+        <footer class="border-t border-gray-200 pt-6 mt-12 text-center text-gray-600 text-sm">
+            <p>LuckyShoppings Fund Management System © 2025. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
         });
 
- 
-        document.getElementById('withdraw-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const amount = document.getElementById('withdraw-amount').value;
-            alert(`Withdrawal request of ₹${amount} submitted successfully! You will receive it within 2-3 business days.`);
-            this.reset();
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
         });
 
-
-
-  const menuBtn = document.getElementById('menu-btn');
-    const closeBtn = document.getElementById('close-btn');
-    const mobileNav = document.getElementById('mobile-nav');
-    const overlay = document.getElementById('overlay');
-
-    menuBtn.addEventListener('click', () => {
-        mobileNav.classList.remove('hidden');
-        setTimeout(() => {
-            mobileNav.classList.remove('-translate-x-full');
-        }, 10);
-        overlay.classList.remove('hidden');
-    });
-
-    const closeMenu = () => {
-        mobileNav.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-        setTimeout(() => {
-            mobileNav.classList.add('hidden');
-        }, 300);
-    };
-
-    closeBtn.addEventListener('click', closeMenu);
-    overlay.addEventListener('click', closeMenu);
-
-
-
-
-
-
-
-
-
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        });
     </script>
 </body>
 </html>
+
+
