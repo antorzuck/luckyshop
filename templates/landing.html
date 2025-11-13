@@ -3,87 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucky - The Biggest Online Service Platform</title>
+    <title>Lucky Shoppings - Saving by Shopping</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #ec4899 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .prize-glow {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+    </style>
 </head>
-<body class="bg-white font-sans">
-    <!-- Navigation Bar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex-shrink-0">
-                    <h1 class="text-md font-bold bg-gradient-to-r from-red-500 via-yellow-400 to-pink-500 bg-clip-text text-transparent">
-                        LuckyShoppings
-                    </h1>
-                </div>
-                
-                <!-- Right side buttons -->
-                <div class="flex items-center gap-4">
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold text-pink-500">Lucky</span>
+                <span class="text-2xl font-bold text-blue-900">Shoppings</span>
+            </div>
+            <div class="flex gap-3">
+                <button class="bg-pink-400 hover:bg-pink-500 text-white px-6 py-2 rounded-full font-semibold">Register</button>
+                <button class="bg-blue-900 hover:bg-blue-950 text-white px-6 py-2 rounded-full font-semibold">Login</button>
+            </div>
+        </div>
+    </header>
 
-                    {% if not request.user.is_authenticated %}
-                    <a href="/login">
-                    <button class="px-6 py-2 text-gray-700 font-semibold hover:text-red-500 transition duration-300">
-                        Login
-                    </button>
-                    </a>
-                    {% else %}
+    <!-- Hero Section with Banner -->
+    <section class="w-full h-96 bg-cover bg-center" style="background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20Project-JoGNmzlQaUo7TxXBnTSXZvEheOlvIO.jpg')">
+    </section>
 
-                    <a href="/dashboard">
-                    <button class="px-6 py-2 text-gray-700 font-semibold hover:text-red-500 transition duration-300">
-                        Dashboard
-                    </button>
-                    </a>
-                    {% endif %}
-                    <button class="px-3 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-lg hover:shadow-lg transition duration-300 transform hover:scale-105">
-                        Download App
-                    </button>
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        
+        <!-- Yellow Section - Friendship World -->
+        <div class="bg-yellow-400 rounded-3xl p-8 text-center mb-12 shadow-md">
+            <h2 class="text-4xl font-bold text-red-700">The biggest online shopping platform.</h2>
+        </div>
+
+         <div class="bg-green-400 rounded-3xl p-8 text-center mb-12 shadow-md">
+            <h2 class="text-4xl font-bold text-red-700">Halal Lottery</h2>
+        </div>
+
+        <div class="bg-pink-400 rounded-3xl p-8 text-center mb-12 shadow-md">
+            <h2 class="text-4xl font-bold text-red-700">Halal Loan</h2>
+        </div>
+        <div class="bg-purple-400 rounded-3xl p-8 text-center mb-12 shadow-md">
+            <h2 class="text-4xl font-bold text-red-700">Halal Savings</h2>
+        </div>
+
+        <!-- Bengali Content Section -->
+        <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm">
+            <div class="flex gap-3 mb-4">
+                <span class="text-3xl">🎉</span>
+                <h3 class="text-2xl font-bold text-purple-700">৬টি বিশেষ উপহার!</h3>
+            </div>
+            <p class="text-gray-700 text-lg mb-4">একটি সিরিয়াল নম্বরই বদলে যেতে পারে আপনার ভাগ্য। জিতে নিন Yamaha R15, Suzuki Gixxer সহ অসাধারণ সব উপহার।</p>
+            <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-bold text-lg">পুরস্কার দেখুন 👈</button>
+        </div>
+
+        <!-- Fancy Bike Section with Image and Enhanced Styling -->
+        <div class="mb-12">
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl overflow-hidden shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 items-center">
+                    <!-- Bike Image -->
+                    <div class="flex justify-center">
+                        <div class="float-animation">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop" alt="Suzuki Gixxer Bike" class="w-full h-96 object-cover rounded-2xl shadow-2xl">
+                        </div>
+                    </div>
+                    <!-- Bike Info -->
+                    <div class="text-white">
+                        <h2 class="text-5xl font-bold mb-4">🏍️ Suzuki Gixxer</h2>
+                        <p class="text-xl mb-6 opacity-90">আপনার স্বপ্নের বাইক জিতে নিন লাকি শপিং এ!</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">⚡</span>
+                                <span class="text-lg">অসাধারণ পারফরম্যান্স</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🎯</span>
+                                <span class="text-lg">প্রিমিয়াম ডিজাইন</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">💎</span>
+                                <span class="text-lg">সীমিত পুরস্কার - এখনই অংশ নিন!</span>
+                            </div>
+                        </div>
+                        <button class="mt-8 bg-yellow-400 hover:bg-yellow-300 text-blue-900 px-8 py-3 rounded-full font-bold text-lg transition transform hover:scale-105">
+                            এখনই পংশগ্রহণ করুন
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
 
+        <!-- Enhanced Prize List with Better Layout and Styling -->
+        <div>
+            <h2 class="text-4xl font-bold text-center mb-10 gradient-text">🎁 সকল পুরস্কারের তালিকা</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Prize 1 -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
+                    <h4 class="text-3xl font-bold text-blue-700 mb-2">🥇 প্রথম পুরস্কার</h4>
+                    <p class="text-gray-800 text-lg font-semibold">Suzuki Gixxer Bike</p>
+                    <p class="text-blue-600 text-xl font-bold mt-2">০ লক্ষ টাকা</p>
+                </div>
 
-    {% block body %}
-    {% endblock %}
+                <!-- Prize 2 -->
+                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
+                    <h4 class="text-3xl font-bold text-red-700 mb-2">🥈 দ্বিতীয় পুরস্কার</h4>
+                    <p class="text-gray-800 text-lg font-semibold">Yamaha R15 Bike</p>
+                    <p class="text-red-600 text-xl font-bold mt-2">৩.৫ লক্ষ টাকা</p>
+                </div>
+
+                <!-- Prize 3 -->
+                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
+                    <h4 class="text-3xl font-bold text-yellow-700 mb-2">🥉 তৃতীয় পুরস্কার</h4>
+                    <p class="text-gray-800 text-lg font-semibold">স্মার্টফোন</p>
+                    <p class="text-yellow-600 text-xl font-bold mt-2">২০ হাজার টাকা</p>
+                </div>
+
+                <!-- Prize 4 -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
+                    <h4 class="text-3xl font-bold text-green-700 mb-2">🎯 চতুর্থ পুরস্কার</h4>
+                    <p class="text-gray-800 text-lg font-semibold">হাইড্রিলিক্স বাইসাইকেল</p>
+                    <p class="text-green-600 text-xl font-bold mt-2">১০ হাজার টাকা</p>
+                </div>
+
+                <!-- Prize 5 -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
+                    <h4 class="text-3xl font-bold text-purple-700 mb-2">💝 পঞ্চম পুরস্কার</h4>
+                    <p class="text-gray-800 text-lg font-semibold">Gift Box</p>
+                    <p class="text-purple-600 text-xl font-bold mt-2">৬ হাজার টাকা</p>
+                </div>
+
+                <!-- Prize 6 -->
+                <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
+                    <h4 class="text-3xl font-bold text-pink-700 mb-2">🎊 ষষ্ঠ পুরস্কার</h4>
+                    <p class="text-gray-800 text-lg font-semibold">আরও অনেক আকর্ষণীয় পুরস্কার</p>
+                    <p class="text-pink-600 text-xl font-bold mt-2">সর্বোচ্চ ৫ হাজার টাকা</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-white font-bold mb-4">About Lucky</h3>
-                    <p class="text-sm">The biggest online service platform for saving by shopping</p>
-                </div>
-                <div>
-                    <h3 class="text-white font-bold mb-4">Quick Links</h3>
-                    <ul class="text-sm space-y-2">
-                        <li><a href="#" class="hover:text-white transition">Home</a></li>
-                        <li><a href="#" class="hover:text-white transition">Funds</a></li>
-                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-white font-bold mb-4">Support</h3>
-                    <ul class="text-sm space-y-2">
-                        <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white transition">Help Center</a></li>
-                        <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-white font-bold mb-4">Follow Us</h3>
-                    <ul class="text-sm space-y-2">
-                        <li><a href="#" class="hover:text-white transition">Facebook</a></li>
-                        <li><a href="#" class="hover:text-white transition">Twitter</a></li>
-                        <li><a href="#" class="hover:text-white transition">Instagram</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm">
-                <p>&copy; 2025 Lucky Shopping. All rights reserved.</p>
-            </div>
-        </div>
+    <footer class="bg-gray-900 text-white text-center py-8 mt-12">
+        <p>&copy; 2025 Lucky Shoppings. Saving by Shopping</p>
+        <p class="text-sm text-gray-400">luckyshopping.com</p>
     </footer>
 </body>
 </html>
