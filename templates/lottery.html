@@ -1,0 +1,161 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<main class="min-h-screen bg-white py-12 px-4 md:px-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Section Title -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-black mb-4">Create Lucky Lottery</h1>
+            <p class="text-gray-600 text-lg">Get your chance to win amazing prizes!</p>
+        </div>
+
+        <!-- Content Container -->
+        <div class="grid md:grid-cols-1 gap-8 items-center">
+            <!-- Illustration - Hidden on Mobile -->
+
+            <!--
+            <div class="hidden md:flex justify-center">
+                <img 
+                    src="https://cdn.jsdelivr.net/npm/undraw-ui@latest/dist/svg/winning.svg" 
+                    alt="Lottery Illustration" 
+                    class="w-full max-w-sm"
+                    style="animation: float 3s ease-in-out infinite;"
+                >
+            </div> -->
+
+            <!-- Form Section -->
+            <div>
+                <div class="bg-white rounded-xl shadow-lg p-8 md:p-10 border border-gray-200">
+                    <!-- Form -->
+                    <form id="lotteryForm" class="space-y-6">
+                        <!-- Phone Number Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-black mb-3">
+                                Phone Number
+                            </label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="Enter your phone number"
+                                required
+                                class="w-full px-4 py-3 bg-gray-50 text-black placeholder-gray-400 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                            >
+                            <p class="text-xs text-gray-500 mt-2">We'll use this to contact you if you win!</p>
+                        </div>
+
+                        <!-- Lottery Quantity Input -->
+                        <div>
+                            <label class="block text-sm font-semibold text-black mb-3">
+                                Lottery Quantity
+                            </label>
+                            <input
+                                type="number"
+                                id="quantity"
+                                name="quantity"
+                                min="1"
+                                max="100"
+                                placeholder="How many tickets?"
+                                required
+                                class="w-full px-4 py-3 bg-gray-50 text-black placeholder-gray-400 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                            >
+                            <p class="text-xs text-gray-500 mt-2">Min: 1 | Max: 100 tickets</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button
+                            type="submit"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 active:scale-95"
+                        >
+                            Buy Lottery Tickets
+                        </button>
+                    </form>
+
+                    <!-- Message Display Area -->
+                    <div id="messageContainer" class="mt-6 hidden">
+                        <div id="message" class="text-white px-6 py-4 rounded-lg font-semibold text-center">
+                            <!-- Message will appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingContainer" class="mt-6 hidden">
+                        <div class="flex items-center justify-center gap-3 text-green-600">
+                            <div class="w-3 h-3 bg-green-600 rounded-full animate-bounce"></div>
+                            <div class="w-3 h-3 bg-green-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-3 h-3 bg-green-600 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                            <span>Processing...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="mt-6 bg-green-50 rounded-lg p-6 border-l-4 border-green-600">
+                    <h3 class="font-semibold text-black mb-3">How It Works</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>✓ Enter your phone number</li>
+                        <li>✓ Choose quantity of lottery tickets</li>
+                        <li>✓ Click "Buy Lottery Tickets"</li>
+                        <li>✓ Wait for confirmation message</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+</style>
+
+<script>
+    const form = document.getElementById('lotteryForm');
+    const messageContainer = document.getElementById('messageContainer');
+    const message = document.getElementById('message');
+    const loadingContainer = document.getElementById('loadingContainer');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const phone = document.getElementById('phone').value;
+        const quantity = document.getElementById('quantity').value;
+
+        messageContainer.classList.add('hidden');
+        loadingContainer.classList.remove('hidden');
+
+        try {
+            const response = await fetch(
+                `/create-lottery?phone=${encodeURIComponent(phone)}&quantity=${encodeURIComponent(quantity)}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const data = await response.json();
+
+            loadingContainer.classList.add('hidden');
+            messageContainer.classList.remove('hidden');
+            message.textContent = data.message || data.detail || 'Response received!';
+            
+            if (response.ok) {
+                message.className = 'bg-green-600 text-white px-6 py-4 rounded-lg font-semibold text-center';
+                form.reset();
+            } else {
+                message.className = 'bg-red-600 text-white px-6 py-4 rounded-lg font-semibold text-center';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            loadingContainer.classList.add('hidden');
+            messageContainer.classList.remove('hidden');
+            message.textContent = 'Error connecting to server. Please check your connection.';
+            message.className = 'bg-red-600 text-white px-6 py-4 rounded-lg font-semibold text-center';
+        }
+    });
+</script>
+{% endblock %}

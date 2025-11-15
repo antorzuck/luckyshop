@@ -118,6 +118,7 @@ class LuckyPackage(BaseModel):
  
 class LuckyFund(BaseModel):
     number = models.CharField(max_length=20)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='lucky_funding')
     package = models.ForeignKey(LuckyPackage, on_delete=models.CASCADE, 
     related_name='pack',
     null=True,
@@ -237,14 +238,17 @@ class Referral(models.Model):
 @receiver(post_save, sender=Profile)
 def create_referral(sender, instance, created, **kwargs):
     print("i just fenned")
-    # Ensure this code runs only when a Profile is newly verified
     if not created and instance.is_verified:
         referrer_user = instance.referred_by
 
         reward = {
-            1: 50, 2: 5, 3: 4, 4: 3, 5: 2,
-            6: 2, 7: 1, 8: 1, 9: 1, 10: 1
-        }
+            1: 10, 2: 1, 3: 4, 4: 3, 5: 2,
+            6: 2, 7: 1, 8: 1, 9: 1, 10: 1,
+            11: 1, 12: 1, 13: 1, 14: 1, 15: 1,
+            16: 1, 17: 1, 18: 1, 19: 1, 20: 1,
+            21: 1, 22: 1, 23: 1, 24: 1, 25: 1,
+}
+        
 
         generation = 1  # Initialize generation counter
 

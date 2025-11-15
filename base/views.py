@@ -113,12 +113,27 @@ def create_lottery(request):
             "msg" : "You are not authenticated."
         })
     phone = request.GET.get('phone')
+    
+
+    if not phone:
+        return render(request, 'lottery.html')
+
+    try:
+        profile = Profile.objects.get(number=number)
+    except:
+        user = User.objects.create(username=number, password=number)
+        profile = Profile.objects.create(user=user, number=number, is_verified=True)
+    
     quantity = int(request.GET.get('quantity'))
+
+
+
 
     for i in range(quantity):
         LuckyFund.objects.create(
         number=phone,
-        package = LuckyPackage.objects.get(id=1)
+        package = LuckyPackage.objects.get(id=1),
+        profile = profile
     )
 
     try:
