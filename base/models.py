@@ -55,29 +55,24 @@ class Profile(models.Model):
     
     def total_refer_income(self):
         tf = Referral.objects.filter(referrer=self, generation=1).count()
-        return 40 * tf
+        return 10 * tf
 
 
     def total_gen_income(self):
       
-        referrals = Referral.objects.filter(referrer=self, generation__lte=10)
-        generation_counts = {i: 0 for i in range(1, 11)}
+        referrals = Referral.objects.filter(referrer=self, generation__lte=25)
+        generation_counts = {i: 0 for i in range(1, 26)}
         
         for referral in referrals:
             generation_counts[referral.generation] += 1
         
         multipliers = {
-            1: 10,
-            2: 5,
-            3: 4,
-            4: 3,
-            5: 2,
-            6: 2,
-            7: 1,
-            8: 1,
-            9: 1,
-            10: 1,
-                }
+            1: 10, 2: 1, 3: 4, 4: 3, 5: 2,
+            6: 2, 7: 1, 8: 1, 9: 1, 10: 1,
+            11: 1, 12: 1, 13: 1, 14: 1, 15: 1,
+            16: 1, 17: 1, 18: 1, 19: 1, 20: 1,
+            21: 1, 22: 1, 23: 1, 24: 1, 25: 1,
+            }
         sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
 
         return sums
@@ -85,23 +80,18 @@ class Profile(models.Model):
     def lti(self):
         if self.balance == 0:
             return 00
-        referrals = Referral.objects.filter(referrer=self, generation__lte=10)
-        generation_counts = {i: 0 for i in range(1, 11)}
+        referrals = Referral.objects.filter(referrer=self, generation__lte=25)
+        generation_counts = {i: 0 for i in range(1, 26)}
         
         for referral in referrals:
             generation_counts[referral.generation] += 1
         
         multipliers = {
-            1: 50,
-            2: 5,
-            3: 4,
-            4: 3,
-            5: 2,
-            6: 2,
-            7: 1,
-            8: 1,
-            9: 1,
-            10: 1,
+            1: 10, 2: 1, 3: 4, 4: 3, 5: 2,
+            6: 2, 7: 1, 8: 1, 9: 1, 10: 1,
+            11: 1, 12: 1, 13: 1, 14: 1, 15: 1,
+            16: 1, 17: 1, 18: 1, 19: 1, 20: 1,
+            21: 1, 22: 1, 23: 1, 24: 1, 25: 1,
                 }
         sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
         return sums
@@ -115,9 +105,9 @@ class LuckyPackage(BaseModel):
     def __str__(self):
         return self.name
 
- 
 class LuckyFund(BaseModel):
     number = models.CharField(max_length=20)
+    agent = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='fund_agent', null=True, blank=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='lucky_funding')
     package = models.ForeignKey(LuckyPackage, on_delete=models.CASCADE, 
     related_name='pack',

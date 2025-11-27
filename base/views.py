@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import * 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-
+from .decor import agent_required 
 
 def home(request):
 
@@ -105,7 +105,7 @@ def handle_logout(request):
     logout(request)
     return redirect(handle_login)
 
-
+@agent_required
 def create_lottery(request):
 
     if not request.user.is_authenticated:
@@ -121,6 +121,7 @@ def create_lottery(request):
     try:
         profile = Profile.objects.get(number=number)
     except:
+        agent = Profile.objects.get(user=request.user)
         user = User.objects.create(username=number, password=number)
         profile = Profile.objects.create(user=user, number=number, is_verified=True)
     
