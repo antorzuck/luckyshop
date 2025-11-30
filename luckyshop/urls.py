@@ -12,5 +12,7 @@ urlpatterns = [
     path('logout', handle_logout),
     path('register', handle_reg),
     path('dashboard', dashboard),
-    path('create-lottery', create_lottery)
+    path('create-lottery', create_lottery),
+    path('lucky-fund-dashboard/', lucky_fund_dashboard, name='lucky_fund_dashboard'),
+    path('lucky-fund-report/', get_lucky_fund_report, name='lucky_fund_report'),
 ]

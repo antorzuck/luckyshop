@@ -1,0 +1,68 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<main class="min-h-screen bg-white py-12 px-4 md:px-8">
+    <div class="max-w-6xl mx-auto">
+
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+    <h1 class="text-2xl font-bold mb-5">Lucky Fund Dashboard</h1>
+
+    <label class="text-lg font-semibold">Select Agent:</label>
+    <select id="agentSelect" class="border rounded-lg p-2 w-full mt-2">
+        <option value="">-- Select --</option>
+        {% for agent in agents %}
+        <option class="text-blue-900" value="{{ agent.id }}">{{ agent.user.first_name }} {{ agent.user.last_name }}</option>
+        {% endfor %}
+    </select>
+
+    <button onclick="loadReport()" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+        Filter
+    </button>
+
+    <div id="resultBox" class="mt-6 hidden">
+        <p class="font-semibold text-lg">📌 Total Lucky Fund Count: <span id="count"></span></p>
+        <p class="font-semibold text-lg">💰 Total Balance: <span id="balance"></span></p>
+
+        <canvas id="chart" class="mt-8"></canvas>
+    </div>
+
+</div>
+
+<script>
+let chart = null;
+
+function loadReport() {
+    const agentId = document.getElementById('agentSelect').value;
+    if (!agentId) {
+        alert("Please select an agent!");
+        return;
+    }
+
+    fetch(`/lucky-fund-report/?agent_id=${agentId}`)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("resultBox").classList.remove("hidden");
+        document.getElementById("count").innerText = data.total_count;
+        document.getElementById("balance").innerText = data.total_balance + " ৳";
+
+        const ctx = document.getElementById('chart');
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Rewarded', 'Not Rewarded'],
+                datasets: [{
+                    label: 'Count',
+                    data: [data.rewarded, data.not_rewarded],
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false }},
+            }
+        });
+    });
+}
+</script>
+
+{% endblock %}

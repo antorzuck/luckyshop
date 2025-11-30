@@ -14,7 +14,7 @@ def dashboard(request):
     if not request.user.is_authenticated:
         return redirect('/')
 
-            
+    """      
     context = {
         'honorable_fund': HonorableFund.objects.filter().first(),
         'admin_fund': AdminFund.objects.filter().first(),
@@ -25,6 +25,19 @@ def dashboard(request):
         'scholarship_fund': ScholarshipFund.objects.filter().first(),
         'lucky_gift': LuckyGift.objects.filter().first(),
         'poor_fund': PoorFund.objects.filter().first(),
+    }"""
+
+
+    profile = Profile.objects.get(user=request.user)
+    
+    context = {
+        "profile": profile,  
+        "total_refer": profile.total_refer(), 
+        "total_team": profile.total_team(), 
+        "total_withdraw": profile.totalwithdraw(), 
+        "total_refer_income": profile.total_refer_income(), 
+        "total_gen_income": profile.total_gen_income(), 
+        "lti": profile.lti(), 
     }
     return render(request, 'dashboard.html', context)
 
@@ -119,11 +132,11 @@ def create_lottery(request):
         return render(request, 'lottery.html')
 
     try:
-        profile = Profile.objects.get(number=number)
+        profile = Profile.objects.get(number=phone)
     except:
         agent = Profile.objects.get(user=request.user)
-        user = User.objects.create(username=number, password=number)
-        profile = Profile.objects.create(user=user, number=number, is_verified=True)
+        user = User.objects.create(username=phone, password=phone)
+        profile = Profile.objects.create(user=user, number=phone, is_verified=True)
     
     quantity = int(request.GET.get('quantity'))
 
@@ -160,3 +173,25 @@ def create_lottery(request):
         'quantity': quantity,
     })
 
+
+
+def lucky_fund_dashboard(request):
+    agents = Profile.objects.filter(is_agent=True)
+    return render(request, 'lucky_fund_dashboard.html', {'agents': agents})
+
+def get_lucky_fund_report(request):
+    agent_id = request.GET.get('agent_id')
+
+    print("ATTTTTTENTIOOOOOON", agent_id)
+
+    funds = LuckyFund.objects.filter(agent__id=agent_id)
+
+    print(funds)
+
+    data = {
+        "total_count": funds.count(),
+        "total_balance": funds.aggregate(total=models.Sum('balance'))['total'] or 0,
+        "rewarded": funds.filter(is_rewarded=True).count(),
+        "not_rewarded": funds.filter(is_rewarded=False).count(),
+    }
+    return JsonResponse(data)

@@ -304,3 +304,18 @@ def giving_reward(sender, instance, created, **kwargs):
             print(e, "while rewqrd")
             if not packageSetting.objects.filter(package=instance.package).exists():
                 packageSetting.objects.create(package=instance.package)
+
+
+
+
+
+
+class Withdraw(BaseModel):
+    amount = models.IntegerField(default=0)
+    method = models.CharField(max_length=100)
+    profile = models.ForeignKey(Profile, related_name='cashout', on_delete=models.CASCADE)
+    number = models.CharField(max_length=100)
+    complete = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.number
