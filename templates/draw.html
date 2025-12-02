@@ -1,0 +1,178 @@
+{% extends "index.html" %}
+
+{% block body %}
+<div class="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+  <!-- Title -->
+  <div class="text-center mb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-black mb-2">Lucky Draw</h1>
+    <p class="text-gray-600 text-lg">Spin and win amazing prizes!</p>
+  </div>
+
+  <!-- Main Container -->
+  <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
+    
+    <!-- Spinning Wheel -->
+    <div class="flex flex-col items-center">
+      <div class="relative w-80 h-80 md:w-96 md:h-96">
+        <!-- Pointer -->
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
+          <div class="w-0 h-0 border-l-8 border-r-8 border-t-12 border-l-transparent border-r-transparent border-t-green-600"></div>
+        </div>
+
+        <!-- Spinning Circle -->
+        <div id="spinner" class="w-full h-full rounded-full border-8 border-green-600 flex items-center justify-center cursor-pointer transition-transform duration-1000"
+             style="background: conic-gradient(
+               from 0deg,
+               #4ade80 0deg 60deg,
+               #000 60deg 120deg,
+               #4ade80 120deg 180deg,
+               #000 180deg 240deg,
+               #4ade80 240deg 300deg,
+               #000 300deg 360deg
+             );">
+          <div class="w-16 h-16 bg-white rounded-full border-4 border-green-600 flex items-center justify-center">
+            <span class="text-2xl font-bold text-black">Lucky</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spin Button -->
+      <button id="spinBtn" class="mt-8 px-8 py-3 bg-green-600 text-white font-bold text-lg rounded-full hover:bg-green-700 active:scale-95 transition-all duration-100 shadow-lg hover:shadow-xl">
+        SPIN NOW
+      </button>
+    </div>
+
+    <!-- Info Section -->
+    <div class="flex-1">
+      <div class="bg-gray-50 rounded-lg p-6 border-2 border-green-600">
+        <h2 class="text-2xl font-bold text-black mb-4">How it Works</h2>
+        <ul class="space-y-3 text-gray-700">
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 font-bold text-xl">1</span>
+            <span>Click the SPIN NOW button to start the lottery wheel</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 font-bold text-xl">2</span>
+            <span>Watch the wheel spin with exciting animations</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 font-bold text-xl">3</span>
+            <span>The wheel will stop and reveal your lucky winner</span>
+          </li>
+        </ul>
+
+        <!-- Winner Display -->
+        <div id="winnerBox" class="mt-6 p-4 bg-green-600 text-white rounded-lg hidden animate-pulse">
+          <p class="text-sm font-semibold mb-1">🎉 WINNER 🎉</p>
+          <p id="winnerText" class="text-2xl font-bold"></p>
+        </div>
+
+        <!-- Message Display -->
+        <div id="messageBox" class="mt-4 p-4 rounded-lg hidden">
+          <p id="messageText" class="font-semibold"></p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingBox" class="mt-4 p-4 bg-blue-100 text-blue-800 rounded-lg hidden">
+          <p class="font-semibold text-center">Generating winner...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(3600deg);
+    }
+  }
+
+  #spinner.spinning {
+    animation: spin 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  @keyframes pulse-custom {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse-custom 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+</style>
+
+<script>
+  const spinner = document.getElementById('spinner');
+  const spinBtn = document.getElementById('spinBtn');
+  const winnerBox = document.getElementById('winnerBox');
+  const winnerText = document.getElementById('winnerText');
+  const messageBox = document.getElementById('messageBox');
+  const messageText = document.getElementById('messageText');
+  const loadingBox = document.getElementById('loadingBox');
+  let isSpinning = false;
+
+  spinBtn.addEventListener('click', async () => {
+    if (isSpinning) return;
+
+    isSpinning = true;
+    spinBtn.disabled = true;
+    winnerBox.classList.add('hidden');
+    messageBox.classList.add('hidden');
+    loadingBox.classList.remove('hidden');
+
+    // Add spinning animation
+    spinner.classList.add('spinning');
+
+    // Random rotation between 360 and 3600 degrees
+    const randomRotation = Math.random() * 360 + 360;
+
+    setTimeout(async () => {
+      spinner.style.transition = 'transform 0.3s ease-out';
+      spinner.style.transform = `rotate(${randomRotation}deg)`;
+
+      try {
+        // Call Django backend
+        const response = await fetch('/lottery/draw/', {
+          method: 'GET',
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          winnerText.textContent = data.winner || 'Congratulations!';
+          winnerBox.classList.remove('hidden');
+          
+          if (data.message) {
+            messageText.textContent = data.message;
+            messageBox.classList.remove('hidden');
+            messageBox.className = 'mt-4 p-4 rounded-lg';
+            messageBox.classList.add(data.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800');
+          }
+        } else {
+          messageText.textContent = data.message || 'Something went wrong';
+          messageBox.classList.remove('hidden');
+          messageBox.className = 'mt-4 p-4 rounded-lg bg-red-100 text-red-800';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        messageText.textContent = 'Error connecting to server';
+        messageBox.classList.remove('hidden');
+        messageBox.className = 'mt-4 p-4 rounded-lg bg-red-100 text-red-800';
+      }
+
+      loadingBox.classList.add('hidden');
+      spinner.classList.remove('spinning');
+      isSpinning = false;
+      spinBtn.disabled = false;
+    }, 4000);
+  });
+</script>
+{% endblock %}

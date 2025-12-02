@@ -5,9 +5,10 @@ from django.http import JsonResponse
 from .decor import agent_required 
 
 def home(request):
-
     return render(request, 'home.html')
 
+def draw(request):
+    return render(request, 'draw.html')
 
 
 def dashboard(request):
