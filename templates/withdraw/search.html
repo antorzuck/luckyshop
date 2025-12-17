@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<div class="max-w-xl w-full bg-white p-6 rounded-xl shadow">
+  <h2 class="text-2xl font-bold mb-4 text-center">Cashout Panel</h2>
+
+  {% for message in messages %}
+    <div class="mb-3 p-2 text-white rounded {{ message.tags|yesno:'bg-green-500,bg-red-500' }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+
+  <!-- Search -->
+  <form method="POST" class="flex gap-2 mb-6">
+    {% csrf_token %}
+    <input type="text" name="number" placeholder="Enter phone number"
+      class="w-full border rounded-lg px-4 py-2" required>
+    <button class="bg-blue-600 text-white px-4 rounded-lg">Search</button>
+  </form>
+
+  {% if profile %}
+  <!-- Profile Info -->
+  <div class="border rounded-lg p-4 mb-4">
+    <p><strong>Name:</strong> {{ profile.name }}</p>
+    <p><strong>Phone:</strong> {{ profile.number }}</p>
+    <p class="text-green-600 font-bold mt-2">Balance: ৳ {{ profit.profit }}</p>
+  </div>
+
+  <!-- Withdraw Form -->
+  <form method="POST" action="{% url 'withdraw_submit' profile.id %}" class="space-y-3">
+    {% csrf_token %}
+
+    <input type="number" name="amount" placeholder="Amount"
+      class="w-full border px-4 py-2 rounded-lg" required>
+
+    <select name="method" class="w-full border px-4 py-2 rounded-lg">
+      <option value="Bkash">Bkash</option>
+      <option value="Nagad">Nagad</option>
+      <option value="Rocket">Rocket</option>
+      <option value="Cash">Cash</option>
+    </select>
+
+    <input type="text" name="number" placeholder="Payment Number"
+      class="w-full border px-4 py-2 rounded-lg" required>
+
+    <button class="w-full bg-green-600 text-white py-2 rounded-lg font-bold">
+      Confirm Withdraw
+    </button>
+  </form>
+  {% endif %}
+
+</div>
+
+{% endblock %}

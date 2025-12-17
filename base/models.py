@@ -319,3 +319,12 @@ class Withdraw(BaseModel):
 
     def __str__(self):
         return self.number
+
+
+class LuckyWinner(BaseModel):
+    number = models.CharField(max_length=20)
+    fund = models.ForeignKey(LuckyFund, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.number

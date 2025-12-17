@@ -11,7 +11,7 @@
     <select id="agentSelect" class="border rounded-lg p-2 w-full mt-2">
         <option value="">-- Select --</option>
         {% for agent in agents %}
-        <option class="text-blue-900" value="{{ agent.id }}">{{ agent.user.first_name }} {{ agent.user.last_name }}</option>
+        <option class="text-blue-900" value="{{ agent.id }}">{{ agent.user.username }}</option>
         {% endfor %}
     </select>
 

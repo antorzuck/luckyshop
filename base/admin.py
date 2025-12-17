@@ -1,12 +1,7 @@
 
 
 from django.contrib import admin
-from .models import (
-  packageSetting, LuckyProfit,  Profile, LuckyPackage, LuckyFund,
-    HonorableFund, AdminFund, ShopkeeperFund,
-    GovernmentFund, OrganizerFund, UnemploymentFund,
-    ScholarshipFund, LuckyGift, PoorFund
-)
+from .models import *
 
 # Simple reusable base for all models
 @admin.register(Profile)
@@ -28,7 +23,7 @@ class LuckyFundAdmin(admin.ModelAdmin):
 # The following are all simple, so we can auto-register them with a loop
 fund_models = [
    packageSetting, HonorableFund, AdminFund, ShopkeeperFund, GovernmentFund,
-    OrganizerFund, UnemploymentFund, ScholarshipFund, LuckyGift, PoorFund, LuckyProfit
+    OrganizerFund, UnemploymentFund, ScholarshipFund, LuckyGift, PoorFund, LuckyProfit, Withdraw
 ]
 
 for model in fund_models:

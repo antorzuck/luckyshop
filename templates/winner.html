@@ -1,0 +1,22 @@
+
+{% extends 'index.html' %}
+
+{% block body %}
+
+
+<div class="bg-gradient-to-br from-yellow-400 to-red-600 min-h-screen flex items-center justify-center">
+
+<script>
+confetti({ particleCount: 400, spread: 160 })
+</script>
+
+<div class="bg-white p-10 rounded-2xl text-center shadow-xl">
+  <h2 class="text-3xl font-bold mb-4">🎉 Winner 🎉</h2>
+  <p class="text-xl">Name: <b>{{ winner.profile.name }}</b></p>
+  <p class="text-lg mt-2">Number: <b>{{ winner.number }}</b></p>
+</div>
+
+</div>
+
+
+{% endblock %}

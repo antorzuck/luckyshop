@@ -29,16 +29,15 @@
     <header class="bg-white shadow-sm">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <span class="text-lg font-bold text-pink-500">Lucky</span>
-                <span class="text-lg font-bold text-blue-900">Shoppings</span>
+                <span class="text-md font-bold text-pink-500">Lucky</span><span class="text-md font-bold text-blue-900">Shoppings</span>
             </div>
             <div class="flex gap-3">
 
                 {% if not request.user.is_authenticated %}
                 <a href="/register">
-                <button class="bg-pink-400 hover:bg-pink-500 text-white px-6 py-2 rounded-full font-semibold">Register</button></a>
+                <button class="bg-pink-400 hover:bg-pink-500 text-white px-5 py-2 rounded-full font-semibold">Register</button></a>
 
-               <a href="/login"> <button class="bg-blue-900 hover:bg-blue-950 text-white px-6 py-2 rounded-full font-semibold">Login</button></a>
+               <a href="/login"> <button class="bg-blue-900 hover:bg-blue-950 text-white px-5 py-2 rounded-full font-semibold">Login</button></a>
                {% else %}
                <a href="/dashboard">
                 <button class="bg-pink-400 hover:bg-pink-500 text-white px-6 py-2 rounded-full font-semibold">Dashboard</button></a>

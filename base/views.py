@@ -1,8 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import * 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from .decor import agent_required 
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
+
 
 def home(request):
     return render(request, 'home.html')
@@ -196,3 +200,113 @@ def get_lucky_fund_report(request):
         "not_rewarded": funds.filter(is_rewarded=False).count(),
     }
     return JsonResponse(data)
+
+
+
+
+
+
+
+
+
+
+@login_required
+def withdraw_search(request):
+    profile = None
+    profit = None
+
+    if not (request.user.is_superuser or hasattr(request.user, 'profile') and request.user.profile.is_agent):
+        messages.error(request, 'Unauthorized')
+        return redirect('/')
+
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        try:
+            profile = Profile.objects.get(number=number)
+            profit = LuckyProfit.objects.get(number=number)
+        except Profile.DoesNotExist:
+            messages.error(request, 'Profile not found')
+        except LuckyProfit.DoesNotExist:
+            messages.error(request, 'Balance record not found')
+
+    return render(request, 'withdraw/search.html', {
+        'profile': profile,
+        'profit': profit
+    })
+
+
+@login_required
+@transaction.atomic
+def withdraw_submit(request, profile_id):
+    if request.method != 'POST':
+        return redirect('withdraw_search')
+
+    profile = get_object_or_404(Profile, id=profile_id)
+    profit = get_object_or_404(LuckyProfit, number=profile.number)
+
+    amount = int(request.POST.get('amount'))
+    method = request.POST.get('method')
+    number = request.POST.get('number')
+
+    if amount <= 0:
+        messages.error(request, 'Invalid amount')
+        return redirect('withdraw_search')
+
+    if profit.profit < amount:
+        messages.error(request, 'Insufficient balance')
+        return redirect('withdraw_search')
+
+    # create withdraw
+    Withdraw.objects.create(
+        profile=profile,
+        amount=amount,
+        method=method,
+        number=number,
+        complete=True
+    )
+
+    # cut balance
+    profit.profit -= amount
+    profit.save()
+
+    messages.success(request, 'Withdraw successful')
+    return redirect('withdraw_search')
+
+
+
+
+
+
+import random
+
+
+def lottery_draw(request):
+    return render(request, 'draw.html')
+
+
+def lottery_run(request):
+    funds = LuckyFund.objects.all()
+
+    pool = []
+    for fund in funds:
+        pool.append(fund)  # duplicate allowed naturally
+
+    winner_fund = random.choice(pool)
+
+    LuckyWinner.objects.all().delete()  # keep only latest
+
+    LuckyWinner.objects.create(
+        number=winner_fund.number,
+        fund=winner_fund,
+        profile=winner_fund.profile
+    )
+
+    return JsonResponse({
+        'number': winner_fund.number,
+        'name': winner_fund.profile.name
+    })
+
+
+def lottery_winner(request):
+    winner = LuckyWinner.objects.last()
+    return render(request, 'winner.html', {'winner': winner})
