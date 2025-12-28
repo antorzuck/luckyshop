@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto bg-white rounded-xl shadow p-5">
+
+    <h1 class="text-2xl font-bold text-center mb-4">🎯 Lucky Fund Serial Check</h1>
+
+    <!-- Search -->
+    <form method="get" class="flex gap-2 mb-4">
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Enter your number..."
+            class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring"
+        >
+        <button
+            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+        >Search</button>
+    </form>
+
+    <!-- Result -->
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-200 text-left">
+                    <th class="p-2">Serial</th>
+                    <th class="p-2">Number</th>
+                    <th class="p-2">Package</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fund in funds %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-2 font-bold">{{ fund.serial }}</td>
+                    <td class="p-2">{{ fund.number }}</td>
+                    <td class="p-2">{{ fund.package.name }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center py-4 text-gray-500">No result found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

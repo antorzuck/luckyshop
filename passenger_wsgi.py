@@ -1,0 +1,1 @@
+from luckyshop.wsgi import application

@@ -1,77 +1,160 @@
 {% extends 'index.html' %}
 
 {% block body %}
-        <!-- Welcome Section -->
-        <div class="mb-6">
-            <h2 class="text-3xl font-bold text-black mb-1">Welcome back, {{ request.user.username }}</h2>
-      
+
+<!-- Added Font Awesome CDN for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% if not request.user.is_staff and not request.user.is_superuser and not request.user.profile.is_agent and not request.user.profile.is_verified %}
+    
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+    <div class="bg-white max-w-md w-full rounded-3xl shadow-2xl p-8 text-center border border-gray-100">
+        <!-- Updated illustration container with subtle glow -->
+        <div class="relative inline-block mb-6">
+            <div class="absolute inset-0 bg-green-100 blur-3xl rounded-full opacity-50"></div>
+            <img 
+                src="/images/attachments-gen-images-public-payment-activation-illustration.jpg"
+                alt="Payment Illustration"
+                class="w-56 mx-auto relative z-10"
+            />
         </div>
 
-       
-        <!-- Funds Grid -->
-        <div>
-            <h3 class="text-lg font-bold text-black mb-4">All Funds</h3>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">
+            Activate Your Account
+        </h2>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-
-    <!-- Total Refer -->
-    <div class="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 border hover:shadow-lg transition">
-        <div class="text-4xl">👥</div>
-        <div>
-            <p class="text-gray-500 text-sm">Total Refer</p>
-            <h2 class="text-2xl font-semibold text-gray-800">{{ total_refer }}</h2>
-        </div>
+        <p class="text-gray-500 mb-8 leading-relaxed">
+            Join our premium network. Please pay <span class="font-bold text-green-600 text-lg">500 BDT</span> to unlock all dashboard features.
+        </p>
+        
+        <form method="post" action="/activate/">
+            {% csrf_token %}
+            <input type="hidden" name="username" value="{{request.user.username}}">
+            <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg hover:shadow-green-200 active:scale-[0.98]">
+                Pay Now & Activate
+            </button> 
+        </form>
     </div>
-
-    <!-- Total Team -->
-    <div class="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 border hover:shadow-lg transition">
-        <div class="text-4xl">🧑‍🤝‍🧑</div>
-        <div>
-            <p class="text-gray-500 text-sm">Total Team</p>
-            <h2 class="text-2xl font-semibold text-gray-800">{{ total_team }}</h2>
-        </div>
-    </div>
-
-    <!-- Total Withdraw -->
-    <div class="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 border hover:shadow-lg transition">
-        <div class="text-4xl">💸</div>
-        <div>
-            <p class="text-gray-500 text-sm">Total Withdraw</p>
-            <h2 class="text-2xl font-semibold text-gray-800">{{ totalwithdraw }}</h2>
-        </div>
-    </div>
-
-    <!-- Refer Income -->
-    <div class="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 border hover:shadow-lg transition">
-        <div class="text-4xl">🏆</div>
-        <div>
-            <p class="text-gray-500 text-sm">Refer Income</p>
-            <h2 class="text-2xl font-semibold text-gray-800">{{ total_refer_income }}</h2>
-        </div>
-    </div>
-
-    <!-- Generation Income -->
-    <div class="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 border hover:shadow-lg transition">
-        <div class="text-4xl">🌍</div>
-        <div>
-            <p class="text-gray-500 text-sm">Generation Income</p>
-            <h2 class="text-2xl font-semibold text-gray-800">{{ total_gen_income }}</h2>
-        </div>
-    </div>
-
-    <!-- LTI -->
-    <div class="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 border hover:shadow-lg transition">
-        <div class="text-4xl">💰</div>
-        <div>
-            <p class="text-gray-500 text-sm">Lucky Fund Balance</p>
-            <h2 class="text-2xl font-semibold text-gray-800">{{ lti }}</h2>
-        </div>
-    </div>
-
 </div>
 
+{% else %}
+
+<!-- Modernized the welcome section with better spacing and typography -->
+<div class="py-8">
+    <div class="mb-10">
+        <h2 class="text-4xl font-black text-gray-900 tracking-tight">Welcome back, <span class="text-indigo-600">{{ request.user.username }}</span></h2>
+        <p class="text-gray-500 mt-2 font-medium">Here's what's happening with your account today.</p>
+    </div>
+
+    <div>
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-xl font-bold text-gray-900">Financial Overview</h3>
+            <span class="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm font-semibold italic">All Funds</span>
         </div>
 
+        <!-- Updated grid to 2 columns on mobile (grid-cols-2) and refined card aesthetics -->
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 
-        {% endblock %}
-       
+            <!-- Profile Balance -->
+            <div class="group bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                    
+                    <div>
+                        <p class="text-indigo-100 text-sm font-bold uppercase tracking-wider">Profile Balance</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ profile.balance }} <span class="text-lg font-normal opacity-80">BDT</span></h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Refer -->
+            <div class="group bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                    
+                    <div>
+                        <p class="text-blue-500 text-sm font-bold uppercase tracking-wider text-white/90">Total Refer</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ total_refer }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Team -->
+            <div class="group bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                   
+                    <div>
+                        <p class="text-emerald-100 text-sm font-bold uppercase tracking-wider">Total Team</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ total_team }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Withdraw -->
+            <div class="group bg-gradient-to-br from-rose-500 to-rose-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-money-bill-transfer"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                  
+                    <div>
+                        <p class="text-rose-100 text-sm font-bold uppercase tracking-wider">Total Withdraw</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ totalwithdraw }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Refer Income -->
+            <div class="group bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                  
+                    <div>
+                        <p class="text-amber-100 text-sm font-bold uppercase tracking-wider">Refer Income</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ total_refer_income }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generation Income -->
+            <div class="group bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                    
+                    <div>
+                        <p class="text-cyan-100 text-sm font-bold uppercase tracking-wider">Generation Income</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ total_gen_income }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lucky Fund -->
+            <div class="group bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/5 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                   
+                    <div>
+                        <p class="text-slate-300 text-sm font-bold uppercase tracking-wider">Lucky Fund Balance</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ lti }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

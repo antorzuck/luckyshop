@@ -1,0 +1,138 @@
+{% extends 'index.html' %}
+
+
+
+{% block body %}
+
+    <div class="container mx-auto p-2">
+
+      <div class="mx-3 flex-col mb-5 p-3 rounded-md bg-white shadow flex items-center justify-center">
+      <img class="w-40"
+  src="https://api.dicebear.com/8.x/big-smile/svg?seed={{username}}"
+  alt="avatar" />
+    <h1 class="font-bold text-2xl">{{username}}'s teams👾</h1>
+      </div>
+
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold"></h1>
+            
+
+
+
+<form class="max-w-sm mx-auto">
+
+  <select onchange="x()" id="select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+    <option selected disabled>Choose generation</option>
+    <option {% if gen == '1' %} selected {% endif %}  value="1">generation one</option>
+    <option {% if gen == '2' %} selected {% endif %} value="2">generation two</option>
+    <option {% if gen == '3' %} selected {% endif %} value="3">generation three</option>
+    <option {% if gen == '4' %} selected {% endif %} value="4">generation four</option>
+    <option {% if gen == '5' %} selected {% endif %} value="5">generation five</option>
+    <option {% if gen == '6' %} selected {% endif %} value="6">generation six</option>
+    <option {% if gen == '7' %} selected {% endif %} value="7">generation seven</option>
+<option {% if gen == '8' %} selected {% endif %} value="8">generation eight</option>
+<option {% if gen == '9' %} selected {% endif %} value="9">generation nine</option>
+<option {% if gen == '10' %} selected {% endif %} value="10">generation ten</option> 
+<option {% if gen == '11' %} selected {% endif %} value="11">generation eleven</option>
+<option {% if gen == '12' %} selected {% endif %} value="12">generation twelve</option>
+<option {% if gen == '13' %} selected {% endif %} value="13">generation thirteen</option>
+<option {% if gen == '14' %} selected {% endif %} value="14">generation fourteen</option>
+<option {% if gen == '15' %} selected {% endif %} value="15">generation fifteen</option>
+<option {% if gen == '16' %} selected {% endif %} value="16">generation sixteen</option>
+<option {% if gen == '17' %} selected {% endif %} value="17">generation seventeen</option>
+<option {% if gen == '18' %} selected {% endif %} value="18">generation eighteen</option>
+<option {% if gen == '19' %} selected {% endif %} value="19">generation nineteen</option>
+<option {% if gen == '20' %} selected {% endif %} value="20">generation twenty</option>
+<option {% if gen == '21' %} selected {% endif %} value="21">generation twenty-one</option>
+<option {% if gen == '22' %} selected {% endif %} value="22">generation twenty-two</option>
+<option {% if gen == '23' %} selected {% endif %} value="23">generation twenty-three</option>
+<option {% if gen == '24' %} selected {% endif %} value="24">generation twenty-four</option>
+<option {% if gen == '25' %} selected {% endif %} value="25">generation twenty-five</option>
+
+
+  </select>
+</form>
+
+
+
+
+
+        </div>
+        <div class="overflow-x-auto rounded-md">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 border-b">Username</th>
+                        <th class="px-4 py-2 border-b">Balance</th>
+                        <th class="px-4 py-2 border-b">Refer</th>
+                        <th class="px-4 py-2 border-b">Team</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table">
+    {% for r in ref %}
+                 <tr>
+      <td class="px-4 py-2 border-b text-center flex">
+<img class="w-6 rounded-3xl"  src="https://api.dicebear.com/8.x/big-smile/svg?seed={{r.referred_user.user}}">
+<p class="m-auto">{{r.referred_user.user.username}}</p></td>
+<td class="px-4 py-2 border-b text-center">{{r.referred_user.balance}}</td>
+<td class="px-4 py-2 border-b text-center">{{r.referred_user.total_refer}}</td>
+<td class="px-4 py-2 border-b text-center">
+<a href="/teams/{{r.referred_user.user.username}}">
+<button class=" text-white bg-cyan-800 rounded-md">Team</button>
+</td>
+                 </tr> {% endfor %}
+                    <!-- Data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-between items-center mt-4">
+{% if ref.has_previous %}
+<a href="?page={{ref.previous_page_number}}&gen={{gen}}" >        <button id="prev" class="bg-gray-300 p-2 rounded">Previous</button>
+          </a> {% endif %}
+   <div id="page-info"></div> {% if ref.has_next %}
+
+<a href="?page={{ref.next_page_number}}&gen={{gen}}">
+            <button id="next" class="bg-gray-300 p-2 rounded">Next</button>
+      </a> {% endif %} </div>
+    </div>
+
+
+<script>
+
+
+function x() {
+    var dropdown = document.getElementById("select");
+    var val = dropdown.value;
+    var currentUrl = new URL(window.location.href);
+    var params = currentUrl.searchParams;
+
+    // Set or update the "gen" parameter
+    params.set('gen', val);
+
+    // Construct the new URL with the updated parameters
+    currentUrl.search = params.toString();
+
+    // Navigate to the new URL
+    window.location.href = currentUrl.toString();
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var currentUrl = new URL(window.location.href);
+    var genValue = currentUrl.searchParams.get('gen');
+
+    if (genValue) {
+        var links = document.querySelectorAll('a');
+        links.forEach(function(link) {
+            var linkUrl = new URL(link.href);
+            linkUrl.searchParams.set('gen', genValue);
+            link.href = linkUrl.toString();
+        });
+    }
+});
+
+
+
+</script>
+
+{% endblock %}

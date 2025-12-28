@@ -67,11 +67,12 @@ class Profile(models.Model):
             generation_counts[referral.generation] += 1
         
         multipliers = {
-            1: 10, 2: 1, 3: 4, 4: 3, 5: 2,
-            6: 2, 7: 1, 8: 1, 9: 1, 10: 1,
-            11: 1, 12: 1, 13: 1, 14: 1, 15: 1,
-            16: 1, 17: 1, 18: 1, 19: 1, 20: 1,
-            21: 1, 22: 1, 23: 1, 24: 1, 25: 1,
+        1: 2,
+    2: 2, 3: 2, 4: 2, 5: 2,
+    6: 2, 7: 2, 8: 2, 9: 2, 10: 2,
+    11: 2, 12: 2, 13: 2, 14: 2, 15: 2,
+    16: 2, 17: 2, 18: 2, 19: 2, 20: 2,
+    21: 2, 22: 2, 23: 2, 24: 2, 25: 2,
             }
         sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
 
@@ -87,11 +88,12 @@ class Profile(models.Model):
             generation_counts[referral.generation] += 1
         
         multipliers = {
-            1: 10, 2: 1, 3: 4, 4: 3, 5: 2,
-            6: 2, 7: 1, 8: 1, 9: 1, 10: 1,
-            11: 1, 12: 1, 13: 1, 14: 1, 15: 1,
-            16: 1, 17: 1, 18: 1, 19: 1, 20: 1,
-            21: 1, 22: 1, 23: 1, 24: 1, 25: 1,
+            1: 100,
+    2: 2, 3: 2, 4: 2, 5: 2,
+    6: 2, 7: 2, 8: 2, 9: 2, 10: 2,
+    11: 2, 12: 2, 13: 2, 14: 2, 15: 2,
+    16: 2, 17: 2, 18: 2, 19: 2, 20: 2,
+    21: 2, 22: 2, 23: 2, 24: 2, 25: 2,
                 }
         sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
         return sums
@@ -175,10 +177,13 @@ class ScholarshipFund(BaseModel):
 
 
 class LuckyGift(BaseModel):
-    amount = models.IntegerField(default=0)
+    
+    number = models.CharField(max_length=20)
+    agent = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='gifts_agent', null=True, blank=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='lucky_gifts')
 
     def __str__(self):
-        return f'Collection is {str(self.amount)}'
+        return f'{str(self.number)}'
 
 class PoorFund(BaseModel):
     amount = models.IntegerField(default=0)
@@ -201,7 +206,7 @@ class packageSetting(BaseModel):
 
 
 
-
+"""
 
 def transfer_fund_auto(pid, number):
     print("transfering the fund....")
@@ -212,6 +217,7 @@ def transfer_fund_auto(pid, number):
     except Exception as e:
         print("arey buij", e)
 
+"""
 
 
 class Referral(models.Model):
@@ -232,17 +238,18 @@ def create_referral(sender, instance, created, **kwargs):
         referrer_user = instance.referred_by
 
         reward = {
-            1: 10, 2: 1, 3: 4, 4: 3, 5: 2,
-            6: 2, 7: 1, 8: 1, 9: 1, 10: 1,
-            11: 1, 12: 1, 13: 1, 14: 1, 15: 1,
-            16: 1, 17: 1, 18: 1, 19: 1, 20: 1,
-            21: 1, 22: 1, 23: 1, 24: 1, 25: 1,
-}
+    1: 100,
+    2: 2, 3: 2, 4: 2, 5: 2,
+    6: 2, 7: 2, 8: 2, 9: 2, 10: 2,
+    11: 2, 12: 2, 13: 2, 14: 2, 15: 2,
+    16: 2, 17: 2, 18: 2, 19: 2, 20: 2,
+    21: 2, 22: 2, 23: 2, 24: 2, 25: 2,
+    }
         
 
         generation = 1  # Initialize generation counter
 
-        while referrer_user and generation <= 10:
+        while referrer_user and generation <= 25:
             try:
                 referrer_profile = Profile.objects.get(user=referrer_user)
             except Profile.DoesNotExist:
@@ -271,7 +278,7 @@ def create_referral(sender, instance, created, **kwargs):
 
 
 
-
+"""
 
 @receiver(post_save, sender=LuckyFund)
 def giving_reward(sender, instance, created, **kwargs):
@@ -304,6 +311,115 @@ def giving_reward(sender, instance, created, **kwargs):
             print(e, "while rewqrd")
             if not packageSetting.objects.filter(package=instance.package).exists():
                 packageSetting.objects.create(package=instance.package)
+
+"""
+
+
+
+
+from django.db.models import Count, F
+
+@receiver(post_save, sender=LuckyFund)
+def giving_reward(sender, instance, created, **kwargs):
+
+    print("yeah im running bitch")
+    if not LuckyProfit.objects.filter(number=instance.number).exists():
+        LuckyProfit.objects.create(number=instance.number)
+
+    if not created:
+        return
+
+    try:
+        # 🔑 STEP 1:
+        # eligible numbers = jader current package-e 10+ fund ache
+        eligible_numbers = (
+            LuckyFund.objects
+            .filter(package=instance.package)
+            .values('number')
+            .annotate(total=Count('id'))
+            .filter(total__gte=10)
+            .values_list('number', flat=True)
+        )
+
+        if not eligible_numbers:
+            return
+
+        # 🔑 STEP 2:
+        # reward pool only eligible numbers
+        ff = LuckyFund.objects.filter(
+            package=instance.package,
+            is_rewarded=False,
+            number__in=eligible_numbers
+        ).exclude(id=instance.id).order_by('id')
+
+        if not ff.exists():
+            return
+
+        # serial logic
+        setting, _ = packageSetting.objects.get_or_create(
+            package=instance.package,
+            defaults={'current_serial': 0, 'increase': 1}
+        )
+
+        # serial out of range safety
+        index = setting.current_serial % ff.count()
+        get_rwrd_id = ff[index]
+
+        # 🔑 STEP 3:
+        # reward EXACTLY 10 fund of that number
+        reward_funds = LuckyFund.objects.filter(
+            number=get_rwrd_id.number,
+            package=instance.package,
+            is_rewarded=False
+        ).order_by('id')[:10]
+
+        if reward_funds.count() < 10:
+            return
+
+        total_reward = instance.package.price * 10
+
+        # add balance ONCE
+        LuckyFund.objects.filter(id=get_rwrd_id.id).update(
+            balance=F('balance') + total_reward
+        )
+
+        # mark 10 funds rewarded
+        reward_funds.update(is_rewarded=True)
+
+        # update serial
+        setting.current_serial += setting.increase
+        setting.save()
+
+        # 🔑 STEP 4: update profit
+        pro = LuckyProfit.objects.get(number=get_rwrd_id.number)
+        pro.invest += total_reward
+        pro.profit += total_reward
+        pro.save()
+
+        # 🔑 STEP 5: auto transfer
+        transfer_fund_auto(
+            pid=instance.package.id,
+            number=get_rwrd_id.number
+        )
+
+    except Exception as e:
+        print(e, "while reward")
+
+
+def transfer_fund_auto(pid, number):
+    print("transfering the fund....")
+    try:
+        pack = LuckyPackage.objects.filter(id__gt=pid).order_by('id').first()
+        if not pack:
+            return
+
+        LuckyFund.objects.create(
+            package=pack,
+            number=number,
+            balance=pack.price
+        )
+    except Exception as e:
+        print("arey buij", e)
 
 
 

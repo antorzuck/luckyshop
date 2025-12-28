@@ -1,0 +1,83 @@
+{% extends "index.html" %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">
+        Fund Overview
+    </h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Honorable Fund -->
+        <!-- Added blue background and white text for visual distinction -->
+        <div class="bg-blue-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Honorable Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ honorable_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Admin Fund -->
+        <!-- Added indigo background -->
+        <div class="bg-indigo-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Admin Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ admin_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Shopkeeper Fund -->
+        <!-- Added amber background -->
+        <div class="bg-amber-500 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Shopkeeper Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ shopkeeper_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Government Fund -->
+        <!-- Added emerald/green background -->
+        <div class="bg-emerald-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Government Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ government_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Organizer Fund -->
+        <!-- Added violet background -->
+        <div class="bg-violet-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Organizer Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ organizer_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Unemployment Fund -->
+        <!-- Added rose/red background -->
+        <div class="bg-rose-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Unemployment Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ unemployment_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Scholarship Fund -->
+        <!-- Added cyan background -->
+        <div class="bg-cyan-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Scholarship Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ scholarship_fund.amount|default:"0" }}
+            </p>
+        </div>
+
+        <!-- Poor Fund -->
+        <!-- Added teal background -->
+        <div class="bg-teal-600 rounded-lg shadow-md p-5 text-white">
+            <p class="text-sm opacity-90">Poor Fund</p>
+            <p class="text-2xl font-bold mt-2">
+                ৳ {{ poor_fund.amount|default:"0" }}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -21,5 +21,11 @@ path('withdraw/submit/<int:profile_id>/', withdraw_submit, name='withdraw_submit
 path('lottery/draw/', lottery_draw, name='lottery_draw'),
 path('lottery/run/', lottery_run, name='lottery_run'),
 path('lottery/winner/', lottery_winner, name='lottery_winner'),
+path('lucky-fund/', luckyfund_list, name='luckyfund_list'),
+path('teams/<str:username>/', get_teams),
+path("activate/", create_payment, name="create_payment"), 
+path('lucky-gifts/', luckygifts_list, name='luckygift_list'),
+path("all-funds/", fund_overview, name="funds"),
+
 ]
 

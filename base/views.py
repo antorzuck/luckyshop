@@ -6,9 +6,156 @@ from .decor import agent_required
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import F
+from django.db.models.functions import RowNumber
+from django.db.models.expressions import Window
+from django.core.paginator import Paginator
+import requests
+
+def create_payment(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request"}, status=405)
+
+    username = request.POST.get("username")
+
+
+    if not username:
+        return JsonResponse({"error": "Username and amount required"}, status=400)
+
+    url = "https://pay.luckyshoppings.com/api/create-charge"
+
+    payload = {
+        "full_name": username,
+        "email_mobile": f"{username}@gmail.com",
+        "amount": "500",
+        "metadata": {
+            "username": username
+        },
+        "redirect_url": "https://luckyshoppings.com",
+        "return_type": "GET",
+        "cancel_url": "https://luckyshoppings.com",
+        "webhook_url": "https://luckyshoppings.com",
+        "currency": "BDT"
+    }
+
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "mh-piprapay-api-key": "1987542710694a4f49e196116168253371733401808694a4f49e19651915710269"
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=15)
+        data = response.json()
+
+        # ✅ Redirect to payment page
+        if data.get("status") is True and data.get("pp_url"):
+            return redirect(data["pp_url"])
+
+        return JsonResponse({"error": "Payment creation failed", "response": data}, status=400)
+
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+def luckyfund_list(request):
+    query = request.GET.get('q', '').strip()
+
+    # Step 1: full ordered list (real serial base)
+    full_ids = list(
+        LuckyFund.objects
+        .filter(is_rewarded=False)
+        .order_by('created_at')
+        .values_list('id', flat=True)
+    )
+
+    # Step 2: apply search
+    funds = LuckyFund.objects.filter(is_rewarded=False).order_by('created_at')
+    if query:
+        funds = funds.filter(number__icontains=query)
+
+    # Step 3: attach real serial
+    result = []
+    for fund in funds:
+        fund.serial = full_ids.index(fund.id) + 1
+        result.append(fund)
+
+    return render(request, 'list.html', {
+        'funds': result,
+        'query': query,
+    })
+
+
+
+
+
+def luckygifts_list(request):
+    query = request.GET.get('q', '').strip()
+
+    # Step 1: full ordered list (real serial base)
+    full_ids = list(
+        LuckyGift.objects
+        .all().order_by('created_at').values_list('id', flat=True)
+    )
+
+    # Step 2: apply search
+    funds = LuckyGift.objects.all().order_by('created_at')
+    if query:
+        funds = funds.filter(number__icontains=query)
+
+   
+    result = []
+    for fund in funds:
+        fund.serial = full_ids.index(fund.id) + 1
+        result.append(fund)
+
+    return render(request, 'gifts.html', {
+        'funds': result,
+        'query': query,
+    })
+
+
+
+
+
+
+
+def get_teams(request, username):
+    if request.method == 'GET':
+        gen = request.GET.get('gen')
+        genon = 1
+        if gen:
+            genon = gen
+        p = Profile.objects.get(user__username=username)
+        ref = Referral.objects.filter(referrer=p, generation=genon).order_by('-id')
+        paginator = Paginator(ref, 10)
+        page_number = request.GET.get('page')
+        ref = paginator.get_page(page_number)
+        context = {'ref':ref, 'gen':genon, 'username':username}
+        return render(request, 'team.html', context)
+
+
+def fund_overview(request):
+    context = {
+        'honorable_fund': HonorableFund.objects.first(),
+        'admin_fund': AdminFund.objects.first(),
+        'shopkeeper_fund': ShopkeeperFund.objects.first(),
+        'government_fund': GovernmentFund.objects.first(),
+        'organizer_fund': OrganizerFund.objects.first(),
+        'unemployment_fund': UnemploymentFund.objects.first(),
+        'scholarship_fund': ScholarshipFund.objects.first(),
+        'lucky_gift': LuckyGift.objects.first(),
+        'poor_fund': PoorFund.objects.first(),
+    }
+    return render(request, 'overview.html', context)
+
+
 
 
 def home(request):
+    if request.method == "post":
+        return redirect(request.POST)
     return render(request, 'home.html')
 
 def draw(request):
@@ -140,7 +287,7 @@ def create_lottery(request):
         profile = Profile.objects.get(number=phone)
     except:
         agent = Profile.objects.get(user=request.user)
-        user = User.objects.create(username=phone, password=phone)
+        user = User.objects.create_user(username=phone, password=phone)
         profile = Profile.objects.create(user=user, number=phone, is_verified=True)
     
     quantity = int(request.GET.get('quantity'))
@@ -154,6 +301,10 @@ def create_lottery(request):
         package = LuckyPackage.objects.get(id=1),
         profile = profile
     )
+        LuckyGift.objects.create(
+        number=phone,
+        profile = profile
+    )
 
     try:
         quantity = int(quantity)
@@ -163,7 +314,7 @@ def create_lottery(request):
     fund_models = [
         HonorableFund, AdminFund, ShopkeeperFund,
         GovernmentFund, OrganizerFund, UnemploymentFund,
-        ScholarshipFund, LuckyGift, PoorFund
+        ScholarshipFund, PoorFund
     ]
 
     for model in fund_models:
