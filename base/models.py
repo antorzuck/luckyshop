@@ -319,92 +319,108 @@ def giving_reward(sender, instance, created, **kwargs):
 
 from django.db.models import Count, F
 
+
+
+
 @receiver(post_save, sender=LuckyFund)
 def giving_reward(sender, instance, created, **kwargs):
 
-    print("yeah im running bitch")
-    if not LuckyProfit.objects.filter(number=instance.number).exists():
-        LuckyProfit.objects.create(number=instance.number)
+    LuckyProfit.objects.get_or_create(number=instance.number)
 
     if not created:
         return
 
     try:
-        # 🔑 STEP 1:
-        # eligible numbers = jader current package-e 10+ fund ache
+        # STEP 1: numbers having 2+ funds in this package
         eligible_numbers = (
             LuckyFund.objects
             .filter(package=instance.package)
             .values('number')
             .annotate(total=Count('id'))
-            .filter(total__gte=10)
+            .filter(total__gte=2)
             .values_list('number', flat=True)
         )
 
         if not eligible_numbers:
             return
 
-        # 🔑 STEP 2:
-        # reward pool only eligible numbers
-        ff = LuckyFund.objects.filter(
-            package=instance.package,
-            is_rewarded=False,
-            number__in=eligible_numbers
-        ).exclude(id=instance.id).order_by('id')
+        # STEP 2: pick OLDEST fund (bottom one) per number
+        ff = []
+        for num in eligible_numbers:
+            fund = (
+                LuckyFund.objects
+                .filter(
+                    package=instance.package,
+                    number=num,
+                    is_rewarded=False
+                )
+                .exclude(id=instance.id)
+                .order_by('-id')  
+                .first()
+            )
+            if fund:
+                ff.append(fund)
 
-        if not ff.exists():
+        if not ff:
             return
 
-        # serial logic
+        # STEP 3: serial logic (unchanged)
         setting, _ = packageSetting.objects.get_or_create(
             package=instance.package,
             defaults={'current_serial': 0, 'increase': 1}
         )
 
-        # serial out of range safety
-        index = setting.current_serial % ff.count()
-        get_rwrd_id = ff[index]
-
-        # 🔑 STEP 3:
-        # reward EXACTLY 10 fund of that number
-        reward_funds = LuckyFund.objects.filter(
-            number=get_rwrd_id.number,
-            package=instance.package,
-            is_rewarded=False
-        ).order_by('id')[:10]
-
-        if reward_funds.count() < 10:
+        if setting.current_serial >= len(ff):
             return
 
-        total_reward = instance.package.price * 10
+        winner_fund = ff[setting.current_serial]
 
-        # add balance ONCE
-        LuckyFund.objects.filter(id=get_rwrd_id.id).update(
-            balance=F('balance') + total_reward
+        # STEP 4: get FIRST 2 fund IDs (OLDEST)
+        reward_fund_ids = list(
+            LuckyFund.objects
+            .filter(
+                package=instance.package,
+                number=winner_fund.number,
+                is_rewarded=False
+            )
+            .order_by('id')
+            .values_list('id', flat=True)[:2]
         )
 
-        # mark 10 funds rewarded
-        reward_funds.update(is_rewarded=True)
+        if len(reward_fund_ids) < 2:
+            return
+
+        # STEP 5: reward (balance added ONCE)
+        winner_fund.balance += instance.package.price
+        winner_fund.save()
+
+        # mark BOTH funds rewarded (NO SLICE HERE)
+        LuckyFund.objects.filter(id__in=reward_fund_ids).update(is_rewarded=True)
+
 
         # update serial
         setting.current_serial += setting.increase
         setting.save()
 
-        # 🔑 STEP 4: update profit
-        pro = LuckyProfit.objects.get(number=get_rwrd_id.number)
-        pro.invest += total_reward
-        pro.profit += total_reward
+        # STEP 6: profit
+        pro = LuckyProfit.objects.get(number=winner_fund.number)
+        pro.invest += instance.package.price
+        pro.profit += instance.package.price
         pro.save()
 
-        # 🔑 STEP 5: auto transfer
-        transfer_fund_auto(
+        # STEP 7: auto transfer
+        transfer_fund(
             pid=instance.package.id,
-            number=get_rwrd_id.number
+            number=winner_fund.number
+        )
+
+        print(
+            f"reward given to {winner_fund.number}, "
+            f"funds={[f.id for f in reward_funds]}"
         )
 
     except Exception as e:
         print(e, "while reward")
-
 
 def transfer_fund_auto(pid, number):
     print("transfering the fund....")
