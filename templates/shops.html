@@ -1,0 +1,83 @@
+{% extends 'landing.html' %}
+
+{% block body %}
+  <!-- Shops Grid -->
+  <main class="max-w-6xl mx-auto px-4 py-12">
+      
+      <div class="mb-8 text-center">
+  <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+    {% if selected_district %}
+      Showing shops in {{ selected_district }}, {{ selected_country|default:"Bangladesh" }}
+    {% else %}
+      Showing all shops
+    {% endif %}
+  </h1>
+
+  {% if shops %}
+    <p class="mt-2 text-gray-600 text-sm">
+      {{ shops|length }} shop{{ shops|length|pluralize }} found
+    </p>
+  {% endif %}
+</div>
+      
+      
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      {% for shop in shops %}
+      <!-- Shop Card -->
+      <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+        
+        <!-- Cover Photo -->
+        <div class="relative h-48 bg-gradient-to-br from-purple-400 to-purple-600 overflow-hidden">
+          {% if shop.shop_photo %}
+            <img src="{{ shop.shop_photo.url }}" alt="{{ shop.name }}" class="w-full h-full object-cover">
+          {% else %}
+            <img src="/placeholder.svg?height=192&width=400" alt="Store front" class="w-full h-full object-cover">
+          {% endif %}
+        </div>
+
+        <!-- Shop Info -->
+        <div class="p-6">
+          
+          <!-- Profile Picture -->
+          <div class="flex items-center gap-4 mb-4">
+            {% if shop.profile_pic %}
+              <img src="{{ shop.profile_pic.url }}" alt="{{ shop.name }}"
+                   class="w-16 h-16 rounded-full object-cover border-2 border-purple-500">
+            {% else %}
+              <img src="/placeholder.svg?height=64&width=64" alt="Shop logo"
+                   class="w-16 h-16 rounded-full object-cover border-2 border-purple-500">
+            {% endif %}
+
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">{{ shop.name }}</h3>
+              <p class="text-sm text-gray-600">{{ shop.district }}, Bangladesh</p>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="mb-4">
+            <p class="text-gray-700 text-sm">
+              <span class="font-semibold">📍 Address:</span><br>
+              {{ shop.location }}
+            </p>
+          </div>
+
+          <!-- Google Maps Button -->
+          {% if shop.google_map_link %}
+          <a href="{{ shop.google_map_link }}" target="_blank"
+             class="block w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-center">
+            View on Google Maps
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+        <p class="col-span-full text-center text-gray-500">
+          No shops found for this location.
+        </p>
+      {% endfor %}
+
+    </div>
+  </main>
+{% endblock %}

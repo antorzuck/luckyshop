@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucky Shoppings - Saving by Shopping</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fancy: ['Pacifico', 'cursive'],
+            sans: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            'hero-pink': '#ec4899',
+            'banner-purple': '#8b5cf6',
+            'cyan-main': '#06b6d4',
+            'gold': '#fbbf24',
+          }
+        }
+      }
+    }
+  </script>
+  
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -21,6 +42,130 @@
         }
         .prize-glow {
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+         * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .text-glow {
+      text-shadow: 
+        0 0 10px rgba(236, 72, 153, 0.8),
+        0 0 20px rgba(236, 72, 153, 0.6),
+        0 0 40px rgba(236, 72, 153, 0.4),
+        0 0 80px rgba(236, 72, 153, 0.3);
+      animation: glow-pulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow-pulse {
+      from {
+        text-shadow: 
+          0 0 10px rgba(255, 255, 255, 0.9),
+          0 0 20px rgba(236, 72, 153, 0.8),
+          0 0 40px rgba(236, 72, 153, 0.6),
+          0 0 80px rgba(236, 72, 153, 0.4);
+      }
+      to {
+        text-shadow: 
+          0 0 15px rgba(255, 255, 255, 1),
+          0 0 30px rgba(236, 72, 153, 1),
+          0 0 60px rgba(236, 72, 153, 0.8),
+          0 0 100px rgba(236, 72, 153, 0.6);
+      }
+    }
+
+    @keyframes bounce-soft {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .animate-bounce-soft {
+      animation: bounce-soft 1.5s ease-in-out infinite;
+    }
+
+    .gradient-hero {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    }
+
+    .gradient-banner {
+      background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 50%, #7c3aed 100%);
+    }
+
+    .gradient-cyan {
+      background: linear-gradient(180deg, #06b6d4 0%, #0891b2 100%);
+    }
+
+    .cta-button {
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 40px rgba(251, 191, 36, 0.4);
+    }
+    
+    
+     @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.4s ease-out;
+        } 
+        
+                /* Unique modal slide-up animation */
+        @keyframes giftModal_slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes giftModal_fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .giftModal_slideUp {
+            animation: giftModal_slideUp 0.4s ease-out;
+        }
+
+        .giftModal_fadeIn {
+            animation: giftModal_fadeIn 0.3s ease-out;
+        }
+
+        .giftModal_hidden {
+            display: none !important;
+        }
+
+        /* Added colorful gradient backgrounds for modal header and cards */
+        .giftModal_header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .giftModal_badge {
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
@@ -52,5 +197,129 @@
         <p>&copy; 2025 Lucky Shoppings. Saving by Shopping</p>
         <p class="text-sm text-gray-400">luckyshopping.com</p>
     </footer>
+    
+
+    <script>
+        let selectedCountry = null;
+
+        function openModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.remove('hidden');
+            showCountryView();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.add('hidden');
+            selectedCountry = null;
+        }
+
+        function selectCountry(country) {
+            selectedCountry = country;
+
+            if (country === 'Bangladesh') {
+                showDistrictView();
+            } else {
+                showComingSoonView();
+            }
+        }
+
+        function selectDistrict(district) {
+            const url = `/shop?country=${encodeURIComponent(selectedCountry)}&district=${encodeURIComponent(district)}`;
+            window.location.href = url;
+        }
+
+        function showCountryView() {
+            document.getElementById('countryView').classList.remove('hidden');
+            document.getElementById('districtView').classList.add('hidden');
+            document.getElementById('comingSoonView').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = 'Select Country';
+        }
+
+        function showDistrictView() {
+            document.getElementById('countryView').classList.add('hidden');
+            document.getElementById('districtView').classList.remove('hidden');
+            document.getElementById('comingSoonView').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = 'Select Location';
+        }
+
+        function showComingSoonView() {
+            document.getElementById('countryView').classList.add('hidden');
+            document.getElementById('districtView').classList.add('hidden');
+            document.getElementById('comingSoonView').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = selectedCountry;
+        }
+
+        function backToCountries() {
+            selectedCountry = null;
+            showCountryView();
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        
+        
+        const triggerBtn = document.getElementById('giftModal_triggerBtn');
+        const closeBtn = document.getElementById('giftModal_closeBtn');
+        const modalContainer = document.getElementById('giftModal_container');
+        const backdropOverlay = document.getElementById('giftModal_backdrop');
+
+        triggerBtn.addEventListener('click', () => {
+            modalContainer.classList.remove('giftModal_hidden');
+            backdropOverlay.classList.remove('giftModal_hidden');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closegiftModal = () => {
+            modalContainer.classList.add('giftModal_hidden');
+            backdropOverlay.classList.add('giftModal_hidden');
+            document.body.style.overflow = 'auto';
+        };
+
+        closeBtn.addEventListener('click', closegiftModal);
+
+        backdropOverlay.addEventListener('click', closegiftModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closegiftModal();
+            }
+        });
+        
+        
+           const luckySavingModal = document.getElementById('luckySavingModal');
+        const luckySavingOpenBtn = document.getElementById('luckySavingOpenBtn');
+        const luckySavingCloseBtn = document.getElementById('luckySavingCloseBtn');
+
+        luckySavingOpenBtn.addEventListener('click', () => {
+            luckySavingModal.classList.remove('hidden');
+        });
+
+        luckySavingCloseBtn.addEventListener('click', () => {
+            luckySavingModal.classList.add('hidden');
+        });
+
+        luckySavingModal.addEventListener('click', (e) => {
+            if (e.target === luckySavingModal) {
+                luckySavingModal.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                luckySavingModal.classList.add('hidden');
+            }
+        });
+        
+        
+        
+    </script> 
+    
+    
+    
 </body>
 </html>

@@ -2,7 +2,8 @@
 from django.contrib import admin
 from django.urls import path
 from base.views import *
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -13,6 +14,8 @@ urlpatterns = [
     path('draw', draw),
     path('register', handle_reg),
     path('dashboard', dashboard),
+    path('shop', shop),
+    path('transfer', transfer_fund),
     path('create-lottery', create_lottery),
     path('lucky-fund-dashboard/', lucky_fund_dashboard, name='lucky_fund_dashboard'),
     path('lucky-fund-report/', get_lucky_fund_report, name='lucky_fund_report'),
@@ -27,5 +30,5 @@ path("activate/", create_payment, name="create_payment"),
 path('lucky-gifts/', luckygifts_list, name='luckygift_list'),
 path("all-funds/", fund_overview, name="funds"),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

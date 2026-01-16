@@ -18,6 +18,64 @@ class BaseModel(models.Model):
 
     def __str__(self):
         return f"{self.__class__.__name__} (id={self.pk})"
+from django.db import models
+
+
+class Shop(BaseModel):
+
+
+    COUNTRY_CHOICES = [
+        ('BD', 'Bangladesh'),
+    ]
+
+
+    DISTRICT_CHOICES = [
+        ('Dhaka', 'Dhaka'),
+        ('Chattogram', 'Chattogram'),
+        ('Khulna', 'Khulna'),
+        ('Rajshahi', 'Rajshahi'),
+        ('Sylhet', 'Sylhet'),
+        ('Barishal', 'Barishal'),
+        ('Rangpur', 'Rangpur'),
+    ]
+
+    name = models.CharField(max_length=255)
+
+    profile_pic = models.ImageField(
+        upload_to='shops/profile_pics/',
+        blank=True,
+        null=True
+    )
+
+    shop_photo = models.ImageField(
+        upload_to='shops/photos/',
+        blank=True,
+        null=True
+    )
+
+    country = models.CharField(
+        max_length=5,
+        choices=COUNTRY_CHOICES,
+        default='BD'
+    )
+
+    district = models.CharField(
+        max_length=50,
+        choices=DISTRICT_CHOICES
+    )
+
+    location = models.CharField(
+        max_length=255,
+        help_text="Shop address / area"
+    )
+
+    google_map_link = models.URLField(
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.name
 
 
 
@@ -102,6 +160,7 @@ class Profile(models.Model):
 class LuckyPackage(BaseModel):
     name = models.CharField(max_length=50)
     price = models.IntegerField(default=0)
+    reward = models.IntegerField(default=0)
 
 
     def __str__(self):
@@ -314,7 +373,8 @@ def giving_reward(sender, instance, created, **kwargs):
 
 """
 
-
+class FundSettings(BaseModel):
+    number = models.IntegerField(default=1)
 
 
 from django.db.models import Count, F
@@ -326,6 +386,8 @@ from django.db.models import Count, F
 def giving_reward(sender, instance, created, **kwargs):
 
     LuckyProfit.objects.get_or_create(number=instance.number)
+    
+    fund_setting_number = FundSettings.objects.filter().first()
 
     if not created:
         return
@@ -337,7 +399,7 @@ def giving_reward(sender, instance, created, **kwargs):
             .filter(package=instance.package)
             .values('number')
             .annotate(total=Count('id'))
-            .filter(total__gte=2)
+            .filter(total__gte=fund_setting_number.number)
             .values_list('number', flat=True)
         )
 
@@ -355,7 +417,7 @@ def giving_reward(sender, instance, created, **kwargs):
                     is_rewarded=False
                 )
                 .exclude(id=instance.id)
-                .order_by('-id')  
+                .order_by('id')  
                 .first()
             )
             if fund:
@@ -384,12 +446,12 @@ def giving_reward(sender, instance, created, **kwargs):
                 is_rewarded=False
             )
             .order_by('id')
-            .values_list('id', flat=True)[:2]
+            .values_list('id', flat=True)[:fund_setting_number.number]
         )
 
-        if len(reward_fund_ids) < 2:
+        if len(reward_fund_ids) < fund_setting_number.number:
             return
-
+ 
         # STEP 5: reward (balance added ONCE)
         winner_fund.balance += instance.package.price
         winner_fund.save()
@@ -405,11 +467,13 @@ def giving_reward(sender, instance, created, **kwargs):
         # STEP 6: profit
         pro = LuckyProfit.objects.get(number=winner_fund.number)
         pro.invest += instance.package.price
-        pro.profit += instance.package.price
+        pro.profit += instance.package.reward
         pro.save()
+        
+        """
 
-        # STEP 7: auto transfer
-        transfer_fund(
+    
+        transfer_fund_auto(
             pid=instance.package.id,
             number=winner_fund.number
         )
@@ -417,7 +481,7 @@ def giving_reward(sender, instance, created, **kwargs):
         print(
             f"reward given to {winner_fund.number}, "
             f"funds={[f.id for f in reward_funds]}"
-        )
+        )"""
 
     except Exception as e:
         print(e, "while reward")

@@ -39,8 +39,8 @@
 
 {% else %}
 
-<!-- Modernized the welcome section with better spacing and typography -->
-<div class="py-8">
+
+<div class="py-3">
     <div class="mb-10">
         <h2 class="text-4xl font-black text-gray-900 tracking-tight">Welcome back, <span class="text-indigo-600">{{ request.user.username }}</span></h2>
         <p class="text-gray-500 mt-2 font-medium">Here's what's happening with your account today.</p>
@@ -152,6 +152,28 @@
                     </div>
                 </div>
             </div>
+            
+            
+            
+            
+            
+            
+            <div class="group bg-gradient-to-br from-pink-500 to-pink-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 relative overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98]">
+                <div class="absolute -right-4 -bottom-4 text-white/10 text-6xl md:text-8xl transition-transform group-hover:scale-110 rotate-12">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="relative z-10 flex items-center space-x-4">
+                    
+                    <div>
+                        <p class="text-pink-500 text-sm font-bold uppercase tracking-wider text-white/90">Recycle</p>
+                        <h2 class="text-3xl font-black text-white mt-1">{{ total_refer }}</h2>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            
         </div>
     </div>
 </div>

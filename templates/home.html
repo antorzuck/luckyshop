@@ -3,9 +3,377 @@
 
 {% block body %}
 
+<div id="luckySavingModal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center transition-opacity duration-300">
+        <div class="relative max-w-[90%] max-h-[90vh] rounded-xl overflow-hidden">
+            <button id="luckySavingCloseBtn" class="absolute -top-7 -right-5 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full text-2xl font-bold hover:bg-black/90 hover:scale-110 transition-all duration-300 z-10">
+                &times;
+            </button>
+            <img src="https://luckyshoppings.com/fdo.jpeg" alt="Lucky Saving FDO Promotion" class="w-full h-auto">
+        </div>
+    </div>
+
+
+
+
+    <div 
+        id="giftModal_backdrop" 
+        class="giftModal_hidden fixed inset-0 bg-black bg-opacity-30 z-40 giftModal_fadeIn"
+    ></div>
+
+    <!-- Bottom Slide-Up Modal -->
+    <div 
+        id="giftModal_container" 
+        class="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% giftModal_hidden fixed bottom-0 left-0 right-0  rounded-t-2xl shadow-2xl z-50 giftModal_slideUp max-h-[80vh] overflow-y-auto"
+    >
+        <!-- Updated header with colorful gradient background -->
+        <div class="sticky top-0 giftModal_header rounded-t-2xl border-b border-opacity-20 p-4 flex justify-between items-center z-50">
+            <h2 class="text-2xl font-bold text-white">Available Gifts</h2>
+            <button 
+                id="giftModal_closeBtn" 
+                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
+            >
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Gifts Grid -->
+        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Gift 1: Suzuki Bike - Added price badge and colorful design -->
+            <div class="bg-white border-2 border-blue-300 rounded-xl overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105">
+                <div class="relative aspect-square bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center overflow-hidden">
+                    <img 
+                        src="https://images.unsplash.com/photo-1664643890508-05223aa7f580?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8eWFtYWhhJTIwcjE1fGVufDB8fDB8fHww" 
+                        alt="" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full giftModal_badge">
+                        1st Prize
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">R15 Motorcycle</h3>
+                    <p class="text-gray-600 text-sm mb-4">High-performance sports bike with advanced features</p>
+                 
+                </div>
+            </div>
+
+            <!-- Gift 2: Latest Mobile Phone - Added price badge and colorful design -->
+            <div class="bg-white border-2 border-purple-300 rounded-xl overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105">
+                <div class="relative aspect-square bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center overflow-hidden">
+                    <img 
+                        src="https://cdn.bikedekho.com/processedimages/suzuki/gixxer-sf/640X309/gixxer-sf6799f17c8a938.jpg" 
+                        alt="Mobile Phone" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute top-3 right-3 bg-purple-600 text-white px-3 py-1 rounded-full giftModal_badge">
+                        2nd Prize
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Suzuki Gixxer</h3>
+                    <p class="text-gray-600 text-sm mb-4">Sports bike</p>
+                    
+                </div>
+            </div>
+
+            <!-- Gift 3: Premium Gift Box - Added price badge and colorful design -->
+            <div class="bg-white border-2 border-red-300 rounded-xl overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105">
+                <div class="relative aspect-square bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center overflow-hidden">
+                    <img 
+                        src="https://s3-pwa-prod.mumzworld.com/media/cGF0aD0lMkZtZWRpYSUyRmNhdGFsb2clMkZwcm9kdWN0JTJGbSUyRmElMkZtYXktbXl0c19yMTVfdy1teXRzLWtpZHMtcjE1LXNwb3J0cy1iaWtlLTEydi13aGl0ZS0xNjg3MjU2Nzk3MS5qcGcmZml0PXVuZGVmaW5lZA/Myts%20-%20Kids%20R15%20Ride-on%20Sports%20Bike%2012V%20-%20White.jpeg" 
+                        alt="Gift Box" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full giftModal_badge">
+                        3rd Prize
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">R15 Kids Bike</h3>
+                    <p class="text-gray-600 text-sm mb-4">R15 bike for kid.</p>
+                    
+                </div>
+            </div>
+
+            <!-- Gift 4: Wireless Headphones - Added price badge and colorful design -->
+            <div class="bg-white border-2 border-green-300 rounded-xl overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105">
+                <div class="relative aspect-square bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center overflow-hidden">
+                    <img 
+                        src="https://www.cnet.com/a/img/resize/88f3de31256ea76c0f73e07083d4bdc5a1406bf6/hub/2025/08/27/7d3f60f8-cc7e-472d-b2c6-8c068be281fe/pixel10pro-s25ultra-fan.jpg?auto=webp&fit=crop&height=900&width=1200" 
+                        alt="Headphones" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute top-3 right-3 bg-green-600 text-white px-3 py-1 rounded-full giftModal_badge">
+                        4th Prize
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Smartphone</h3>
+                    <p class="text-gray-600 text-sm mb-4">Smartphone worth 20,000 TK</p>
+           
+                </div>
+            </div>
+
+            <!-- Gift 5: Smart Watch - Added price badge and colorful design -->
+            <div class="bg-white border-2 border-yellow-300 rounded-xl overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105">
+                <div class="relative aspect-square bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center overflow-hidden">
+                    <img 
+                        src="https://rukminim2.flixcart.com/image/480/640/xif0q/cycle/u/f/l/drift-24t-kids-multi-speed-gear-cycle-for-boys-girls-age-9-to-13-original-imah8kbg2hdz2d68.jpeg?q=90" 
+                        alt="Smart Watch" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute top-3 right-3 bg-yellow-600 text-white px-3 py-1 rounded-full giftModal_badge">
+                        5th Prize
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Bycycle</h3>
+                    <p class="text-gray-600 text-sm mb-4"></p>
+                  
+                </div>
+            </div>
+
+            <!-- Gift 6: Laptop - Added price badge and colorful design -->
+            <div class="bg-white border-2 border-indigo-300 rounded-xl overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105">
+                <div class="relative aspect-square bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center overflow-hidden">
+                  
+                    <div class="absolute top-3 right-3 bg-indigo-600 text-white px-3 py-1 rounded-full giftModal_badge">
+                        6th Prize
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Many more.</h3>
+                    <p class="text-gray-600 text-sm mb-4">Many more gifts are coming soon.</p>
+                    
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Spacing -->
+        <div class="p-6"></div>
+    </div>
+
+<div class="hidden fixed inset-0 bg-black bg-opacity-40 z-50 flex items-end" id="modalOverlay">
+        <div class="w-full bg-white rounded-t-3xl p-8 max-h-96 overflow-y-auto animate-slide-up">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h2 id="modalTitle" class="text-2xl font-semibold text-gray-800">Select Country</h2>
+                <button class="text-gray-400 hover:text-gray-600 text-3xl leading-none" onclick="closeModal()">&times;</button>
+            </div>
+
+            <!-- Country Selection View -->
+            <div id="countryView" class="flex flex-col gap-3 max-h-[500px] overflow-y-auto">
+    <!-- Asia / Middle East -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Bangladesh')">
+        🇧🇩 Bangladesh
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('India')">
+        🇮🇳 India
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('China')">
+        🇨🇳 China
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Japan')">
+        🇯🇵 Japan
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('South Korea')">
+        🇰🇷 South Korea
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Indonesia')">
+        🇮🇩 Indonesia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Pakistan')">
+        🇵🇰 Pakistan
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Philippines')">
+        🇵🇭 Philippines
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Vietnam')">
+        🇻🇳 Vietnam
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Thailand')">
+        🇹🇭 Thailand
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Malaysia')">
+        🇲🇾 Malaysia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Singapore')">
+        🇸🇬 Singapore
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Saudi Arabia')">
+        🇸🇦 Saudi Arabia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('United Arab Emirates')">
+        🇦🇪 United Arab Emirates
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Israel')">
+        🇮🇱 Israel
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Turkey')">
+        🇹🇷 Turkey
+    </button>
+
+    <!-- Europe -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('France')">
+        🇫🇷 France
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Spain')">
+        🇪🇸 Spain
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Italy')">
+        🇮🇹 Italy
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Germany')">
+        🇩🇪 Germany
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('United Kingdom')">
+        🇬🇧 United Kingdom
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Russia')">
+        🇷🇺 Russia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Netherlands')">
+        🇳🇱 Netherlands
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Switzerland')">
+        🇨🇭 Switzerland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Sweden')">
+        🇸🇪 Sweden
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Norway')">
+        🇳🇴 Norway
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Poland')">
+        🇵🇱 Poland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Portugal')">
+        🇵🇹 Portugal
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Greece')">
+        🇬🇷 Greece
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Austria')">
+        🇦🇹 Austria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Belgium')">
+        🇧🇪 Belgium
+    </button>
+
+    <!-- Americas -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('United States')">
+        🇺🇸 United States
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Canada')">
+        🇨🇦 Canada
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Brazil')">
+        🇧🇷 Brazil
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Mexico')">
+        🇲🇽 Mexico
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Argentina')">
+        🇦🇷 Argentina
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Colombia')">
+        🇨🇴 Colombia
+    </button>
+
+    <!-- Africa -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('South Africa')">
+        🇿🇦 South Africa
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Egypt')">
+        🇪🇬 Egypt
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Nigeria')">
+        🇳🇬 Nigeria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Kenya')">
+        🇰🇪 Kenya
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Morocco')">
+        🇲🇦 Morocco
+    </button>
+
+    <!-- Oceania & others -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Australia')">
+        🇦🇺 Australia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('New Zealand')">
+        🇳🇿 New Zealand
+    </button>
+
+    <!-- More popular additions to reach ~100 -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Ukraine')">
+        🇺🇦 Ukraine
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Czechia')">
+        🇨🇿 Czechia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Hungary')">
+        🇭🇺 Hungary
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Romania')">
+        🇷🇴 Romania
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Bulgaria')">
+        🇧🇬 Bulgaria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Croatia')">
+        🇭🇷 Croatia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Ireland')">
+        🇮🇪 Ireland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Denmark')">
+        🇩🇰 Denmark
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Finland')">
+        🇫🇮 Finland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Iceland')">
+        🇮🇸 Iceland
+    </button>
+    <!-- ... you can continue adding more like Chile 🇨🇱, Peru 🇵🇪, Qatar 🇶🇦, Kuwait 🇰🇼, Jordan 🇯🇴, etc. to go beyond 100 if needed -->
+</div>
+
+            <!-- District Selection View -->
+            <div id="districtView" class="hidden">
+                <button class="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-800 text-sm font-medium transition-all" onclick="backToCountries()">← Back</button>
+                <h3 class="text-xl font-semibold text-gray-800 mb-5">Select District</h3>
+                <div class="flex flex-col gap-3">
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Dhaka')">Dhaka</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Chittagong')">Chittagong</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Khulna')">Khulna</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Rajshahi')">Rajshahi</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Barisal')">Barisal</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Sylhet')">Sylhet</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Rangpur')">Rangpur</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Mymensingh')">Mymensingh</button>
+                </div>
+            </div>
+
+            <!-- Coming Soon View -->
+            <div id="comingSoonView" class="hidden">
+                <button class="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-800 text-sm font-medium transition-all" onclick="backToCountries()">← Back</button>
+                <div class="text-center py-10">
+                    <p class="text-2xl font-semibold text-blue-600 mb-3">🔄 Coming Soon</p>
+                    <p class="text-sm text-gray-500">This feature will be available soon. Please check back later!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Hero Section with Banner -->
-    <section class="w-full h-64 bg-cover" style="background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Ft9HLQo9Q3ktLSUSRhQ9SEljSbb6gl.png')">
+    <section class="w-full h-64 bg-cover" style="background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gemini_Generated_Image_fp1g4xfp1g4xfp1g-cdwhpd9EABBUmbqafOqqNpb6igxlDt.png')">
     </section>
 
     <!-- Main Content -->
@@ -18,128 +386,119 @@
             </p>
         </div>
 
+
+         <div class="min-h-screen gradient-cyan w-full max-w-full overflow-x-hidden">
+    
+    <!-- Hero Section - Pink -->
+    <section class="gradient-hero py-10 px-4 text-center relative overflow-hidden w-full">
+        <div class="absolute top-4 left-1/4 w-20 h-20 rounded-full bg-white/20 blur-xl"></div>
+        <div class="absolute bottom-4 right-1/4 w-32 h-32 rounded-full bg-white/10 blur-2xl"></div>
+
+        <h1 class="text-5xl sm:text-6xl md:text-8xl text-gray-900 text-glow tracking-wide font-bold whitespace-nowrap">
+            HELLO PEOPLE
+        </h1>
+    </section>
+
+    <!-- Banner Section - Purple -->
+    <section class="gradient-banner py-4 px-2 w-full">
+        <div class="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 flex-wrap">
+            <span class="text-xl sm:text-2xl md:text-3xl animate-bounce-soft">👇</span>
+            <div class="flex items-center gap-1 sm:gap-2 md:gap-3 flex-wrap justify-center">
+                <span class="font-bold text-base sm:text-lg md:text-2xl text-white drop-shadow-lg">
+                    The whole world
+                </span>
+                <span class="text-xl sm:text-2xl md:text-3xl">🌎</span>
+                <span class="font-bold text-base sm:text-lg md:text-2xl text-white drop-shadow-lg">is here</span>
+            </div>
+            <span class="text-xl sm:text-2xl md:text-3xl animate-bounce-soft">👇</span>
+        </div>
+    </section>
+
+    <!-- Main Content Section -->
+    <section class="py-8 w-full">
+          <a onclick="openModal()" href="#shops">
+        <!-- Lucky World Card -->
+        <div class="mx-auto">
+            <div class="relative bg-gradient-to-br from-violet-600/90 to-violet-700 rounded-2xl p-4 sm:p-6 shadow-2xl overflow-hidden cursor-pointer hover:shadow-xl transition">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+
+                <div class="flex items-center justify-center relative z-10 gap-1">
+                    <h2 class="font-black text-xl sm:text-3xl md:text-4xl text-yellow-400 drop-shadow-lg tracking-wider">
+                        LUCKY
+                    </h2>
+                    <h2 class="font-black text-xl sm:text-3xl md:text-4xl text-yellow-400 drop-shadow-lg tracking-wider">
+                        SHOPPING
+                    </h2>
+                    <h2 class="font-black text-xl sm:text-3xl md:text-4xl text-yellow-400 drop-shadow-lg tracking-wider">
+                        WORLD
+                    </h2>
+                </div>
+            </div>
+        </div>
+</a>
+        <!-- CTA Section -->
+        <div class="text-center my-5 sm:mt-10 px-2 flex flex-col items-center justify-center">
+            <div class="inline-flex items-center gap-2 mb-4">
+                <span class="text-4xl sm:text-3xl animate-bounce-soft">☝️</span>
+            </div>
+
+            <button class="cta-button bg-yellow-400 hover:bg-yellow-300 text-white font-bold text-xl sm:text-base md:text-xl px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 rounded-full shadow-2xl cursor-pointer">
+                Please click here to get the world shopping
+            </button>
+        </div>
+        
+
+
+        <!-- Red Section - Lucky Gifts -->
+        <div id="giftModal_triggerBtn" class="bg-white text-red-600 text-6xl font-black text-center py-6">
+            Lucky Gifts
+        </div>
+        
+        
+
+ 
+        <div id="luckySavingOpenBtn" class="bg-red-600 text-white text-xl font-black text-center py-6 shadow-lg flex items-center justify-center gap-4">
+            Lucky savings
+            <span class="text-yellow-300 text-xl">🔥</span>
+            FDO
+            <span class="text-yellow-300 text-xl">🔥</span>
+        </div>
+
+            <!-- Coming Soon Section at Top -->
+    <section class=" bg-gray-100 py-4 px-4 text-center w-full">
+        <p class="text-xl font-bold text-gray-800">Coming Soon👇</p>
+    </section>
+    
+            <!-- Removed all margin from this section -->
+        <div class=" bg-gradient-to-r from-violet-600 to-violet-700 text-white text-center py-6 px-4">
+            <p class="text-xl font-bold">Lucky Service World</p>
+        </div>
+        
+                
         <!-- Purple Section - Halal Loan -->
         <div class="bg-purple-800 text-yellow-300 text-6xl font-black text-center py-6 shadow-lg">
             Halal Loan
         </div>
 
-        <!-- Red Section - Lucky Gifts -->
-        <div class="bg-white text-red-600 text-6xl font-black text-center py-6">
-            Lucky Gifts
-        </div>
-
-        <!-- Red Banner - Lucky savings FDO -->
-        <div class="bg-red-600 text-white text-xl font-black text-center py-6 shadow-lg flex items-center justify-center gap-4">
-            Lucky savings
-            <span class="text-yellow-300 text-xl">💥</span>
-            FDO
-            <span class="text-yellow-300 text-xl">💥</span>
-        </div>
-
-        <!-- Yellow Section - Lucky World -->
-        <div class="bg-yellow-300 text-purple-800 text-4xl font-black text-center py-6">
-            Lucky World
-        </div>
-
-        <!-- Blue Bottom Section -->
+        <!-- Removed all margin from this section -->
         <div class="bg-blue-900 text-white text-center py-8">
-            <p class="text-4xl font-black leading-tight">
-                We want to create<br>
+            <p class="text-2xl font-black leading-tight">
+                We want to create
+                <br />
                 A friendship world
             </p>
         </div>
-        <!-- Bengali Content Section -->
-        <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm text-center">
-            <div class="flex gap-3 mb-4 items-center justify-center">
-                <span class="text-3xl">🎉</span>
-                <h3 class="text-2xl font-bold text-purple-700">৫ টি বিশেষ উপহার!</h3>
-            </div>
-            <p class="text-gray-700 text-lg mb-4">একটি সিরিয়াল নম্বরই বদলে যেতে পারে আপনার ভাগ্য। জিতে নিন Yamaha R15, Suzuki Gixxer সহ অসাধারণ সব উপহার।</p>
-            <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-bold text-lg">পুরস্কার দেখুন 👈</button>
-        </div>
 
-        <!-- Fancy Bike Section with Image and Enhanced Styling -->
-        <div class="mb-12">
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl overflow-hidden shadow-2xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 items-center">
-                    <!-- Bike Image -->
-                    <div class="flex justify-center">
-                        <div class="float-animation">
-                            <img src="https://images.unsplash.com/photo-1664643890508-05223aa7f580?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8eWFtYWhhJTIwcjE1fGVufDB8fDB8fHww" alt="Suzuki Gixxer Bike" class="w-full h-96 object-cover rounded-2xl shadow-2xl">
-                        </div>
-                    </div>
-                    <!-- Bike Info -->
-                    <div class="text-white">
-                        <h2 class="text-5xl font-bold mb-4">🏍️ Bike R15</h2>
-                        <p class="text-xl mb-6 opacity-90">আপনার স্বপ্নের বাইক জিতে নিন লাকি শপিং এ!</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">⚡</span>
-                                <span class="text-lg">অসাধারণ পারফরম্যান্স</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🎯</span>
-                                <span class="text-lg">প্রিমিয়াম ডিজাইন</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">💎</span>
-                                <span class="text-lg">সীমিত পুরস্কার - এখনই অংশ নিন!</span>
-                            </div>
-                        </div>
-                        <button class="mt-8 bg-yellow-400 hover:bg-yellow-300 text-blue-900 px-8 py-3 rounded-full font-bold text-lg transition transform hover:scale-105">
-                            অংশগ্রহন করুন        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Enhanced Prize List with Better Layout and Styling -->
-        <div>
-            <h2 class="text-4xl font-bold text-center mb-10 gradient-text">🎁 সকল পুরস্কারের তালিকা</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Prize 1 -->
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
-                    <h4 class="text-3xl font-bold text-blue-700 mb-2">🥇 প্রথম পুরস্কার</h4>
-                    <p class="text-gray-800 text-lg font-semibold">Yamaha R15 Bike</p>
-                    <p class="text-blue-600 text-xl font-bold mt-2">৫ লক্ষ টাকা</p>
-                </div>
+    </section>
 
-                <!-- Prize 2 -->
-                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
-                    <h4 class="text-3xl font-bold text-red-700 mb-2">🥈 দ্বিতীয় পুরস্কার</h4>
-                    <p class="text-gray-800 text-lg font-semibold">Suzuki Gixxer</p>
-                    <p class="text-red-600 text-xl font-bold mt-2">৩ লক্ষ টাকা</p>
-                </div>
+  </div>
 
-                <!-- Prize 3 -->
-                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
-                    <h4 class="text-3xl font-bold text-yellow-700 mb-2">🥉 তৃতীয় পুরস্কার</h4>
-                    <p class="text-gray-800 text-lg font-semibold">বাচ্চাদের বাইক (R15)</p>
-                    <p class="text-yellow-600 text-xl font-bold mt-2"></p>
-                </div>
 
-                <!-- Prize 4 -->
-                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
-                    <h4 class="text-3xl font-bold text-green-700 mb-2">🎯 চতুর্থ পুরস্কার</h4>
-                    <p class="text-gray-800 text-lg font-semibold">স্মার্টফোন</p>
-                    <p class="text-green-600 text-xl font-bold mt-2">২০ হাজার টাকা</p>
-                </div>
-
-                <!-- Prize 5 -->
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
-                    <h4 class="text-3xl font-bold text-purple-700 mb-2">💝 পঞ্চম পুরস্কার</h4>
-                    <p class="text-gray-800 text-lg font-semibold">হাইড্রোলিক্স বাইসাইকেল</p>
-                    <p class="text-purple-600 text-xl font-bold mt-2">১০ হাজার টাকা</p>
-                </div>
-
-                <!-- Prize 6 -->
-                <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6 prize-glow hover:shadow-lg transition transform hover:scale-105">
-                    <h4 class="text-3xl font-bold text-pink-700 mb-2">🎊 ষষ্ঠ পুরস্কার</h4>
-                    <p class="text-gray-800 text-lg font-semibold">আরও অনেক আকর্ষণীয় পুরস্কার</p>
-                    <p class="text-pink-600 text-xl font-bold mt-2">সর্বোচ্চ ৫ হাজার টাকা</p>
-                </div>
-            </div>
-        </div>
+  
+      
+       
+      
     </div>
 
 

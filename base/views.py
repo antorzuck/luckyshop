@@ -12,6 +12,61 @@ from django.db.models.expressions import Window
 from django.core.paginator import Paginator
 import requests
 
+
+
+
+
+
+def shop(request):
+    country = request.GET.get('country')
+    district = request.GET.get('district')
+
+    shops = Shop.objects.all()
+
+    if country:
+        # since you store country as 'BD'
+        if country.lower() == 'bangladesh':
+            shops = shops.filter(country='BD')
+
+    if district:
+        shops = shops.filter(district=district)
+
+    context = {
+        'shops': shops,
+        'selected_country': country,
+        'selected_district': district,
+    }
+
+    return render(request, 'shops.html', context)
+
+
+
+
+def transfer_fund(request):
+
+    try:
+        pack = LuckyPackage.objects.all().first()
+        if not pack:
+            return
+        
+        user = request.user
+        
+        profile = Profile.objects.get(user=user)
+
+        LuckyFund.objects.create(
+            package=pack,
+            number=profile.number,
+            balance=pack.price,
+            profile = profile)
+            
+        messages.info(request, "Fund created on secound package. 500 tk was deducted from your balance")
+        
+        return redirect('/dashboard')
+        
+    except Exception as e:
+        print("ERROR WHILE CREATING SECOUND FUND", e)
+
+
 def create_payment(request):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request"}, status=405)
@@ -27,7 +82,7 @@ def create_payment(request):
     payload = {
         "full_name": username,
         "email_mobile": f"{username}@gmail.com",
-        "amount": "500",
+        "amount": "1",
         "metadata": {
             "username": username
         },
@@ -155,7 +210,8 @@ def fund_overview(request):
 
 def home(request):
     if request.method == "post":
-        return redirect(request.POST)
+        print("pay data", request.POST)
+    print(" YaAAYYYYData", request.GET)
     return render(request, 'home.html')
 
 def draw(request):

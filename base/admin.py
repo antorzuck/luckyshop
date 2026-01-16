@@ -23,7 +23,7 @@ class LuckyFundAdmin(admin.ModelAdmin):
 # The following are all simple, so we can auto-register them with a loop
 fund_models = [
    packageSetting, HonorableFund, AdminFund, ShopkeeperFund, GovernmentFund,
-    OrganizerFund, UnemploymentFund, ScholarshipFund, LuckyGift, PoorFund, LuckyProfit, Withdraw
+    OrganizerFund, UnemploymentFund, ScholarshipFund, LuckyGift, PoorFund, LuckyProfit, Withdraw, FundSettings, Shop
 ]
 
 for model in fund_models:
