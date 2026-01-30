@@ -29,6 +29,7 @@ path('teams/<str:username>/', get_teams),
 path("activate/", create_payment, name="create_payment"), 
 path('lucky-gifts/', luckygifts_list, name='luckygift_list'),
 path("all-funds/", fund_overview, name="funds"),
+path('one-click/', transfer_fund)
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

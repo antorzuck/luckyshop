@@ -53,18 +53,24 @@ def transfer_fund(request):
         
         profile = Profile.objects.get(user=user)
 
-        LuckyFund.objects.create(
-            package=pack,
-            number=profile.number,
-            balance=pack.price,
-            profile = profile)
-            
-        messages.info(request, "Fund created on secound package. 500 tk was deducted from your balance")
-        
-        return redirect('/dashboard')
+        prof = LuckyProfit.objects.get(number=profile.number)
+
+        if prof.profit >= 500:
+            LuckyFund.objects.create(
+                package=pack,
+                number=profile.number,
+                balance=pack.price,
+                profile = profile)
+            messages.info(request, "Fund created on secound package. 500 tk was deducted from your balance")
+            return redirect('/dashboard')
+        else:
+            messages.info(request, "You do not have enough balance.")
+            return redirect('/dashboard')
         
     except Exception as e:
+        messages.info(request, e)
         print("ERROR WHILE CREATING SECOUND FUND", e)
+        return redirect('/dashboard')
 
 
 def create_payment(request):
