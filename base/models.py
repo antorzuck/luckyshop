@@ -18,107 +18,7 @@ class BaseModel(models.Model):
 
     def __str__(self):
         return f"{self.__class__.__name__} (id={self.pk})"
-from django.db import models
 
-
-class Shop(BaseModel):
-
-
-    COUNTRY_CHOICES = [
-        ('BD', 'Bangladesh'),
-    ]
-
-
-    DISTRICT_CHOICES = [
-        ('Dhaka', 'Dhaka'),
-        ('Chattogram', 'Chattogram'),
-        ('Khulna', 'Khulna'),
-        ('Rajshahi', 'Rajshahi'),
-        ('Sylhet', 'Sylhet'),
-        ('Barishal', 'Barishal'),
-        ('Rangpur', 'Rangpur'),
-    ]
-
-    name = models.CharField(max_length=255)
-
-    profile_pic = models.ImageField(
-        upload_to='shops/profile_pics/',
-        blank=True,
-        null=True
-    )
-
-    shop_photo = models.ImageField(
-        upload_to='shops/photos/',
-        blank=True,
-        null=True
-    )
-
-    country = models.CharField(
-        max_length=5,
-        choices=COUNTRY_CHOICES,
-        default='BD'
-    )
-
-    district = models.CharField(
-        max_length=50,
-        choices=DISTRICT_CHOICES
-    )
-
-    location = models.CharField(
-        max_length=255,
-        help_text="Shop address / area"
-    )
-
-    google_map_link = models.URLField(
-        blank=True,
-        null=True
-    )
-
-    def __str__(self):
-        return self.name
-
-
-
-
-from django.db import models
-
-
-class Category(BaseModel):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
-class Product(BaseModel):
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='theshop')
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
-
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='products'
-    )
-
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    original_price = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
-    )
-
-    discount_percent = models.PositiveIntegerField(blank=True, null=True)
-
-    is_new = models.BooleanField(default=False)
-
-    stock = models.PositiveIntegerField(default=0)
-
-
-    def __str__(self):
-        return self.name
 
 
 
@@ -201,6 +101,109 @@ class Profile(models.Model):
                 }
         sums = sum(generation_counts[g] * multipliers[g] for g in generation_counts)
         return sums
+
+
+
+
+
+
+class Shop(BaseModel):
+
+
+    COUNTRY_CHOICES = [
+        ('BD', 'Bangladesh'),
+    ]
+
+
+    DISTRICT_CHOICES = [
+        ('Dhaka', 'Dhaka'),
+        ('Chattogram', 'Chattogram'),
+        ('Khulna', 'Khulna'),
+        ('Rajshahi', 'Rajshahi'),
+        ('Sylhet', 'Sylhet'),
+        ('Barishal', 'Barishal'),
+        ('Rangpur', 'Rangpur'),
+    ]
+
+    name = models.CharField(max_length=255)
+
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+
+    profile_pic = models.ImageField(
+        upload_to='shops/profile_pics/',
+        blank=True,
+        null=True
+    )
+
+    shop_photo = models.ImageField(
+        upload_to='shops/photos/',
+        blank=True,
+        null=True
+    )
+
+    country = models.CharField(
+        max_length=5,
+        choices=COUNTRY_CHOICES,
+        default='BD'
+    )
+
+    district = models.CharField(
+        max_length=50,
+        choices=DISTRICT_CHOICES
+    )
+
+    location = models.CharField(
+        max_length=255,
+        help_text="Shop address / area"
+    )
+
+    google_map_link = models.URLField(
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.name
+
+
+
+
+class Category(BaseModel):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(BaseModel):
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='theshop')
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products'
+    )
+
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    original_price = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
+
+    discount_percent = models.PositiveIntegerField(blank=True, null=True)
+
+    is_new = models.BooleanField(default=False)
+
+    stock = models.PositiveIntegerField(default=0)
+
+
+    def __str__(self):
+        return self.name
 
 
 class LuckyPackage(BaseModel):

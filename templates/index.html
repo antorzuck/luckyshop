@@ -244,13 +244,16 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-3 border-l border-gray-200 pl-4">
-                    <div class="w-9 h-9 bg-green-600 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
-                    <div class="hidden md:block">
-                        <p class="text-sm font-medium text-black">{{ request.user.username }}</p>
-                        <p class="text-xs text-gray-500">Administrator</p>
-                    </div>
+                    <a href="/shop/create"
+   class="h-9 px-4 bg-green-600 hover:bg-green-700 rounded-full
+          flex items-center justify-center gap-2
+          text-white text-sm font-semibold
+          transition-all duration-300 shadow-md hover:shadow-lg">
+
+    <i class="fas fa-store text-xs"></i>
+    <span>Create Store</span>
+</a>
+                   
                 </div>
             </div>
         </div>

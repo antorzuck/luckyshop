@@ -1,0 +1,390 @@
+{% extends 'landing.html' %}
+{% block body %}
+<main class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
+  
+  <!-- Decorative Background Elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Breadcrumb Navigation -->
+    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8">
+      <a href="" class="hover:text-purple-600 transition-colors flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Shops
+      </a>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+      <a href="" class="hover:text-purple-600 transition-colors">
+        {{ product.shop.name }}
+      </a>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+      <span class="text-gray-900 font-medium line-clamp-1">{{ product.name }}</span>
+    </nav>
+
+    <!-- Product Details Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      
+      <!-- Product Image Gallery -->
+      <div class="space-y-4">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 overflow-hidden">
+          <div class="aspect-square bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center relative">
+            {% if product.image %}
+              <img 
+                src="{{ product.image.url }}" 
+                alt="{{ product.name }}" 
+                class="w-full h-full object-cover"
+                id="main-image"
+              >
+            {% else %}
+              <svg class="w-24 h-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            {% endif %}
+            <!-- Badges -->
+            <div class="absolute top-4 left-4 flex flex-col gap-2">
+              {% if product.is_new %}
+              <span class="px-4 py-2 bg-emerald-500 text-white text-sm font-bold rounded-full shadow-lg">
+                NEW
+              </span>
+              {% endif %}
+              {% if product.discount_percent %}
+              <span class="px-4 py-2 bg-red-500 text-white text-sm font-bold rounded-full shadow-lg">
+                -{{ product.discount_percent }}%
+              </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Additional Images (if available) -->
+        {% if additional_images %}
+        <div class="grid grid-cols-4 gap-3">
+          {% for img in additional_images %}
+          <button 
+            onclick="changeMainImage(this)"
+            class="aspect-square bg-white/80 backdrop-blur-sm rounded-xl border-2 border-white/50 hover:border-purple-500 overflow-hidden transition-all duration-300 cursor-pointer"
+          >
+            <img src="{{ img.url }}" alt="Product image" class="w-full h-full object-cover">
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Information -->
+      <div class="space-y-6">
+        <!-- Category and Title -->
+        <div>
+          {% if product.category %}
+          <p class="text-sm font-medium text-purple-600 uppercase tracking-wider mb-3">
+            {{ product.category.name }}
+          </p>
+          {% endif %}
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+            {{ product.name }}
+          </h1>
+          
+          <!-- Rating -->
+          {% if product.rating %}
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1">
+              {% for i in "12345" %}
+                {% if i|add:"0" <= product.rating %}
+                <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                {% else %}
+                <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <span class="text-gray-600">({{ product.rating }}/5)</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Shop Info Card -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 p-4 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg overflow-hidden bg-gradient-to-br from-purple-500 to-indigo-600 flex-shrink-0">
+            {% if product.shop.profile_pic %}
+              <img src="{{ product.shop.profile_pic.url }}" alt="{{ product.shop.name }}" class="w-full h-full object-cover">
+            {% else %}
+              <div class="w-full h-full flex items-center justify-center">
+                <span class="text-lg font-bold text-white">{{ product.shop.name|first|upper }}</span>
+              </div>
+            {% endif %}
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-500">Sold by</p>
+            <a href="" class="font-semibold text-gray-900 hover:text-purple-600 transition-colors">
+              {{ product.shop.name }}
+            </a>
+          </div>
+          <a href="" class="text-purple-600 hover:text-purple-700 font-medium">
+            Visit Shop →
+          </a>
+        </div>
+
+        <!-- Price and Stock -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 p-6 space-y-4">
+          <div class="space-y-2">
+            <p class="text-gray-600 text-sm uppercase tracking-wider">Price</p>
+            <div class="flex items-baseline gap-3">
+              <span class="text-4xl font-bold text-gray-900">
+                ৳{{ product.price }}
+              </span>
+              {% if product.original_price %}
+              <span class="text-lg text-gray-400 line-through">
+                ৳{{ product.original_price }}
+              </span>
+              {% if product.discount_percent %}
+              <span class="text-lg font-semibold text-red-500">
+                Save {{ product.discount_percent }}%
+              </span>
+              {% endif %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Stock Status -->
+          <div class="pt-4 border-t border-gray-200">
+            {% if product.stock > 0 %}
+            <div class="flex items-center gap-2 text-emerald-600 font-medium">
+              <div class="w-2 h-2 rounded-full bg-emerald-600"></div>
+              In Stock ({{ product.stock }} available)
+            </div>
+            {% else %}
+            <div class="flex items-center gap-2 text-red-600 font-medium">
+              <div class="w-2 h-2 rounded-full bg-red-600"></div>
+              Out of Stock
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Product Description -->
+        {% if product.description %}
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 p-6">
+          <h3 class="font-bold text-gray-900 mb-3">Description</h3>
+          <p class="text-gray-600 leading-relaxed">
+            {{ product.description }}
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="space-y-3">
+          {% if product.stock > 0 %}
+          <form method="post" action="" class="space-y-3">
+            {% csrf_token %}
+            <div class="flex items-center gap-3">
+              <div class="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden bg-white/80 backdrop-blur-sm">
+                <button 
+                  type="button"
+                  onclick="decrementQty()"
+                  class="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                  </svg>
+                </button>
+                <input 
+                  type="number" 
+                  id="qty" 
+                  name="quantity" 
+                  value="1" 
+                  min="1" 
+                  max="{{ product.stock }}"
+                  class="w-16 text-center font-semibold border-0 outline-none"
+                >
+                <button 
+                  type="button"
+                  onclick="incrementQty()"
+                  class="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                </button>
+              </div>
+              <p class="text-gray-600 text-sm">/ {{ product.stock }} available</p>
+            </div>
+
+            <button 
+              type="submit"
+              class="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 text-lg"
+            >
+              Order Now
+            </button>
+          </form>
+          {% else %}
+          <button 
+            disabled
+            class="w-full py-4 px-6 bg-gray-300 text-gray-600 font-bold rounded-xl cursor-not-allowed text-lg"
+          >
+            Out of Stock
+          </button>
+          {% endif %}
+
+          <button 
+            type="button"
+            onclick="toggleWishlist()"
+            class="w-full py-3 px-6 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+            id="wishlist-btn"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            Add to Wishlist
+          </button>
+        </div>
+
+        <!-- Key Features -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 p-6">
+          <h3 class="font-bold text-gray-900 mb-4">Key Features</h3>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <p class="font-medium text-gray-900">Fast Delivery</p>
+                <p class="text-sm text-gray-600">Quick shipment to your location</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <p class="font-medium text-gray-900">Authentic Product</p>
+                <p class="text-sm text-gray-600">100% genuine items guaranteed</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <p class="font-medium text-gray-900">Easy Returns</p>
+                <p class="text-sm text-gray-600">Hassle-free return policy</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products Section -->
+    <div class="mb-12">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Similar Products</h2>
+      
+      {% if related_products %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for related in related_products %}
+        <!-- Related Product Card -->
+        <div class="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl border border-white/50 overflow-hidden transition-all duration-500 hover:-translate-y-2">
+          <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+            {% if related.image %}
+              <img 
+                src="{{ related.image.url }}" 
+                alt="{{ related.name }}" 
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              >
+            {% else %}
+              <div class="w-full h-full flex items-center justify-center">
+                <svg class="w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+            {% endif %}
+            {% if related.discount_percent %}
+            <span class="absolute top-3 left-3 px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-lg">
+              -{{ related.discount_percent }}%
+            </span>
+            {% endif %}
+          </div>
+          <div class="p-5">
+            {% if related.category %}
+            <p class="text-xs font-medium text-purple-600 uppercase tracking-wider mb-2">
+              {{ related.category.name }}
+            </p>
+            {% endif %}
+            <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors duration-300">
+              {{ related.name }}
+            </h3>
+            <div class="flex items-baseline gap-2 mb-4">
+              <span class="text-2xl font-bold text-gray-900">
+                ৳{{ related.price }}
+              </span>
+              {% if related.original_price %}
+              <span class="text-sm text-gray-400 line-through">
+                ৳{{ related.original_price }}
+              </span>
+              {% endif %}
+            </div>
+            <a 
+              href="" 
+              class="block w-full py-2 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl text-center text-sm shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
+            >
+              View Details
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 p-8 text-center">
+        <p class="text-gray-500">No similar products found</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function incrementQty() {
+      const qtyInput = document.getElementById('qty');
+      const maxStock = parseInt(qtyInput.max);
+      let current = parseInt(qtyInput.value);
+      if (current < maxStock) {
+        qtyInput.value = current + 1;
+      }
+    }
+
+    function decrementQty() {
+      const qtyInput = document.getElementById('qty');
+      let current = parseInt(qtyInput.value);
+      if (current > 1) {
+        qtyInput.value = current - 1;
+      }
+    }
+
+    function changeMainImage(element) {
+      const mainImage = document.getElementById('main-image');
+      mainImage.src = element.querySelector('img').src;
+    }
+
+    function toggleWishlist() {
+      const btn = document.getElementById('wishlist-btn');
+      btn.classList.toggle('bg-red-50');
+      btn.classList.toggle('border-red-600');
+      btn.classList.toggle('text-red-600');
+      btn.innerHTML = btn.classList.contains('bg-red-50') 
+        ? '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> Added to Wishlist'
+        : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> Add to Wishlist';
+    }
+  </script>
+</main>
+{% endblock %}

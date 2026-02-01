@@ -69,6 +69,13 @@ def view_shop(request, id):
     return render(request, 'store-product.html', context)
 
 
+def product_view(r, id):
+    product = Product.objects.get(id=id)
+    content = {
+        'product' : product
+    }
+
+    return render(r, 'commerce/product.html', content)
 
 
 
@@ -592,4 +599,24 @@ def product_create(request):
 
     return render(request, 'commerce/create.html', {
         'categories': categories
+    })
+
+
+
+def shop_create(request):
+    if request.method == "POST":
+        Shop.objects.create(
+            profile = Profile.objects.get(user=request.user)
+            name=request.POST.get('name'),
+            profile_pic=request.FILES.get('profile_pic'),
+            shop_photo=request.FILES.get('shop_photo'),
+            country=request.POST.get('country'),
+            district=request.POST.get('district'),
+            location=request.POST.get('location'),
+        )
+
+        return redirect('/product/create')
+
+    return render(request, 'commerce/shop.html', {
+        'districts': Shop.DISTRICT_CHOICES
     })
