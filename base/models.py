@@ -79,6 +79,52 @@ class Shop(BaseModel):
 
 
 
+
+from django.db import models
+
+
+class Category(BaseModel):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(BaseModel):
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='theshop')
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products'
+    )
+
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    original_price = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
+
+    discount_percent = models.PositiveIntegerField(blank=True, null=True)
+
+    is_new = models.BooleanField(default=False)
+
+    stock = models.PositiveIntegerField(default=0)
+
+
+    def __str__(self):
+        return self.name
+
+
+
+
+
+
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)

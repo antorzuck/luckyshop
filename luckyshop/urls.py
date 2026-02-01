@@ -15,6 +15,8 @@ urlpatterns = [
     path('register', handle_reg),
     path('dashboard', dashboard),
     path('shop', shop),
+    path('viewshop/<int:id>', view_shop),
+    path('product/create', product_create, name='product_create'),
     path('transfer', transfer_fund),
     path('create-lottery', create_lottery),
     path('lucky-fund-dashboard/', lucky_fund_dashboard, name='lucky_fund_dashboard'),

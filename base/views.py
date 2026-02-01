@@ -42,6 +42,37 @@ def shop(request):
 
 
 
+
+
+
+
+
+def view_shop(request, id):
+    shop = Shop.objects.get(id=id)
+    search_query = request.GET.get('q', '')
+
+    products = Product.objects.filter(shop=shop)
+
+    if search_query:
+        products = products.filter(name__icontains=search_query)
+
+    paginator = Paginator(products, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'products': page_obj,
+        'search_query': search_query,
+        'shop' : shop
+    }
+
+    return render(request, 'store-product.html', context)
+
+
+
+
+
+
 def transfer_fund(request):
 
     try:
@@ -523,3 +554,42 @@ def lottery_run(request):
 def lottery_winner(request):
     winner = LuckyWinner.objects.last()
     return render(request, 'winner.html', {'winner': winner})
+
+
+
+
+def product_create(request):
+    categories = Category.objects.all()
+
+    if request.method == "POST":
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        original_price = request.POST.get('original_price')
+        discount_percent = request.POST.get('discount_percent')
+        stock = request.POST.get('stock')
+        is_new = request.POST.get('is_new') == 'on'
+        category_id = request.POST.get('category')
+        image = request.FILES.get('image')
+
+        category = None
+        if category_id:
+            category = Category.objects.get(id=category_id)
+
+        Product.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            original_price=original_price or None,
+            discount_percent=discount_percent or None,
+            stock=stock,
+            is_new=is_new,
+            category=category,
+            image=image
+        )
+
+        return redirect('product_list')  # change if needed
+
+    return render(request, 'commerce/create.html', {
+        'categories': categories
+    })
