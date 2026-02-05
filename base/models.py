@@ -206,6 +206,20 @@ class Product(BaseModel):
         return self.name
 
 
+
+class Order(BaseModel):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="order_profile")
+    delivery_address = models.TextField()
+    pickup_address = models.TextField()
+    phone = models.CharField(default="None", max_length=30)
+    quantity = models.IntegerField(default=1)
+    price = models.IntegerField(default=0)
+    is_complete = models.BooleanField(default=False)
+
+
+
+
 class LuckyPackage(BaseModel):
     name = models.CharField(max_length=50)
     price = models.IntegerField(default=0)

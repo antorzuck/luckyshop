@@ -584,6 +584,9 @@ def product_create(request):
             category = Category.objects.get(id=category_id)
 
         Product.objects.create(
+            shop = Shop.objects.get(
+                profile= Profile.objects.get(user=request.user)
+            ),
             name=name,
             description=description,
             price=price,
@@ -606,7 +609,7 @@ def product_create(request):
 def shop_create(request):
     if request.method == "POST":
         Shop.objects.create(
-            profile = Profile.objects.get(user=request.user)
+            profile = Profile.objects.get(user=request.user),
             name=request.POST.get('name'),
             profile_pic=request.FILES.get('profile_pic'),
             shop_photo=request.FILES.get('shop_photo'),
