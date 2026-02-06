@@ -618,8 +618,76 @@ def shop_create(request):
             location=request.POST.get('location'),
         )
 
+
+        p = Profile.objects.get(user=request.user)
+        p.is_agent = True
+        p.save()
+
         return redirect('/product/create')
 
     return render(request, 'commerce/shop.html', {
         'districts': Shop.DISTRICT_CHOICES
     })
+
+
+
+def order_create(request):
+    if request.method == 'POST':
+
+        quantity = request.POST.get('quantity')
+        product_id = request.POST.get('product_id')
+        delivery_address = request.POST.get('address')
+        number = request.POST.get('phone')
+
+
+        product = Product.objects.get(id=product_id)
+
+        price = product.price * int(quantity)
+
+        prof = product.shop.profile
+
+
+        c = Order.objects.create(
+            quantity = quantity,
+            product = product,
+            price = price,
+            delivery_address = delivery_address,
+            profile = prof,
+            pickup_address = product.shop.location,
+            phone = number
+        )
+
+        messages.info(request, "Order has been submitted. dekivery may take one or two days to arrive.")
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+
+def user_orders(request):
+
+    
+    profile = Profile.objects.get(user=request.user)
+    order_list = Order.objects.filter(profile=profile).order_by('-created_at')
+
+
+    paginator = Paginator(order_list, 10)
+
+    page_number = request.GET.get('page')
+    orders = paginator.get_page(page_number)
+
+    context = {
+        "orders": orders
+    }
+
+    return render(request, "commerce/orders.html", context)
+
+
+
+
+
+
+def work(request):
+    filter = request.GET.get('filter')
+    context = {
+        'filter': filter
+    }
+    return render(request, 'service/work.html', context)

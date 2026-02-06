@@ -2,6 +2,16 @@
 {% block body %}
 <main class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
 
+
+
+  {% if messages %}
+  {% for message in messages %}
+    <div class="bg-green-100 text-green-800 p-3 rounded mb-3">
+        {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
   <!-- Decorative Background Elements -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none">
     <div
@@ -186,7 +196,7 @@
         <!-- Action Buttons -->
         <div class="space-y-3">
           {% if product.stock > 0 %}
-          <form method="post" action="" class="space-y-3">
+          <form method="post" action="/create-order" class="space-y-3">
             {% csrf_token %}
             <div class="flex items-center gap-3">
               <div
@@ -229,6 +239,9 @@
               <textarea name="address" rows="3" placeholder="Enter your delivery address" required
                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm outline-none focus:border-purple-500 transition resize-none"></textarea>
             </div>
+
+
+            <input type="hidden" name="product_id" value="{{product.id}}">
 
 
             <button type="submit"
