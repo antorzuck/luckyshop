@@ -242,6 +242,7 @@
 
 
             <input type="hidden" name="product_id" value="{{product.id}}">
+            <input type="hidden" name="refer" value="{{refer}}">
 
 
             <button type="submit"
@@ -256,14 +257,15 @@
           </button>
           {% endif %}
 
-          <button type="button" onclick="toggleWishlist()"
-            class="w-full py-3 px-6 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-            id="wishlist-btn">
+     <button type="button" onclick="getLink({{ product.id }})"
+    data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+    class="w-full py-3 px-6 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+    id="wishlist-btn">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            Add to Wishlist
+           Copy Affiliate Link
           </button>
         </div>
 
@@ -417,6 +419,34 @@
         ? '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> Added to Wishlist'
         : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> Add to Wishlist';
     }
+
+
+
+    function getLink(productID) {
+    const btn = document.getElementById("wishlist-btn");
+    const isAuth = btn.dataset.auth === "true";
+
+    if (!isAuth) {
+        window.location.href = "/register";
+        return;
+    }
+
+    fetch(`/get-affiliate-link/${productID}/`, {
+        method: "GET",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.link) {
+            navigator.clipboard.writeText(data.link)
+                .then(() => {
+                    btn.innerText = "Copied!";
+                });
+        }
+    });
+}
   </script>
 </main>
 {% endblock %}

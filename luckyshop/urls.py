@@ -17,6 +17,7 @@ urlpatterns = [
     path('shop', shop),
     path('work', work),
     path('viewshop/<int:id>', view_shop),
+    path('accept/<int:id>', accept_order),
     path('product/create', product_create, name='product_create'),
     path('prod/<int:id>', product_view),
     path('transfer', transfer_fund),
@@ -24,6 +25,9 @@ urlpatterns = [
     path('create-lottery', create_lottery),
     path('create-order', order_create),
     path('orders/', user_orders),
+    path("get-affiliate-link/<int:id>/", get_affiliate_link),
+    path('recycle/', recycle),
+
     path('lucky-fund-dashboard/', lucky_fund_dashboard, name='lucky_fund_dashboard'),
     path('lucky-fund-report/', get_lucky_fund_report, name='lucky_fund_report'),
     path('withdraw/', withdraw_search, name='withdraw_search'),

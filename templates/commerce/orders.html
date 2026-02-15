@@ -2,6 +2,17 @@
 {% load static %}
 {% block body %}
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-100">
+
+
+
+
+  {% if messages %}
+  {% for message in messages %}
+    <div class="bg-green-100 text-green-800 p-3 rounded mb-3">
+        {{ message }}
+    </div>
+  {% endfor %}
+{% endif %} 
     <!-- Decorative Background Elements -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
         <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
@@ -166,13 +177,21 @@
                             </svg>
                             Cancel Order
                         </a>
-                        {% endif %}
-                        <a href="" class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                       
+                        <a href="/accept/{{order.id}}" class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
-                            View Details
+                            Accept
                         </a>
+                         {% else %}
+                         <a href="" class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                            Completed
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

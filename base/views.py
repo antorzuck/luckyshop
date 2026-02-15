@@ -14,6 +14,24 @@ import requests
 
 
 
+def recycle(request):
+
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    prof =  LuckyProfit.objects.get_or_create(numer=profile.number)
+    if prof.balance >= 200:
+        pack = LuckyPackage.objects.all().order_by('-id').first()
+        LuckyFund.objects.create(
+            package=pack,
+            number=profile.number,
+            balance=pack.price)    
+        messages.info(request, "Recycle done")
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.info(request, "You do not have balance")
+
+
 
 
 
@@ -41,12 +59,6 @@ def shop(request):
 
 
 
-
-
-
-
-
-
 def view_shop(request, id):
     shop = Shop.objects.get(id=id)
     search_query = request.GET.get('q', '')
@@ -71,8 +83,12 @@ def view_shop(request, id):
 
 def product_view(r, id):
     product = Product.objects.get(id=id)
+
+    refer = r.GET.get('refer')
+
     content = {
-        'product' : product
+        'product' : product,
+        'refer': refer
     }
 
     return render(r, 'commerce/product.html', content)
@@ -81,7 +97,6 @@ def product_view(r, id):
 
 
 def transfer_fund(request):
-
     try:
         pack = LuckyPackage.objects.all().first()
         if not pack:
@@ -109,6 +124,7 @@ def transfer_fund(request):
         messages.info(request, e)
         print("ERROR WHILE CREATING SECOUND FUND", e)
         return redirect('/dashboard')
+
 
 
 def create_payment(request):
@@ -598,7 +614,8 @@ def product_create(request):
             image=image
         )
 
-        return redirect('product_list')  # change if needed
+        messages.info(request, "Product created")
+        return redirect(request.META.get('HTTP_REFERER'))
 
     return render(request, 'commerce/create.html', {
         'categories': categories
@@ -632,6 +649,10 @@ def shop_create(request):
 
 
 def order_create(request):
+
+    refer = request.GET.get('refer')
+
+
     if request.method == 'POST':
 
         quantity = request.POST.get('quantity')
@@ -647,6 +668,12 @@ def order_create(request):
         prof = product.shop.profile
 
 
+        refer = request.POST.get('refer')
+
+        
+
+
+    
         c = Order.objects.create(
             quantity = quantity,
             product = product,
@@ -654,7 +681,8 @@ def order_create(request):
             delivery_address = delivery_address,
             profile = prof,
             pickup_address = product.shop.location,
-            phone = number
+            phone = number,
+            refer = refer
         )
 
         messages.info(request, "Order has been submitted. dekivery may take one or two days to arrive.")
@@ -682,12 +710,85 @@ def user_orders(request):
 
 
 
-
-
-
 def work(request):
     filter = request.GET.get('filter')
     context = {
         'filter': filter
     }
     return render(request, 'service/work.html', context)
+
+
+
+
+
+
+def accept_order(request, id):
+    order = Order.objects.get(id=id)
+    order.is_complete = True
+    order.save()
+
+    try:
+        aff = Affiliate.objects.first()
+        reward_profile = Profile.objects.get(refer_link=order.refer)
+        reward_profile.balance += order.price * aff.bonus_percent / 100
+        reward_profile.save()
+    except Exception as e:
+        print(e)
+
+    
+    try:
+        profile = Profile.objects.get(number=order.phone.strip())
+    except:
+        agent = Profile.objects.get(user=request.user)
+        user = User.objects.create_user(username=order.phone.strip(), password=order.phone.strip())
+        profile = Profile.objects.create(user=user, number=order.phone.strip(), is_verified=True)
+
+
+    for i in range(order.quantity):
+        LuckyFund.objects.create(
+        number=order.phone,
+        package = LuckyPackage.objects.get(id=1),
+        profile = profile
+    )
+        LuckyGift.objects.create(
+        number=order.phone,
+        profile = profile
+    )
+
+    try:
+        quantity = int(order.quantity)
+    except (TypeError, ValueError):
+        quantity = 1  
+
+    fund_models = [
+        HonorableFund, AdminFund, ShopkeeperFund,
+        GovernmentFund, OrganizerFund, UnemploymentFund,
+        ScholarshipFund, PoorFund
+    ]
+
+    for model in fund_models:
+        fund, created = model.objects.get_or_create(id=1)
+        fund.amount += quantity
+        fund.save()
+
+    
+    messages.info(request, "Order accepted...")
+    return redirect(request.META.get('HTTP_REFERER'))
+
+    
+
+
+
+from django.http import JsonResponse
+from django.urls import reverse
+
+def get_affiliate_link(request, id):
+    user = request.user
+    
+    domain = request.scheme + "://" + request.get_host()
+    
+    affiliate_link = f"{domain}/prod/{id}?ref={user.id}"
+
+    return JsonResponse({
+        "link": affiliate_link
+    })

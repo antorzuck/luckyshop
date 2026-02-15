@@ -215,6 +215,7 @@ class Order(BaseModel):
     phone = models.CharField(default="None", max_length=30)
     quantity = models.IntegerField(default=1)
     price = models.IntegerField(default=0)
+    refer = models.CharField(max_length=500, null=True, blank=True)
     is_complete = models.BooleanField(default=False)
 
 
@@ -587,3 +588,9 @@ class LuckyWinner(BaseModel):
 
     def __str__(self):
         return self.number
+
+
+
+
+class Affiliate(BaseModel):
+    bonus_percent = models.IntegerField(default=0)
