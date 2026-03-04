@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>LuckyGO – Bangladesh</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: 'hsl(142,72%,35%)', light: 'hsl(142,60%,48%)', fore: '#ffffff' },
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; background: #f1f5f9; color: #0f172a; overflow: hidden; }
+
+    #map { width: 100%; height: 100%; }
+    .leaflet-container { font-family: 'Inter', sans-serif; }
+    .leaflet-control-zoom { border: none !important; box-shadow: 0 4px 16px rgba(0,0,0,.12) !important; }
+    .leaflet-control-zoom a { border-radius: 8px !important; border: none !important; color: #0f172a !important; }
+
+    @keyframes slideUp  { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pingAnim { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(2.2); opacity: 0; } }
+
+    .anim-slide-up { animation: slideUp .4s cubic-bezier(.16,1,.3,1); }
+    .anim-fade-in  { animation: fadeIn .3s ease; }
+    .ping-anim     { animation: pingAnim 1.4s ease-out infinite; }
+
+    #app { display: flex; height: 100dvh; width: 100vw; overflow: hidden; }
+
+    #sidebar {
+      width: 360px; flex-shrink: 0; display: flex; flex-direction: column;
+      background: white; border-right: 1px solid #e2e8f0; z-index: 20; transition: transform .3s ease;
+    }
+    #sidebar.hidden-desk { transform: translateX(-100%); width: 0; overflow: hidden; border: none; }
+
+    #map-area { flex: 1; position: relative; overflow: hidden; min-width: 0; }
+
+    @media (max-width: 639px) {
+      #app { flex-direction: column; }
+      #sidebar {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        width: 100% !important; height: auto; max-height: 65vh;
+        border-right: none; border-top: 1px solid #e2e8f0;
+        border-radius: 20px 20px 0 0; box-shadow: 0 -4px 32px rgba(0,0,0,.12);
+        z-index: 300; transform: translateY(0) !important; overflow: hidden;
+      }
+      #map-area { position: fixed; inset: 0; height: 100dvh; z-index: 1; }
+      #map-area::after { content: ''; display: block; height: 65vh; }
+      #sidebar-toggle { display: none !important; }
+      #drag-handle { display: block; }
+    }
+
+    #drag-handle { display: none; width: 40px; height: 4px; background: #cbd5e1; border-radius: 2px; margin: 10px auto 6px; flex-shrink: 0; }
+
+    .panel-scroll { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
+    .toggle-track { position: relative; width: 56px; height: 28px; border-radius: 14px; transition: background .3s; cursor: pointer; flex-shrink: 0; }
+    .toggle-thumb { position: absolute; top: 3px; width: 22px; height: 22px; background: white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: left .3s; }
+
+    .loc-dropdown { max-height: 200px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .cursor-cross { cursor: crosshair !important; }
+
+    #map-hint {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; background: #0f172a; color: white;
+      padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,.25); white-space: nowrap;
+    }
+
+    #pickup-search-wrap, #dropoff-search-wrap {
+      display: none; margin-top: 4px; background: white;
+      border: 1px solid #e2e8f0; border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1); overflow: hidden; position: relative; z-index: 10;
+    }
+    #pickup-search-wrap.visible, #dropoff-search-wrap.visible { display: block; }
+
+    .search-header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+    .search-header input { flex: 1; font-size: 13px; border: none; outline: none; background: transparent; font-family: 'Inter', sans-serif; min-width: 0; }
+    .search-header button { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 16px; padding: 0 2px; }
+
+    /* Toast notification */
+    #toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      background: #0f172a; color: white; padding: 10px 20px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; z-index: 9999;
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    /* API status badge */
+    #api-status {
+      position: absolute; bottom: 12px; left: 12px; z-index: 1000;
+      background: white; border: 1px solid #e2e8f0; border-radius: 999px;
+      padding: 4px 10px; font-size: 11px; font-weight: 600;
+      display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .api-dot { width: 7px; height: 7px; border-radius: 50%; }
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<div id="app">
+
+  <!-- SIDEBAR / BOTTOM-SHEET -->
+  <div id="sidebar">
+    <div id="drag-handle"></div>
+
+    <!-- Header -->
+    <div style="padding:14px 16px 12px;border-bottom:1px solid #e2e8f0;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:32px;height:32px;background:hsl(142,72%,35%);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;">🚗</div>
+        <div>
+          <div style="font-weight:800;font-size:16px;line-height:1.2;">LuckyGO</div>
+          <div style="font-size:11px;color:#64748b;">Bangladesh</div>
+        </div>
+        <!-- Driver selector (demo) -->
+        <div style="margin-left:auto;font-size:11px;color:#64748b;">
+          Driver:
+          <select id="driver-select" onchange="setActiveDriver(this.value)"
+            style="font-size:11px;border:1px solid #e2e8f0;border-radius:6px;padding:2px 4px;outline:none;">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+      </div>
+      <!-- Mode toggle -->
+      <div style="display:flex;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
+        <button id="btn-rider-mode"  onclick="switchMode('rider')"
+          style="flex:1;padding:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;">
+          🙋 Rider
+        </button>
+        <button id="btn-driver-mode" onclick="switchMode('driver')"
+          style="flex:1;padding:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;">
+          🚘 Driver
+        </button>
+      </div>
+    </div>
+
+    <!-- Persistent search inputs -->
+    <div id="pickup-search-wrap">
+      <div class="search-header">
+        <span style="color:#94a3b8;">🔍</span>
+        <input id="pickup-search-input" placeholder="Type any location & press Enter..."
+               oninput="filterPickup(this.value)" onkeydown="handlePickupKey(event)" />
+        <button onclick="submitPickupText()" style="background:hsl(142,72%,35%);color:white;border:none;cursor:pointer;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;">Use</button>
+        <button onclick="closePickupList()">✕</button>
+      </div>
+      <div id="pickup-hint" style="font-size:11px;color:#94a3b8;padding:4px 12px 6px;display:none;">💡 Press Enter or tap <b>Use</b> to set any custom location name</div>
+      <div class="loc-dropdown" id="pickup-results"></div>
+    </div>
+
+    <div id="dropoff-search-wrap">
+      <div class="search-header">
+        <span style="color:#94a3b8;">🔍</span>
+        <input id="dropoff-search-input" placeholder="Type any location & press Enter..."
+               oninput="filterDropoff(this.value)" onkeydown="handleDropoffKey(event)" />
+        <button onclick="submitDropoffText()" style="background:hsl(142,72%,35%);color:white;border:none;cursor:pointer;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;">Use</button>
+        <button onclick="closeDropoffList()">✕</button>
+      </div>
+      <div id="dropoff-hint" style="font-size:11px;color:#94a3b8;padding:4px 12px 6px;display:none;">💡 Press Enter or tap <b>Use</b> to set any custom location name</div>
+      <div class="loc-dropdown" id="dropoff-results"></div>
+    </div>
+
+    <div class="panel-scroll" id="panel-content"></div>
+  </div>
+
+  <!-- MAP AREA -->
+  <div id="map-area">
+    <button onclick="toggleSidebar()" id="sidebar-toggle"
+      style="position:absolute;top:14px;left:14px;z-index:1000;background:white;border:1px solid #e2e8f0;border-radius:12px;padding:9px 11px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);font-size:16px;">
+      ☰
+    </button>
+
+    <div style="position:absolute;top:14px;right:14px;z-index:1000;background:white;border:1px solid #e2e8f0;border-radius:12px;padding:8px 14px;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);">
+      <span style="font-size:13px;">📍</span>
+      <span style="font-size:13px;font-weight:600;" id="location-badge-text">Dhaka, BD</span>
+    </div>
+
+    <div id="map-hint" style="display:none;"></div>
+    <div id="map"></div>
+
+    <!-- API status indicator -->
+    <div id="api-status">
+      <div class="api-dot" id="api-dot" style="background:#94a3b8;"></div>
+      <span id="api-label">Connecting…</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+
+// Base URL of the Django API.
+// When served by Django itself (python manage.py runserver) this is just '/api'.
+// Change to e.g. 'http://127.0.0.1:8000/api' if running frontend separately.
+const API_BASE = '/api';
+
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+
+const DHAKA_CENTER = [23.7808, 90.4093];
+
+const DHAKA_LOCATIONS = [
+  { name:"Gulshan 1",    lat:23.7816, lng:90.4152 },
+  { name:"Gulshan 2",    lat:23.7954, lng:90.4142 },
+  { name:"Dhanmondi",   lat:23.7461, lng:90.3742 },
+  { name:"Motijheel",   lat:23.7274, lng:90.4173 },
+  { name:"Uttara",      lat:23.8759, lng:90.3795 },
+  { name:"Mirpur 10",   lat:23.8057, lng:90.3661 },
+  { name:"Banani",      lat:23.7937, lng:90.4066 },
+  { name:"Mohakhali",   lat:23.7794, lng:90.4044 },
+  { name:"Shahbagh",    lat:23.7389, lng:90.3954 },
+  { name:"New Market",  lat:23.7328, lng:90.3853 },
+  { name:"Rampura",     lat:23.7592, lng:90.4342 },
+  { name:"Badda",       lat:23.7800, lng:90.4283 },
+  { name:"Bashundhara", lat:23.8134, lng:90.4290 },
+  { name:"Shyamoli",    lat:23.7697, lng:90.3567 },
+  { name:"Azimpur",     lat:23.7244, lng:90.3836 },
+  { name:"Airport",     lat:23.8433, lng:90.3978 },
+  { name:"Panthapath",  lat:23.7511, lng:90.3853 },
+  { name:"Farmgate",    lat:23.7573, lng:90.3918 },
+  { name:"Tejgaon",     lat:23.7673, lng:90.3992 },
+  { name:"Khilgaon",    lat:23.7465, lng:90.4295 },
+  { name:"Demra",       lat:23.7211, lng:90.4671 },
+  { name:"Jatrabari",   lat:23.7117, lng:90.4333 },
+  { name:"Sadarghat",   lat:23.7102, lng:90.4085 },
+  { name:"Paltan",      lat:23.7330, lng:90.4130 },
+  { name:"Karwan Bazar",lat:23.7516, lng:90.3932 },
+];
+
+const VEHICLE_TYPES = [
+  { id:"bike", label:"Moto",  emoji:"🏍️", desc:"Fastest & cheapest", mult:1   },
+  { id:"car",  label:"Car",   emoji:"🚗", desc:"Comfortable ride",   mult:2.2 },
+  { id:"cng",  label:"CNG",   emoji:"🛺", desc:"Auto rickshaw",      mult:1.5 },
+];
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+
+let mode           = 'rider';
+let sidebarOpen    = true;
+
+// rider
+let rideStatus     = 'idle';
+let pickup = null, dropoff = null;
+let pickupName = '', dropoffName = '';
+let isSelectingPickup = false, isSelectingDropoff = false;
+let currentRide    = null;       // full ride object from API
+let assignedDriver = null;
+let driverLocation = null;
+let selectedVehicle = 'car';
+
+// driver
+let activeDriverId  = null;      // which DB driver we're acting as
+let allDrivers      = [];        // loaded from API
+let driverOnline    = false;
+let pendingRides    = [];        // from API
+let driverActiveRide = null;
+let driverEarnings  = 0;
+let driverRidesCompleted = 0;
+let driverTab       = 'requests';
+
+// polling
+let ridePollingInterval    = null;
+let driverPollingInterval  = null;
+
+// anim
+let driverAnimInterval = null;
+
+// ══════════════════════════════════════════════
+// API HELPERS
+// ══════════════════════════════════════════════
+
+async function apiFetch(path, opts = {}) {
+  const url = API_BASE + path;
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+    ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : '';
+}
+
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function setApiStatus(connected) {
+  document.getElementById('api-dot').style.background   = connected ? '#16a34a' : '#ef4444';
+  document.getElementById('api-label').textContent       = connected ? 'API connected' : 'API offline';
+}
+
+// ══════════════════════════════════════════════
+// BOOT – load drivers from API
+// ══════════════════════════════════════════════
+
+async function boot() {
+  try {
+    allDrivers = await apiFetch('/drivers/');
+    setApiStatus(true);
+    populateDriverSelect();
+    if (allDrivers.length) {
+      activeDriverId = allDrivers[0].id;
+      syncDriverState(allDrivers[0]);
+    }
+  } catch (e) {
+    setApiStatus(false);
+    showToast('⚠️ Cannot reach API – running offline');
+  }
+  render();
+}
+
+function populateDriverSelect() {
+  const sel = document.getElementById('driver-select');
+  sel.innerHTML = allDrivers.map(d =>
+    `<option value="${d.id}">${d.name.split(' ')[0]}</option>`
+  ).join('');
+  if (activeDriverId) sel.value = activeDriverId;
+}
+
+function setActiveDriver(id) {
+  activeDriverId = parseInt(id, 10);
+  const d = allDrivers.find(x => x.id === activeDriverId);
+  if (d) syncDriverState(d);
+  updateMapLayers(); render();
+}
+
+function syncDriverState(d) {
+  driverOnline  = d.is_online;
+  driverLocation = { lat: d.lat, lng: d.lng };
+}
+
+// ══════════════════════════════════════════════
+// MAP SETUP
+// ══════════════════════════════════════════════
+
+async function updatePlaceName(lat, lng) {
+  try {
+    const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+    const data = await res.json();
+    const badge = document.getElementById('location-badge-text');
+    if (badge && data.address) {
+      const a = data.address;
+      badge.textContent = (a.suburb || a.village || a.town || a.city || 'Unknown') + ', ' + (a.state || '');
+    }
+  } catch(e) {}
+}
+
+const map = L.map('map', { center: DHAKA_CENTER, zoom: 13, zoomControl: true });
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+window.addEventListener('load', () => {
+  map.invalidateSize();
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      map.setView([lat, lng], 15);
+      updatePlaceName(lat, lng);
+      setPickup({ lat, lng }, 'My Location');
+      updateMapLayers(); render();
+      L.circleMarker([lat, lng], { radius: 10, color: '#2563eb', fillColor: '#2563eb', fillOpacity: 0.5, weight: 3 })
+        .addTo(map).bindPopup('<b>📍 You are here</b>');
+    }, () => {});
+  }
+  boot();
+});
+
+window.addEventListener('resize', () => map.invalidateSize());
+
+// map state
+let pickupMarker=null, dropoffMarker=null, driverMarker=null;
+let routeLine=null, driverLine=null;
+let pickupCircle=null, dropoffCircle=null, userMarker=null;
+let pendingMarkers=[], idleDriverMarkers=[];
+
+map.on('click', function(e) {
+  if (isSelectingPickup) {
+    setPickup({ lat: e.latlng.lat, lng: e.latlng.lng },
+              `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`);
+    isSelectingPickup = false; updateMapCursor(); hideHint(); render();
+  } else if (isSelectingDropoff) {
+    setDropoff({ lat: e.latlng.lat, lng: e.latlng.lng },
+               `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`);
+    isSelectingDropoff = false; updateMapCursor(); hideHint(); render();
+  }
+});
+
+// ══════════════════════════════════════════════
+// ICON FACTORIES
+// ══════════════════════════════════════════════
+
+function coloredPin(color, size=36) {
+  return L.divIcon({
+    html: `<div style="width:${size}px;height:${size}px;background:${color};border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 12px rgba(0,0,0,.3);position:relative;">
+             <div style="position:absolute;inset:4px;background:white;border-radius:50%;transform:rotate(45deg);"></div></div>`,
+    iconSize:[size,size], iconAnchor:[size/2,size], className:''
+  });
+}
+function carIcon(color='#16a34a') {
+  return L.divIcon({
+    html: `<div style="background:${color};border:2.5px solid white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);font-size:18px;">🚗</div>`,
+    iconSize:[38,38], iconAnchor:[19,19], className:''
+  });
+}
+function riderIcon() {
+  return L.divIcon({
+    html: `<div style="background:#2563eb;border:2.5px solid white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);font-size:18px;">👤</div>`,
+    iconSize:[38,38], iconAnchor:[19,19], className:''
+  });
+}
+
+// ══════════════════════════════════════════════
+// DISTANCE
+// ══════════════════════════════════════════════
+
+function calcDist(a, b) {
+  const R=6371, toRad=x=>x*Math.PI/180;
+  const dLat=toRad(b.lat-a.lat), dLng=toRad(b.lng-a.lng);
+  const x=Math.sin(dLat/2)**2+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+
+// ══════════════════════════════════════════════
+// MAP LAYERS
+// ══════════════════════════════════════════════
+
+function clearLayer(l) { if (l) { try { map.removeLayer(l); } catch(e){} } }
+
+function updateMapLayers() {
+  clearLayer(pickupMarker); clearLayer(dropoffMarker); clearLayer(driverMarker);
+  clearLayer(routeLine); clearLayer(driverLine);
+  clearLayer(pickupCircle); clearLayer(dropoffCircle); clearLayer(userMarker);
+  pendingMarkers.forEach(m=>clearLayer(m)); pendingMarkers=[];
+  idleDriverMarkers.forEach(m=>clearLayer(m)); idleDriverMarkers=[];
+
+  const dhaka = { lat:DHAKA_CENTER[0], lng:DHAKA_CENTER[1] };
+
+  if (mode==='driver') {
+    const loc = driverLocation || dhaka;
+    userMarker = L.marker([loc.lat, loc.lng], { icon: carIcon('#16a34a') })
+      .addTo(map).bindPopup('<div style="font-weight:600;">📍 Your Location (Driver)</div>');
+    pendingRides.forEach(req => {
+      const m = L.marker([req.pickup_lat, req.pickup_lng], { icon: coloredPin('#f59e0b', 32) })
+        .addTo(map)
+        .bindPopup(`<div style="font-weight:600;">🔔 Ride Request</div>
+                    <div style="font-size:12px;">From: ${req.pickup_name}</div>
+                    <div style="font-size:12px;">To: ${req.dropoff_name}</div>
+                    <div style="font-size:12px;font-weight:700;color:#16a34a;">৳${req.fare}</div>`);
+      pendingMarkers.push(m);
+    });
+    return;
+  }
+
+  // RIDER
+  if (!pickup) {
+    userMarker = L.marker([dhaka.lat,dhaka.lng], { icon: riderIcon() }).addTo(map).bindPopup('You are here');
+    if (!driverLocation) {
+      allDrivers.forEach(d => {
+        const m = L.marker([d.lat, d.lng], { icon: carIcon(d.is_online ? '#16a34a' : '#6b7280') })
+          .addTo(map)
+          .bindPopup(`<div style="font-size:13px;font-weight:600;">${d.name}</div><div style="font-size:11px;color:#6b7280;">${d.is_online?'Available':'Offline'}</div>`);
+        idleDriverMarkers.push(m);
+      });
+    }
+  }
+
+  if (pickup) {
+    pickupMarker = L.marker([pickup.lat,pickup.lng], { icon: coloredPin('#16a34a') })
+      .addTo(map)
+      .bindPopup(`<div style="font-weight:600;color:#15803d;">🟢 Pickup</div><div style="font-size:12px;">${pickupName||'Selected'}</div>`);
+    pickupCircle = L.circle([pickup.lat,pickup.lng], { radius:80, color:'#16a34a', fillColor:'#16a34a', fillOpacity:.1, weight:1 }).addTo(map);
+  }
+  if (dropoff) {
+    dropoffMarker = L.marker([dropoff.lat,dropoff.lng], { icon: coloredPin('#dc2626') })
+      .addTo(map)
+      .bindPopup(`<div style="font-weight:600;color:#dc2626;">🔴 Destination</div><div style="font-size:12px;">${dropoffName||'Selected'}</div>`);
+    dropoffCircle = L.circle([dropoff.lat,dropoff.lng], { radius:80, color:'#dc2626', fillColor:'#dc2626', fillOpacity:.1, weight:1 }).addTo(map);
+  }
+  if (pickup&&dropoff) {
+    routeLine = L.polyline([[pickup.lat,pickup.lng],[dropoff.lat,dropoff.lng]], { color:'#16a34a', weight:4, opacity:.7, dashArray:'8 4' }).addTo(map);
+  }
+  if (driverLocation) {
+    driverMarker = L.marker([driverLocation.lat, driverLocation.lng], { icon: carIcon('#16a34a') })
+      .addTo(map)
+      .bindPopup('<div style="font-weight:600;">🚗 Your Driver</div><div style="font-size:12px;color:#16a34a;">On the way!</div>');
+    if (pickup) {
+      driverLine = L.polyline([[driverLocation.lat,driverLocation.lng],[pickup.lat,pickup.lng]], { color:'#2563eb', weight:3, opacity:.6, dashArray:'6 4' }).addTo(map);
+    }
+  }
+}
+
+// ══════════════════════════════════════════════
+// CURSOR / HINT
+// ══════════════════════════════════════════════
+
+function updateMapCursor() {
+  const el = document.getElementById('map');
+  if (isSelectingPickup||isSelectingDropoff) el.classList.add('cursor-cross');
+  else el.classList.remove('cursor-cross');
+}
+function showHint(txt) { const h=document.getElementById('map-hint'); h.textContent=txt; h.style.display='block'; }
+function hideHint() { document.getElementById('map-hint').style.display='none'; }
+
+// ══════════════════════════════════════════════
+// LOCATION HELPERS
+// ══════════════════════════════════════════════
+
+async function resolveName(lat, lng) {
+  try {
+    const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+    const data = await res.json();
+    if (data.address) {
+      const a = data.address;
+      return (a.suburb||a.village||a.town||a.city||'Selected') + ', ' + (a.state||'');
+    }
+  } catch(e) {}
+  return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+}
+
+function setPickup(latlng, name) {
+  pickup = latlng; pickupName = name;
+  // If name looks like raw coordinates (e.g. "23.7808, 90.4093"), resolve to a real place name
+  if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(name.trim())) {
+    resolveName(latlng.lat, latlng.lng).then(n => { pickupName = n; updateMapLayers(); render(); });
+  }
+}
+function setDropoff(latlng, name) {
+  dropoff = latlng; dropoffName = name;
+  if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(name.trim())) {
+    resolveName(latlng.lat, latlng.lng).then(n => { dropoffName = n; updateMapLayers(); render(); });
+  }
+}
+
+function estFare() {
+  if (!pickup||!dropoff) return 0;
+  const dist = calcDist(pickup, dropoff);
+  const mult = VEHICLE_TYPES.find(v=>v.id===selectedVehicle).mult;
+  return Math.floor(dist*25*mult+80);
+}
+
+// ══════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════
+
+function renderLocationResults(containerId, locs, onSelect) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = locs.length
+    ? locs.map(l => `
+      <button onclick="${onSelect}('${l.name.replace(/'/g,"\\'")}',${l.lat},${l.lng})"
+        style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;border:none;background:white;cursor:pointer;text-align:left;font-size:13px;border-bottom:1px solid #f1f5f9;"
+        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+        <span style="color:hsl(142,72%,35%);">📍</span>${l.name}
+      </button>`).join('')
+    : `<div style="padding:14px;text-align:center;color:#94a3b8;font-size:13px;">No locations found</div>`;
+}
+
+function openPickupList() {
+  document.getElementById('pickup-search-wrap').classList.add('visible');
+  document.getElementById('dropoff-search-wrap').classList.remove('visible');
+  filterPickup(document.getElementById('pickup-search-input').value);
+  setTimeout(()=>document.getElementById('pickup-search-input').focus(), 80);
+}
+function closePickupList() { document.getElementById('pickup-search-wrap').classList.remove('visible'); }
+function filterPickup(val) {
+  const locs = DHAKA_LOCATIONS.filter(l=>l.name.toLowerCase().includes(val.toLowerCase()));
+  renderLocationResults('pickup-results', locs, 'selectPickupLoc');
+  const hint = document.getElementById('pickup-hint');
+  if (hint) hint.style.display = val.trim() && !locs.length ? 'block' : 'none';
+}
+function handlePickupKey(e) { if (e.key==='Enter') { e.preventDefault(); submitPickupText(); } }
+function submitPickupText() {
+  const val = document.getElementById('pickup-search-input').value.trim();
+  if (!val) return;
+  fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val+', Bangladesh')}&format=json&limit=1`)
+    .then(r=>r.json()).then(data => {
+      if (data&&data[0]) { selectPickupLoc(val, parseFloat(data[0].lat), parseFloat(data[0].lon)); map.setView([parseFloat(data[0].lat), parseFloat(data[0].lon)], 15); }
+      else { const c=map.getCenter(); selectPickupLoc(val, c.lat, c.lng); }
+    }).catch(()=>{ const c=map.getCenter(); selectPickupLoc(val, c.lat, c.lng); });
+}
+
+function openDropoffList() {
+  document.getElementById('dropoff-search-wrap').classList.add('visible');
+  document.getElementById('pickup-search-wrap').classList.remove('visible');
+  filterDropoff(document.getElementById('dropoff-search-input').value);
+  setTimeout(()=>document.getElementById('dropoff-search-input').focus(), 80);
+}
+function closeDropoffList() { document.getElementById('dropoff-search-wrap').classList.remove('visible'); }
+function filterDropoff(val) {
+  const locs = DHAKA_LOCATIONS.filter(l=>l.name.toLowerCase().includes(val.toLowerCase()));
+  renderLocationResults('dropoff-results', locs, 'selectDropoffLoc');
+  const hint = document.getElementById('dropoff-hint');
+  if (hint) hint.style.display = val.trim() && !locs.length ? 'block' : 'none';
+}
+function handleDropoffKey(e) { if (e.key==='Enter') { e.preventDefault(); submitDropoffText(); } }
+function submitDropoffText() {
+  const val = document.getElementById('dropoff-search-input').value.trim();
+  if (!val) return;
+  fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val+', Bangladesh')}&format=json&limit=1`)
+    .then(r=>r.json()).then(data => {
+      if (data&&data[0]) { selectDropoffLoc(val, parseFloat(data[0].lat), parseFloat(data[0].lon)); map.setView([parseFloat(data[0].lat), parseFloat(data[0].lon)], 15); }
+      else { const c=map.getCenter(); selectDropoffLoc(val, c.lat, c.lng); }
+    }).catch(()=>{ const c=map.getCenter(); selectDropoffLoc(val, c.lat, c.lng); });
+}
+
+function selectPickupLoc(name,lat,lng) {
+  setPickup({lat,lng},name); closePickupList();
+  isSelectingPickup=false; updateMapCursor(); hideHint();
+  document.getElementById('pickup-search-input').value='';
+  document.getElementById('pickup-hint').style.display='none';
+  updateMapLayers(); render();
+}
+function selectDropoffLoc(name,lat,lng) {
+  setDropoff({lat,lng},name); closeDropoffList();
+  isSelectingDropoff=false; updateMapCursor(); hideHint();
+  document.getElementById('dropoff-search-input').value='';
+  document.getElementById('dropoff-hint').style.display='none';
+  updateMapLayers(); render();
+}
+
+// ══════════════════════════════════════════════
+// RIDE ACTIONS  (backed by Django API)
+// ══════════════════════════════════════════════
+
+async function requestRide() {
+  if (!pickup||!dropoff) return;
+  try {
+    const ride = await apiFetch('/rides/create/', {
+      method: 'POST',
+      body: {
+        rider_name:   'You',
+        pickup_lat:   pickup.lat,
+        pickup_lng:   pickup.lng,
+        pickup_name:  pickupName,
+        dropoff_lat:  dropoff.lat,
+        dropoff_lng:  dropoff.lng,
+        dropoff_name: dropoffName,
+        vehicle_type: selectedVehicle,
+      }
+    });
+    currentRide = ride;
+    rideStatus  = 'searching';
+    render();
+    showToast('🔍 Waiting for a driver to accept…');
+    // Poll the DB — ride moves to 'accepted' only when a driver accepts it from the Driver panel
+    startRidePolling();
+
+  } catch(e) {
+    showToast('⚠️ ' + e.message);
+  }
+}
+
+function startRidePolling() {
+  if (ridePollingInterval) clearInterval(ridePollingInterval);
+  ridePollingInterval = setInterval(async () => {
+    if (!currentRide) { clearInterval(ridePollingInterval); return; }
+    try {
+      const ride = await apiFetch(`/rides/${currentRide.id}/`);
+      currentRide = ride;
+
+      // Ride was accepted by a driver — kick off animation
+      if (ride.status === 'accepted' && rideStatus === 'searching') {
+        assignedDriver = ride.driver_info;
+        driverLocation = { lat: assignedDriver.lat, lng: assignedDriver.lng };
+        rideStatus     = 'accepted';
+        updateMapLayers(); render();
+        showToast('\uD83D\uDE97 Driver accepted your ride!');
+
+        simulateDriverMovement(
+          { lat: assignedDriver.lat, lng: assignedDriver.lng },
+          pickup,
+          async () => {
+            try {
+              const enRoute = await apiFetch(`/rides/${currentRide.id}/status/`, { method: 'POST', body: { status: 'en_route' } });
+              currentRide = enRoute;
+            } catch(e) {}
+            rideStatus = 'en_route';
+            render();
+            simulateDriverMovement(pickup, dropoff, () => {});
+          }
+        );
+      }
+
+      if (ride.status === 'completed' && rideStatus !== 'completed') {
+        rideStatus = 'completed'; clearInterval(ridePollingInterval); render();
+      }
+      if (ride.status === 'cancelled' && rideStatus !== 'idle') {
+        cancelRide();
+      }
+    } catch(e) {}
+  }, 3000);
+}
+
+async function cancelRide() {
+  if (currentRide && ['pending','accepted','en_route'].includes(currentRide.status)) {
+    try { await apiFetch(`/rides/${currentRide.id}/status/`, { method: 'POST', body: { status: 'cancelled' } }); } catch(e) {}
+  }
+  rideStatus='idle'; pickup=null; dropoff=null; pickupName=''; dropoffName='';
+  currentRide=null; assignedDriver=null; driverLocation=null;
+  if (driverAnimInterval) clearInterval(driverAnimInterval);
+  if (ridePollingInterval) clearInterval(ridePollingInterval);
+  updateMapLayers(); render();
+}
+
+async function completeRide() {
+  if (currentRide) {
+    try {
+      const done = await apiFetch(`/rides/${currentRide.id}/status/`, { method: 'POST', body: { status: 'completed' } });
+      currentRide = done;
+    } catch(e) {}
+  }
+  rideStatus = 'completed';
+  if (driverAnimInterval) clearInterval(driverAnimInterval);
+  render();
+}
+
+function simulateDriverMovement(from, to, onDone) {
+  if (driverAnimInterval) clearInterval(driverAnimInterval);
+  let progress = 0;
+  driverAnimInterval = setInterval(() => {
+    progress += 0.04;
+    if (progress >= 1) {
+      progress = 1; clearInterval(driverAnimInterval);
+      driverLocation = { ...to }; updateMapLayers(); onDone();
+    } else {
+      driverLocation = { lat: from.lat+(to.lat-from.lat)*progress, lng: from.lng+(to.lng-from.lng)*progress };
+      if (driverMarker) {
+        driverMarker.setLatLng([driverLocation.lat, driverLocation.lng]);
+        if (driverLine&&pickup) driverLine.setLatLngs([[driverLocation.lat,driverLocation.lng],[pickup.lat,pickup.lng]]);
+      }
+    }
+  }, 400);
+}
+
+// ══════════════════════════════════════════════
+// DRIVER ACTIONS (backed by Django API)
+// ══════════════════════════════════════════════
+
+async function toggleDriverOnline() {
+  if (!activeDriverId) { showToast('Select a driver first'); return; }
+  try {
+    const res    = await apiFetch(`/drivers/${activeDriverId}/toggle/`, { method: 'POST' });
+    driverOnline = res.is_online;
+    // update in local list
+    allDrivers = allDrivers.map(d => d.id===activeDriverId ? { ...d, is_online: driverOnline } : d);
+
+    if (driverOnline) startDriverPolling();
+    else {
+      if (driverPollingInterval) clearInterval(driverPollingInterval);
+      pendingRides = [];
+    }
+    updateMapLayers(); render();
+  } catch(e) {
+    showToast('⚠️ ' + e.message);
+  }
+}
+
+async function fetchPendingRides() {
+  if (!driverOnline || driverActiveRide) return;
+  try {
+    pendingRides = await apiFetch('/rides/pending/');
+    updateMapLayers(); render();
+  } catch(e) {}
+}
+
+function startDriverPolling() {
+  if (driverPollingInterval) clearInterval(driverPollingInterval);
+  fetchPendingRides(); // immediate fetch — don't wait for first tick
+  driverPollingInterval = setInterval(fetchPendingRides, 4000);
+}
+
+async function acceptRideAsDriver(rideId) {
+  if (!activeDriverId) { showToast('Select a driver first'); return; }
+  try {
+    const ride       = await apiFetch(`/rides/${rideId}/accept/`, { method: 'POST', body: { driver_id: activeDriverId } });
+    driverActiveRide = ride;
+    pendingRides     = pendingRides.filter(r => r.id !== rideId);
+    updateMapLayers(); render();
+  } catch(e) {
+    showToast('⚠️ ' + e.message);
+  }
+}
+
+async function declineRide(rideId) {
+  pendingRides = pendingRides.filter(r => r.id !== rideId);
+  updateMapLayers(); render();
+}
+
+async function driverCompleteRide() {
+  if (!driverActiveRide) return;
+  try {
+    await apiFetch(`/rides/${driverActiveRide.id}/status/`, { method: 'POST', body: { status: 'completed' } });
+    // Refresh stats
+    const stats       = await apiFetch(`/drivers/${activeDriverId}/stats/`);
+    driverEarnings    = stats.total_earnings;
+    driverRidesCompleted = stats.rides_completed;
+  } catch(e) {}
+  driverActiveRide = null; render();
+}
+
+async function loadDriverStats() {
+  if (!activeDriverId) return;
+  try {
+    const stats       = await apiFetch(`/drivers/${activeDriverId}/stats/`);
+    driverEarnings    = stats.total_earnings;
+    driverRidesCompleted = stats.rides_completed;
+    render();
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════
+
+function switchMode(m) {
+  mode=m; isSelectingPickup=false; isSelectingDropoff=false;
+  closePickupList(); closeDropoffList();
+  updateMapCursor(); hideHint();
+  if (m==='driver') {
+    loadDriverStats();
+    if (driverOnline) startDriverPolling(); // resume polling if already online
+    else fetchPendingRides();               // still show any pending rides even if offline
+  } else {
+    // leaving driver mode — stop driver polling
+    if (driverPollingInterval) { clearInterval(driverPollingInterval); driverPollingInterval = null; }
+  }
+  updateMapLayers(); render();
+}
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('hidden-desk', !sidebarOpen);
+  document.getElementById('sidebar-toggle').textContent = sidebarOpen ? '✕' : '☰';
+  setTimeout(()=>map.invalidateSize(), 320);
+}
+function setVehicle(v) { selectedVehicle=v; render(); }
+function setDriverTab(t) { driverTab=t; if(t==='stats') loadDriverStats(); render(); }
+function startSelectPickup() {
+  isSelectingPickup=true; isSelectingDropoff=false;
+  closePickupList(); closeDropoffList();
+  updateMapCursor(); showHint('📍 Click to set pickup location'); render();
+}
+function startSelectDropoff() {
+  isSelectingDropoff=true; isSelectingPickup=false;
+  closePickupList(); closeDropoffList();
+  updateMapCursor(); showHint('🎯 Click to set destination'); render();
+}
+function clearPickup()  { pickup=null; pickupName=''; isSelectingPickup=false; updateMapCursor(); hideHint(); updateMapLayers(); render(); }
+function clearDropoff() { dropoff=null; dropoffName=''; isSelectingDropoff=false; updateMapCursor(); hideHint(); updateMapLayers(); render(); }
+
+// ══════════════════════════════════════════════
+// RENDER: RIDER PANEL
+// ══════════════════════════════════════════════
+
+function renderRiderPanel() {
+  if (rideStatus==='accepted'||rideStatus==='en_route') {
+    const d = assignedDriver || {};
+    return `
+    <div class="anim-slide-up" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="background:hsl(142,72%,35%);color:white;border-radius:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="width:8px;height:8px;background:white;border-radius:50%;"></div>
+          <span style="font-size:13px;font-weight:500;opacity:.9;">${rideStatus==='accepted'?'Driver is on the way':"You're en route!"}</span>
+        </div>
+        <div style="font-size:18px;font-weight:800;">${d.name||'Your Driver'}</div>
+        <div style="font-size:12px;opacity:.8;">${d.vehicle||''} · ${d.plate||''}</div>
+      </div>
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="color:#f59e0b;">★</span>
+            <span style="font-weight:600;">${d.rating||'4.8'}</span>
+            <span style="color:#64748b;font-size:13px;">rating</span>
+          </div>
+          <a href="tel:${d.phone||''}" style="display:flex;align-items:center;gap:5px;background:hsl(142,72%,35%);color:white;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;">📞 Call</a>
+        </div>
+        <div style="font-size:13px;color:#64748b;display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:8px;height:8px;background:hsl(142,72%,35%);border-radius:50%;flex-shrink:0;"></div>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${pickupName}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:8px;height:8px;background:#dc2626;border-radius:50%;flex-shrink:0;"></div>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dropoffName}</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#64748b;font-size:13px;">Estimated fare</span>
+          <span style="font-weight:700;font-size:15px;">৳${currentRide?.fare||0}</span>
+        </div>
+        <div style="margin-top:6px;font-size:11px;color:#94a3b8;">Ride #${currentRide?.id||''} · Saved to database ✓</div>
+      </div>
+      ${rideStatus==='en_route'?`<button onclick="completeRide()" style="width:100%;padding:14px;background:hsl(142,72%,35%);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">✓ Complete Ride</button>`:''}
+      <button onclick="cancelRide()" style="width:100%;padding:12px;background:white;color:#dc2626;border:1px solid rgba(220,38,38,.3);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancel Ride</button>
+    </div>`;
+  }
+
+  if (rideStatus==='searching') {
+    return `
+    <div class="anim-fade-in" style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 0;">
+      <div style="position:relative;width:80px;height:80px;">
+        <div class="ping-anim" style="position:absolute;inset:0;border-radius:50%;background:hsl(142,72%,35%,.2);"></div>
+        <div class="ping-anim" style="position:absolute;inset:8px;border-radius:50%;background:hsl(142,72%,35%,.3);animation-delay:.3s;"></div>
+        <div style="position:relative;width:100%;height:100%;border-radius:50%;background:hsl(142,72%,35%);display:flex;align-items:center;justify-content:center;font-size:32px;">🚗</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:17px;font-weight:700;">Finding your driver...</div>
+        <div style="color:#64748b;font-size:13px;margin-top:4px;">Ride #${currentRide?.id||''} created in database</div>
+      </div>
+      <div style="width:100%;background:#f1f5f9;border-radius:16px;padding:14px;font-size:13px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">From</span><span style="font-weight:600;max-width:60%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${pickupName}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">To</span><span style="font-weight:600;max-width:60%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dropoffName}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Fare</span><span style="font-weight:700;color:hsl(142,72%,35%);">৳${currentRide?.fare||0}</span></div>
+      </div>
+      <button onclick="cancelRide()" style="width:100%;padding:12px;background:white;color:#dc2626;border:1px solid rgba(220,38,38,.3);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancel Search</button>
+    </div>`;
+  }
+
+  if (rideStatus==='completed') {
+    return `
+    <div class="anim-slide-up" style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:24px 0;">
+      <div style="width:64px;height:64px;background:hsl(142,72%,35%,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;">✅</div>
+      <div style="text-align:center;">
+        <div style="font-size:20px;font-weight:800;">Ride Complete!</div>
+        <div style="color:#64748b;font-size:13px;margin-top:4px;">Recorded in database ✓</div>
+      </div>
+      <div style="width:100%;background:#f1f5f9;border-radius:16px;padding:16px;text-align:center;">
+        <div style="color:#64748b;font-size:13px;">Total Paid</div>
+        <div style="font-size:32px;font-weight:800;color:hsl(142,72%,35%);">৳${currentRide?.fare||0}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ride #${currentRide?.id||''}</div>
+      </div>
+      <button onclick="cancelRide()" style="width:100%;padding:14px;background:hsl(142,72%,35%);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Book Another Ride</button>
+    </div>`;
+  }
+
+  // IDLE
+  const fare = estFare();
+  return `
+  <div class="anim-slide-up" style="display:flex;flex-direction:column;gap:14px;">
+    <div>
+      <div style="font-size:18px;font-weight:800;">Where are you going?</div>
+      <div style="color:#64748b;font-size:13px;">Set your pickup &amp; destination</div>
+    </div>
+
+    <!-- PICKUP -->
+    <div>
+      <div onclick="startSelectPickup()"
+        style="display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;border:2px solid ${isSelectingPickup?'hsl(142,72%,35%)':'#e2e8f0'};background:${isSelectingPickup?'hsl(142,72%,35%,.05)':'white'};cursor:pointer;transition:all .2s;">
+        <div style="width:11px;height:11px;background:hsl(142,72%,35%);border-radius:50%;flex-shrink:0;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:10px;font-weight:600;color:#94a3b8;letter-spacing:.05em;">PICKUP</div>
+          ${pickupName
+            ?`<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${pickupName}</div>`
+            :`<div style="font-size:13px;color:#94a3b8;">Tap map or search below</div>`}
+        </div>
+        ${pickup?`<button onclick="event.stopPropagation();clearPickup()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1;padding:0 2px;">✕</button>`:''}
+      </div>
+      ${!pickup?`<button onclick="openPickupList()" style="margin-top:6px;width:100%;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#64748b;cursor:pointer;text-align:left;padding-left:12px;">🔍 Search pickup location...</button>`:''}
+    </div>
+
+    <!-- DROPOFF -->
+    <div>
+      <div onclick="startSelectDropoff()"
+        style="display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;border:2px solid ${isSelectingDropoff?'#dc2626':'#e2e8f0'};background:${isSelectingDropoff?'rgba(220,38,38,.05)':'white'};cursor:pointer;transition:all .2s;">
+        <div style="width:11px;height:11px;background:#dc2626;border-radius:50%;flex-shrink:0;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:10px;font-weight:600;color:#94a3b8;letter-spacing:.05em;">DESTINATION</div>
+          ${dropoffName
+            ?`<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dropoffName}</div>`
+            :`<div style="font-size:13px;color:#94a3b8;">Tap map or search below</div>`}
+        </div>
+        ${dropoff?`<button onclick="event.stopPropagation();clearDropoff()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1;padding:0 2px;">✕</button>`:''}
+      </div>
+      ${!dropoff?`<button onclick="openDropoffList()" style="margin-top:6px;width:100%;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#64748b;cursor:pointer;text-align:left;padding-left:12px;">🔍 Search destination...</button>`:''}
+    </div>
+
+    <!-- Vehicle picker -->
+    ${pickup&&dropoff?`
+    <div class="anim-slide-up">
+      <div style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Choose Vehicle</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        ${VEHICLE_TYPES.map(v=>`
+        <button onclick="setVehicle('${v.id}')" style="display:flex;flex-direction:column;align-items:center;padding:12px 8px;border-radius:12px;border:2px solid ${selectedVehicle===v.id?'hsl(142,72%,35%)':'#e2e8f0'};background:${selectedVehicle===v.id?'hsl(142,72%,35%,.08)':'white'};cursor:pointer;transition:all .2s;">
+          <span style="font-size:22px;">${v.emoji}</span>
+          <span style="font-size:12px;font-weight:700;margin-top:4px;">${v.label}</span>
+          <span style="font-size:11px;color:#64748b;">৳${Math.floor(80*v.mult)}+</span>
+        </button>`).join('')}
+      </div>
+      <div style="margin-top:10px;background:#f1f5f9;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="color:#64748b;font-size:13px;">⏱ ~15 min</div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:#64748b;">Estimated</div>
+          <div style="font-weight:700;font-size:16px;">৳${fare}</div>
+        </div>
+      </div>
+    </div>`:''}
+
+    ${pickup&&dropoff
+      ?`<button onclick="requestRide()" style="width:100%;padding:15px;background:hsl(142,72%,35%);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px hsl(142,72%,35%,.4);">Request Ride ›</button>`
+      :`<div style="background:#f1f5f9;border-radius:12px;padding:12px;text-align:center;font-size:13px;color:#64748b;">${!pickup?'Set your pickup location to continue':'Set your destination to continue'}</div>`}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER: DRIVER PANEL
+// ══════════════════════════════════════════════
+
+function renderDriverPanel() {
+  if (driverActiveRide) {
+    const r = driverActiveRide;
+    return `
+    <div class="anim-slide-up" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="background:hsl(142,72%,35%);color:white;border-radius:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="width:8px;height:8px;background:white;border-radius:50%;"></div>
+          <span style="font-size:13px;opacity:.9;font-weight:500;">Active Ride #${r.id}</span>
+        </div>
+        <div style="font-size:17px;font-weight:800;">${r.rider_name}</div>
+        <div style="font-size:13px;opacity:.8;">Fare: ৳${r.fare}</div>
+      </div>
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:10px;height:10px;background:hsl(142,72%,35%);border-radius:50%;margin-top:3px;flex-shrink:0;"></div>
+          <div><div style="font-size:10px;color:#94a3b8;font-weight:600;">PICKUP</div><div style="font-size:13px;font-weight:600;">${r.pickup_name}</div></div>
+        </div>
+        <div style="width:1px;height:18px;background:#e2e8f0;margin-left:4px;"></div>
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:10px;height:10px;background:#dc2626;border-radius:50%;margin-top:3px;flex-shrink:0;"></div>
+          <div><div style="font-size:10px;color:#94a3b8;font-weight:600;">DESTINATION</div><div style="font-size:13px;font-weight:600;">${r.dropoff_name}</div></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#f1f5f9;border-radius:12px;padding:12px;text-align:center;">
+          <div style="font-size:11px;color:#64748b;">Distance</div>
+          <div style="font-weight:700;">${r.distance_km} km</div>
+        </div>
+        <div style="background:#f1f5f9;border-radius:12px;padding:12px;text-align:center;">
+          <div style="font-size:11px;color:#64748b;">Earnings</div>
+          <div style="font-weight:700;color:hsl(142,72%,35%);">৳${r.fare}</div>
+        </div>
+      </div>
+      <button onclick="driverCompleteRide()" style="width:100%;padding:14px;background:hsl(142,72%,35%);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">✓ Complete Ride</button>
+    </div>`;
+  }
+
+  return `
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;border:2px solid ${driverOnline?'hsl(142,72%,35%)':'#e2e8f0'};background:${driverOnline?'hsl(142,72%,35%,.06)':'#f8fafc'};">
+      <div>
+        <div style="font-weight:700;">${driverOnline?"🟢 You're Online":"⭕ You're Offline"}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px;">${driverOnline?'Ready to accept rides':'Go online to receive requests'}</div>
+      </div>
+      <div onclick="toggleDriverOnline()" class="toggle-track" style="background:${driverOnline?'hsl(142,72%,35%)':'#cbd5e1'};">
+        <div class="toggle-thumb" style="left:${driverOnline?'31px':'3px'};"></div>
+      </div>
+    </div>
+    <div style="display:flex;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
+      <button onclick="setDriverTab('requests')" style="flex:1;padding:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;background:${driverTab==='requests'?'hsl(142,72%,35%)':'white'};color:${driverTab==='requests'?'white':'#64748b'};">
+        Requests (${pendingRides.length})
+      </button>
+      <button onclick="setDriverTab('stats')" style="flex:1;padding:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;background:${driverTab==='stats'?'hsl(142,72%,35%)':'white'};color:${driverTab==='stats'?'white':'#64748b'};">
+        Earnings
+      </button>
+    </div>
+    ${driverTab==='requests' ? renderDriverRequests() : renderDriverStats()}
+  </div>`;
+}
+
+function renderDriverRequests() {
+  if (!driverOnline) return `
+    <div style="text-align:center;padding:32px 0;">
+      <div style="font-size:40px;margin-bottom:12px;">🚗</div>
+      <div style="color:#64748b;font-weight:500;">Go online to see ride requests</div>
+    </div>`;
+
+  if (!pendingRides.length) return `
+    <div class="anim-fade-in" style="text-align:center;padding:32px 0;">
+      <div style="width:48px;height:48px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;">⏱</div>
+      <div style="font-weight:600;">Waiting for requests...</div>
+      <div style="font-size:13px;color:#64748b;margin-top:4px;">Polling API every 6 s</div>
+    </div>`;
+
+  return pendingRides.map(req=>`
+    <div class="anim-slide-up" style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div style="font-weight:700;">${req.rider_name}</div>
+          <div style="font-size:12px;color:#64748b;">${req.distance_km} km · Ride #${req.id}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:800;font-size:18px;color:hsl(142,72%,35%);">৳${req.fare}</div>
+          <div style="font-size:11px;color:#94a3b8;">estimated</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:13px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;background:hsl(142,72%,35%);border-radius:50%;flex-shrink:0;"></div>
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${req.pickup_name}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;background:#dc2626;border-radius:50%;flex-shrink:0;"></div>
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${req.dropoff_name}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="declineRide(${req.id})" style="flex:1;padding:10px;background:white;color:#dc2626;border:1px solid rgba(220,38,38,.3);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">✕ Decline</button>
+        <button onclick="acceptRideAsDriver(${req.id})" style="flex:1;padding:10px;background:hsl(142,72%,35%);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✓ Accept</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderDriverStats() {
+  return `
+  <div class="anim-fade-in" style="display:flex;flex-direction:column;gap:12px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:6px;">📈</div>
+        <div style="font-size:24px;font-weight:800;">৳${driverEarnings}</div>
+        <div style="font-size:11px;color:#64748b;">Total Earnings</div>
+      </div>
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:6px;">🚗</div>
+        <div style="font-size:24px;font-weight:800;">${driverRidesCompleted}</div>
+        <div style="font-size:11px;color:#64748b;">Rides Completed</div>
+      </div>
+    </div>
+    <div style="background:hsl(142,72%,35%,.08);border:1px solid hsl(142,72%,35%,.2);border-radius:14px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:hsl(142,72%,35%);margin-bottom:4px;">💡 Dhaka Peak Hours</div>
+      <div style="font-size:12px;color:#64748b;">8–10am and 5–8pm are the busiest. Stay online to earn more!</div>
+    </div>
+    <div style="background:white;border:1px solid #e2e8f0;border-radius:14px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Surge Areas</div>
+      ${['Gulshan','Dhanmondi','Motijheel'].map(area=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;">
+        <span style="color:#64748b;">${area}</span>
+        <span style="font-weight:700;color:hsl(142,72%,35%);">1.5× surge</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// MAIN RENDER
+// ══════════════════════════════════════════════
+
+function render() {
+  const green='hsl(142,72%,35%)', muted='#f1f5f9', mutedTxt='#64748b';
+  const rBtn=document.getElementById('btn-rider-mode');
+  const dBtn=document.getElementById('btn-driver-mode');
+  if (rBtn) { rBtn.style.background=mode==='rider'?green:muted; rBtn.style.color=mode==='rider'?'white':mutedTxt; }
+  if (dBtn) { dBtn.style.background=mode==='driver'?green:muted; dBtn.style.color=mode==='driver'?'white':mutedTxt; }
+  document.getElementById('panel-content').innerHTML =
+    mode==='rider' ? renderRiderPanel() : renderDriverPanel();
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+render();
+filterPickup('');
+filterDropoff('');
+</script>
+</body>
+</html>

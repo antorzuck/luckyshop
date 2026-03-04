@@ -4,11 +4,28 @@ from django.urls import path
 from base.views import *
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
+
+    path('admin/', admin.site.urls),
+    path('firebase-messaging-sw.js', TemplateView.as_view(template_name="firebase-messaging-sw.js", content_type='application/javascript')),
+
+    path('api/drivers/',                            list_drivers,             name='list-drivers'),
+    path('api/drivers/<int:driver_id>/toggle/',     toggle_driver_online,     name='toggle-driver-online'),
+    path('api/drivers/<int:driver_id>/location/',   update_driver_location,   name='update-driver-location'),
+    path('api/drivers/<int:driver_id>/stats/',      driver_stats,              name='driver-stats'),
+
+    path('api/rides/',                              list_rides,                name='list-rides'),
+    path('api/rides/create/',                       create_ride,               name='create-ride'),
+    path('api/rides/pending/',                      pending_rides_for_driver,  name='pending-rides'),
+    path('api/rides/<int:ride_id>/',                ride_detail,               name='ride-detail'),
+    path('api/rides/<int:ride_id>/accept/',         accept_ride,               name='accept-ride'),
+    path('api/rides/<int:ride_id>/status/',         update_ride_status,        name='update-ride-status'),
+    path('api/rides/<int:ride_id>/assign/',         assign_random_driver,      name='assign-driver'),
+    path('ridego', TemplateView.as_view(template_name='rider.html'), name='home'),
     path('login', handle_login),
     path('logout', handle_logout),
     path('draw', draw),

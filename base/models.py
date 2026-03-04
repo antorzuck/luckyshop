@@ -21,6 +21,69 @@ class BaseModel(models.Model):
 
 
 
+class Driver(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    vehicle = models.CharField(max_length=100)
+    plate = models.CharField(max_length=30)
+    rating = models.FloatField(default=5.0)
+    is_online = models.BooleanField(default=False)
+    lat = models.FloatField(default=23.7808)
+    lng = models.FloatField(default=90.4093)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.plate})"
+
+
+class Ride(models.Model):
+    STATUS_CHOICES = [
+        ('pending',   'Pending'),
+        ('accepted',  'Accepted'),
+        ('en_route',  'En Route'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    VEHICLE_CHOICES = [
+        ('bike', 'Moto'),
+        ('car',  'Car'),
+        ('cng',  'CNG'),
+    ]
+
+    rider_name   = models.CharField(max_length=100, default='Rider')
+    driver       = models.ForeignKey(Driver, null=True, blank=True, on_delete=models.SET_NULL, related_name='rides')
+
+    # Pickup
+    pickup_lat   = models.FloatField()
+    pickup_lng   = models.FloatField()
+    pickup_name  = models.CharField(max_length=200)
+
+    # Dropoff
+    dropoff_lat  = models.FloatField()
+    dropoff_lng  = models.FloatField()
+    dropoff_name = models.CharField(max_length=200)
+
+    vehicle_type = models.CharField(max_length=10, choices=VEHICLE_CHOICES, default='car')
+    fare         = models.IntegerField(default=0)          # BDT
+    distance_km  = models.FloatField(default=0)
+
+    status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    requested_at = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Ride #{self.id} – {self.rider_name} [{self.status}]"
+
+
+class DriverEarning(models.Model):
+    driver      = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name='earnings')
+    ride        = models.OneToOneField(Ride, on_delete=models.CASCADE)
+    amount      = models.IntegerField()
+    earned_at   = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"৳{self.amount} – {self.driver.name}"
 
 
 

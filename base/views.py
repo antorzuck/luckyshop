@@ -13,6 +13,243 @@ from django.core.paginator import Paginator
 import requests
 
 
+import random
+import math
+from django.db.models import Sum
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+from .serializers import DriverSerializer, RideSerializer, RideCreateSerializer, EarningSerializer
+
+
+def calc_dist(lat1, lng1, lat2, lng2):
+    """Haversine distance in km."""
+    R = 6371
+    to_rad = math.radians
+    d_lat = to_rad(lat2 - lat1)
+    d_lng = to_rad(lng2 - lng1)
+    a = (math.sin(d_lat / 2) ** 2
+         + math.cos(to_rad(lat1)) * math.cos(to_rad(lat2))
+         * math.sin(d_lng / 2) ** 2)
+    return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+VEHICLE_MULT = {'bike': 1.0, 'car': 2.2, 'cng': 1.5}
+
+
+@api_view(['GET'])
+def list_drivers(request):
+    """Return all drivers (optionally filter by ?online=true)."""
+    qs = Driver.objects.all()
+    if request.query_params.get('online') == 'true':
+        qs = qs.filter(is_online=True)
+    return Response(DriverSerializer(qs, many=True).data)
+
+
+@api_view(['POST'])
+def toggle_driver_online(request, driver_id):
+    """Toggle a driver's online status."""
+    try:
+        driver = Driver.objects.get(pk=driver_id)
+    except Driver.DoesNotExist:
+        return Response({'error': 'Driver not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    driver.is_online = not driver.is_online
+    driver.save()
+    return Response({'driver_id': driver.id, 'is_online': driver.is_online})
+
+
+@api_view(['PATCH'])
+def update_driver_location(request, driver_id):
+    """Update driver GPS location.  Body: { lat, lng }"""
+    try:
+        driver = Driver.objects.get(pk=driver_id)
+    except Driver.DoesNotExist:
+        return Response({'error': 'Driver not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    driver.lat = request.data.get('lat', driver.lat)
+    driver.lng = request.data.get('lng', driver.lng)
+    driver.save()
+    return Response({'driver_id': driver.id, 'lat': driver.lat, 'lng': driver.lng})
+
+
+@api_view(['GET'])
+def driver_stats(request, driver_id):
+    """Return earnings & rides completed for a driver."""
+    try:
+        driver = Driver.objects.get(pk=driver_id)
+    except Driver.DoesNotExist:
+        return Response({'error': 'Driver not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    earnings_qs = DriverEarning.objects.filter(driver=driver)
+    total_earnings  = earnings_qs.aggregate(total=Sum('amount'))['total'] or 0
+    rides_completed = Ride.objects.filter(driver=driver, status='completed').count()
+
+    return Response({
+        'driver_id':        driver.id,
+        'name':             driver.name,
+        'total_earnings':   total_earnings,
+        'rides_completed':  rides_completed,
+    })
+
+
+
+@api_view(['GET'])
+def list_rides(request):
+    """List all rides or filter by ?status=pending etc."""
+    qs = Ride.objects.select_related('driver').order_by('-requested_at')
+    s = request.query_params.get('status')
+    if s:
+        qs = qs.filter(status=s)
+    return Response(RideSerializer(qs, many=True).data)
+
+
+@api_view(['POST'])
+def create_ride(request):
+    """
+    Rider requests a new ride.
+    Body: { rider_name, pickup_lat, pickup_lng, pickup_name,
+            dropoff_lat, dropoff_lng, dropoff_name, vehicle_type }
+    The fare & distance are calculated server-side.
+    """
+    data = request.data.copy()
+
+    try:
+        dist = calc_dist(
+            float(data['pickup_lat']),  float(data['pickup_lng']),
+            float(data['dropoff_lat']), float(data['dropoff_lng']),
+        )
+    except (KeyError, ValueError):
+        return Response({'error': 'Invalid coordinates'}, status=status.HTTP_400_BAD_REQUEST)
+
+    mult       = VEHICLE_MULT.get(data.get('vehicle_type', 'car'), 2.2)
+    data['fare']        = int(dist * 25 * mult + 80)
+    data['distance_km'] = round(dist, 2)
+
+    ser = RideCreateSerializer(data=data)
+    if ser.is_valid():
+        ride = ser.save(status='pending')
+        return Response(RideSerializer(ride).data, status=status.HTTP_201_CREATED)
+    return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def ride_detail(request, ride_id):
+    """Get a single ride's current state (poll this for status updates)."""
+    try:
+        ride = Ride.objects.select_related('driver').get(pk=ride_id)
+    except Ride.DoesNotExist:
+        return Response({'error': 'Ride not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response(RideSerializer(ride).data)
+
+
+@api_view(['POST'])
+def accept_ride(request, ride_id):
+    """
+    Driver accepts a pending ride.
+    Body: { driver_id }
+    """
+    try:
+        ride = Ride.objects.get(pk=ride_id, status='pending')
+    except Ride.DoesNotExist:
+        return Response({'error': 'Ride not found or not pending'}, status=status.HTTP_404_NOT_FOUND)
+
+    driver_id = request.data.get('driver_id')
+    try:
+        driver = Driver.objects.get(pk=driver_id, is_online=True)
+    except Driver.DoesNotExist:
+        return Response({'error': 'Driver not found or offline'}, status=status.HTTP_404_NOT_FOUND)
+
+    ride.driver = driver
+    ride.status = 'accepted'
+    ride.save()
+    return Response(RideSerializer(ride).data)
+
+
+@api_view(['POST'])
+def update_ride_status(request, ride_id):
+    """
+    Advance ride status.
+    Body: { status: 'en_route' | 'completed' | 'cancelled' }
+    """
+    try:
+        ride = Ride.objects.select_related('driver').get(pk=ride_id)
+    except Ride.DoesNotExist:
+        return Response({'error': 'Ride not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    new_status = request.data.get('status')
+    valid_transitions = {
+        'accepted':  ['en_route', 'cancelled'],
+        'en_route':  ['completed', 'cancelled'],
+        'pending':   ['cancelled'],
+    }
+
+    if new_status not in valid_transitions.get(ride.status, []):
+        return Response(
+            {'error': f"Cannot move from '{ride.status}' to '{new_status}'"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    ride.status = new_status
+    ride.save()
+
+    # Record driver earnings on completion
+    if new_status == 'completed' and ride.driver:
+        DriverEarning.objects.get_or_create(
+            ride=ride,
+            defaults={'driver': ride.driver, 'amount': ride.fare},
+        )
+
+    return Response(RideSerializer(ride).data)
+
+
+@api_view(['POST'])
+def assign_random_driver(request, ride_id):
+    """
+    Simulates the matching engine: picks a random online driver
+    and assigns them to the ride (called by the frontend after a delay).
+    """
+    try:
+        ride = Ride.objects.get(pk=ride_id, status='pending')
+    except Ride.DoesNotExist:
+        return Response({'error': 'Ride not found or not pending'}, status=status.HTTP_404_NOT_FOUND)
+
+    online_drivers = list(Driver.objects.filter(is_online=True))
+    if not online_drivers:
+        # Fall back to any driver so the demo always works
+        online_drivers = list(Driver.objects.all())
+
+    if not online_drivers:
+        return Response({'error': 'No drivers available'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    driver = random.choice(online_drivers)
+    ride.driver = driver
+    ride.status = 'accepted'
+    ride.save()
+    return Response(RideSerializer(ride).data)
+
+
+
+@api_view(['GET'])
+def pending_rides_for_driver(request):
+    """
+    Returns the latest pending rides so the Driver panel can show them.
+    In a production app this would be filtered by proximity.
+    """
+    rides = Ride.objects.filter(status='pending').order_by('-requested_at')[:5]
+    return Response(RideSerializer(rides, many=True).data)
+
+
+
+
+
+
+
+
+
+
+
 
 def recycle(request):
 

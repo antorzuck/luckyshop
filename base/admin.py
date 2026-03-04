@@ -28,3 +28,24 @@ fund_models = [
 
 for model in fund_models:
     admin.site.register(model)
+
+
+
+@admin.register(Driver)
+class DriverAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'vehicle', 'plate', 'rating', 'is_online')
+    list_filter   = ('is_online',)
+    search_fields = ('name', 'plate')
+
+
+@admin.register(Ride)
+class RideAdmin(admin.ModelAdmin):
+    list_display  = ('id', 'rider_name', 'driver', 'vehicle_type', 'fare', 'status', 'requested_at')
+    list_filter   = ('status', 'vehicle_type')
+    search_fields = ('rider_name', 'pickup_name', 'dropoff_name')
+    readonly_fields = ('requested_at', 'updated_at')
+
+
+@admin.register(DriverEarning)
+class DriverEarningAdmin(admin.ModelAdmin):
+    list_display = ('driver', 'ride', 'amount', 'earned_at')
