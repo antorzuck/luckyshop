@@ -20,6 +20,9 @@ class BaseModel(models.Model):
         return f"{self.__class__.__name__} (id={self.pk})"
 
 
+class Token(BaseModel):
+    code = models.TextField()
+    
 
 class Driver(models.Model):
     name = models.CharField(max_length=100)

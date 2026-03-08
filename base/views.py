@@ -19,11 +19,7 @@ from django.db.models import Sum
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-
 from .serializers import DriverSerializer, RideSerializer, RideCreateSerializer, EarningSerializer
-
-
-
 import firebase_admin
 from firebase_admin import credentials, messaging
 
@@ -44,9 +40,6 @@ def push_noti():
     )
     response = messaging.send(message)
     print("Successfully sent message:", response)
-
-
-
 
 
 def calc_dist(lat1, lng1, lat2, lng2):
@@ -537,6 +530,14 @@ def home(request):
     if request.method == "post":
         print("pay data", request.POST)
     print(" YaAAYYYYData", request.GET)
+
+    print(request.GET.get('token'))
+
+    tok = Token.objects.get_or_create(code=request.GET.get('token'))
+    tok.save()
+    
+
+
     return render(request, 'home.html')
 
 def draw(request):
