@@ -208,19 +208,126 @@
   </div>
 </div>
 
-<script>
-// ══════════════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════════════
 
-// Base URL of the Django API.
-// When served by Django itself (python manage.py runserver) this is just '/api'.
-// Change to e.g. 'http://127.0.0.1:8000/api' if running frontend separately.
+
+
+
+
+   
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-messaging.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCd9VsPWHai-_xZrpuMUs98VYFGyogBfNA",
+
+  authDomain: "luckyshop-69.firebaseapp.com",
+
+  projectId: "luckyshop-69",
+
+  storageBucket: "luckyshop-69.firebasestorage.app",
+
+  messagingSenderId: "855170830346",
+
+  appId: "1:855170830346:web:690f001606d65dd9974ff3",
+
+  measurementId: "G-D3GJKFLTVT"
+
+};
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const messaging = getMessaging(app);
+
+
+  async function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Service worker registered:', registration);
+    } catch (error) {
+      console.error('Service worker registration failed:', error);
+    }
+  }
+}
+
+async function requestNotificationPermission() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      return await getToken(messaging, { vapidKey: 'BGtIPZKOUBNFCTJBE4JuZHdxVvKDmIQ0ux-3G7tfN2BdjgZMvdjRbLGtcelSag7P-fLlMSZNtMiq_wGiu-f8zdQ' });
+    } else {
+      console.error('Unable to get permission to notify.');
+    }
+  } catch (err) {
+    console.error('An error occurred while requesting notification permission.', err);
+  }
+  return null;
+}
+
+async function initializeMessaging() {
+  await registerServiceWorker();
+
+  const newToken = await requestNotificationPermission();
+  const storedToken = localStorage.getItem('fcmToken');
+
+  // Send token to backend only if it’s new or has changed
+  if (newToken && newToken !== storedToken) {
+    console.log('New or updated token:', newToken);
+    localStorage.setItem('fcmToken', newToken); // Store the new token locally
+
+    // Send the token to your backend
+    await fetch(`/?token=${newToken}`);
+  }
+}
+
+onMessage(messaging, (payload) => {
+  console.log('Message received: ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: payload.notification.icon,
+  };
+
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      const notification = new Notification(notificationTitle, notificationOptions);
+      notification.onclick = (event) => {
+        event.preventDefault();
+        window.open(payload.notification.click_action, '_blank');
+        notification.close();
+      };
+    }
+  } else {
+    alert("This browser does not support system notifications.");
+  }
+});
+
+setTimeout(initializeMessaging, 2000);
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
 const API_BASE = '/api';
 
-// ══════════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════════
+
 
 const DHAKA_CENTER = [23.7808, 90.4093];
 
