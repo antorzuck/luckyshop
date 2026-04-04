@@ -5,7 +5,7 @@
 <!-- Added Font Awesome CDN for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-{% if not request.user.is_staff and not request.user.is_superuser and not request.user.profile.is_agent and not request.user.profile.is_verified %}
+{% if not profile.is_verified %}
     
 <div class="min-h-[80vh] flex items-center justify-center px-4">
     <div class="bg-white max-w-md w-full rounded-3xl shadow-2xl p-8 text-center border border-gray-100">

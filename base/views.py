@@ -24,8 +24,8 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 
-cred = credentials.Certificate("luckyshop-69-firebase-adminsdk-fbsvc-a388834f06.json")
-firebase_admin.initialize_app(cred)
+#cred = credentials.Certificate("luckyshop-69-firebase-adminsdk-fbsvc-a388834f06.json")
+#firebase_admin.initialize_app(cred)
 
 registration_token = "dY35qD_ujNXH4-lVP92r1d:APA91bFCjYUu7Z37GeE_3ML9xqtXXVery4hdXkndZ9wiiivCsiZW27MWkf4eUT8qyeS5bnejrm4Gzl2W6trquzOCgDSLoVhVlZX6porzXlWuYlzDgYUoVlE"
 
@@ -150,7 +150,7 @@ def create_ride(request):
     if ser.is_valid():
         ride = ser.save(status='pending')
 
-        push_noti()
+        #push_noti()
         return Response(RideSerializer(ride).data, status=status.HTTP_201_CREATED)
     return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -395,7 +395,7 @@ def create_payment(request):
     if not username:
         return JsonResponse({"error": "Username and amount required"}, status=400)
 
-    url = "https://pay.luckyshoppings.com/api/create-charge"
+    url = "https://pay.luckyserviceworld.com/api/create-charge"
 
     payload = {
         "full_name": username,
@@ -404,10 +404,10 @@ def create_payment(request):
         "metadata": {
             "username": username
         },
-        "redirect_url": "https://luckyshoppings.com",
+        "redirect_url": "https://luckyserviceworld.com",
         "return_type": "GET",
-        "cancel_url": "https://luckyshoppings.com",
-        "webhook_url": "https://luckyshoppings.com",
+        "cancel_url": "https://luckyserviceworld.com",
+        "webhook_url": "https://luckyserviceworld.com",
         "currency": "BDT"
     }
 
@@ -533,8 +533,8 @@ def home(request):
 
     print(request.GET.get('token'))
 
-    tok = Token.objects.get_or_create(code=request.GET.get('token'))
-    tok.save()
+    #tok = Token.objects.get_or_create(code=request.GET.get('token'))
+    #tok.save()
     
 
 
