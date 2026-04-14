@@ -125,7 +125,7 @@ class Profile(models.Model):
     
     def total_refer_income(self):
         tf = Referral.objects.filter(referrer=self, generation=1).count()
-        return 10 * tf
+        return 5 * tf
 
 
     def total_gen_income(self):
@@ -137,7 +137,7 @@ class Profile(models.Model):
             generation_counts[referral.generation] += 1
         
         multipliers = {
-       1: 0.20,
+       1: 0,
     2: 0.20, 3: 0.20, 4: 0.20, 5: 0.20,
     6: 0.20, 7: 0.20, 8: 0.20, 9: 0.20, 10: 0.20,
     11: 0.20, 12: 0.20, 13: 0.20, 14: 0.20, 15: 0.20,
@@ -468,6 +468,13 @@ def create_referral(sender, instance, created, **kwargs):
 
 
 
+
+
+
+
+
+
+
 """
 
 @receiver(post_save, sender=LuckyFund)
@@ -661,3 +668,44 @@ class LuckyWinner(BaseModel):
 
 class Affiliate(BaseModel):
     bonus_percent = models.IntegerField(default=0)
+    
+
+
+
+@receiver(post_save, sender=Profile)
+def create_referral(sender, instance, created, **kwargs):
+    print("hmmmm")
+    if not created and instance.is_verified:
+        print("faaaaaaaah")
+        LuckyFund.objects.create(
+        number=instance.number,
+        package = LuckyPackage.objects.get(id=1),
+        profile = instance
+    )
+        LuckyGift.objects.create(
+        number=instance.number,
+        profile = instance
+    )
+
+
+    fund_models = [
+        HonorableFund, AdminFund, ShopkeeperFund,
+        GovernmentFund, OrganizerFund, UnemploymentFund,
+        ScholarshipFund, PoorFund
+    ]
+
+    for model in fund_models:
+        fund, created = model.objects.get_or_create(id=1)
+        fund.amount += 1
+        fund.save()
+
+
+
+
+
+
+
+
+
+
+

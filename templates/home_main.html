@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucky Service World - Global Platform for Savings, Services & Community</title>
+  <meta name="description" content="Join Lucky Servicedamn broWorld - the trusted global platform connecting millions for savings, services, gifts, halal loans, and meaningful friendships." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sora', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              primary: '#1e40af',
+              accent: '#dc2626',
+              success: '#16a34a',
+              light: '#eff6ff',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Sora', sans-serif;
+      background: #ffffff;
+      color: #1a202c;
+      overflow-x: hidden;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Gradients */
+    .gradient-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #1e40af 100%);
+    }
+
+    .gradient-accent {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #dc2626 100%);
+    }
+
+    .text-gradient-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Animations */
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slide-in-right {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(30, 64, 175, 0.2); }
+      50% { box-shadow: 0 0 60px rgba(30, 64, 175, 0.4); }
+    }
+
+    .animate-fade-in-up {
+      animation: fade-in-up 0.8s ease-out forwards;
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.8s ease-out forwards;
+    }
+
+    .animate-slide-in-right {
+      animation: slide-in-right 0.8s ease-out forwards;
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .animate-glow {
+      animation: glow-pulse 2s ease-in-out infinite;
+    }
+
+    /* Stagger animations */
+    .stagger-item:nth-child(1) { animation-delay: 0s; }
+    .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+    .stagger-item:nth-child(3) { animation-delay: 0.4s; }
+    .stagger-item:nth-child(4) { animation-delay: 0.6s; }
+    .stagger-item:nth-child(5) { animation-delay: 0.8s; }
+    .stagger-item:nth-child(6) { animation-delay: 1s; }
+
+    /* Glass effect */
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 10px 30px rgba(30, 64, 175, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(30, 64, 175, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #1e40af;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: 2px solid #1e40af;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-secondary:hover {
+      background: #eff6ff;
+      transform: translateY(-2px);
+    }
+
+    /* Card hover effect */
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+      border-color: #1e40af;
+    }
+
+    /* Feature icon */
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .card-hover:hover .feature-icon {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
+    /* Counter animation */
+    .counter {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Section spacing */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navbar */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    }
+
+    /* Hero shapes */
+    .shape-blur {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(80px);
+      opacity: 0.1;
+    }
+
+    .shape-1 {
+      width: 400px;
+      height: 400px;
+      background: #1e40af;
+      top: -100px;
+      right: -100px;
+    }
+
+    .shape-2 {
+      width: 300px;
+      height: 300px;
+      background: #dc2626;
+      bottom: -50px;
+      left: -100px;
+    }
+
+    /* Testimonial */
+    .testimonial-card {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Stats section */
+    .stat-item {
+      text-align: center;
+      padding: 24px;
+    }
+
+    .stat-number {
+      font-size: 40px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #f1f5f9;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: #64748b;
+    }
+
+    .close-btn:hover {
+      background: #e2e8f0;
+      color: #1a202c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-20">
+      <div class="flex items-center gap-3 font-bold text-xl">
+        <div class="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white">
+              <a href="/">
+          <i data-lucide="globe" class="w-6 h-6"></i></a>
+        </div>
+        <span class="text-gradient-primary hidden sm:inline">Lucky Service</span>
+      </div>
+
+      <div class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#hero" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">Home</a>
+        <a href="#features" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">Services</a>
+        <a href="#testimonials" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">Community</a>
+        <a href="#footer" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">About</a>
+      </div>
+
+      <button class="btn-primary hidden md:block">Join Community</button>
+      
+      
+      <div>
+     
+     
+     
+
+      <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden p-2">
+        <i data-lucide="menu" class="w-6 h-6 text-gray-900"></i>
+      </button></div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 px-6 py-4 space-y-3">
+      <a href="#hero" class="block text-gray-600 font-medium hover:text-brand-primary">Home</a>
+      <a href="#features" class="block text-gray-600 font-medium hover:text-brand-primary">Services</a>
+      <a href="#testimonials" class="block text-gray-600 font-medium hover:text-brand-primary">Community</a>
+      <a href="/register">
+      <button class="btn-primary w-full">Create Account</button></a>
+    </div>
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="hidden fixed inset-0 bg-black bg-opacity-40 z-50 flex items-end" id="modalOverlay">
+        <div class="w-full bg-white rounded-t-3xl p-8 max-h-96 overflow-y-auto animate-slide-up">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h2 id="modalTitle" class="text-2xl font-semibold text-gray-800">Select Country</h2>
+                <button class="text-gray-400 hover:text-gray-600 text-3xl leading-none" onclick="closeModal()">&times;</button>
+            </div>
+
+            <!-- Country Selection View -->
+            <div id="countryView" class="flex flex-col gap-3 max-h-[500px] overflow-y-auto">
+    <!-- Asia / Middle East -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Bangladesh')">
+        🇧🇩 Bangladesh
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('India')">
+        🇮🇳 India
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('China')">
+        🇨🇳 China
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Japan')">
+        🇯🇵 Japan
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('South Korea')">
+        🇰🇷 South Korea
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Indonesia')">
+        🇮🇩 Indonesia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Pakistan')">
+        🇵🇰 Pakistan
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Philippines')">
+        🇵🇭 Philippines
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Vietnam')">
+        🇻🇳 Vietnam
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Thailand')">
+        🇹🇭 Thailand
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Malaysia')">
+        🇲🇾 Malaysia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Singapore')">
+        🇸🇬 Singapore
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Saudi Arabia')">
+        🇸🇦 Saudi Arabia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('United Arab Emirates')">
+        🇦🇪 United Arab Emirates
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Israel')">
+        🇮🇱 Israel
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Turkey')">
+        🇹🇷 Turkey
+    </button>
+
+    <!-- Europe -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('France')">
+        🇫🇷 France
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Spain')">
+        🇪🇸 Spain
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Italy')">
+        🇮🇹 Italy
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Germany')">
+        🇩🇪 Germany
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('United Kingdom')">
+        🇬🇧 United Kingdom
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Russia')">
+        🇷🇺 Russia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Netherlands')">
+        🇳🇱 Netherlands
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Switzerland')">
+        🇨🇭 Switzerland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Sweden')">
+        🇸🇪 Sweden
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Norway')">
+        🇳🇴 Norway
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Poland')">
+        🇵🇱 Poland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Portugal')">
+        🇵🇹 Portugal
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Greece')">
+        🇬🇷 Greece
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Austria')">
+        🇦🇹 Austria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Belgium')">
+        🇧🇪 Belgium
+    </button>
+
+    <!-- Americas -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('United States')">
+        🇺🇸 United States
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Canada')">
+        🇨🇦 Canada
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Brazil')">
+        🇧🇷 Brazil
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Mexico')">
+        🇲🇽 Mexico
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Argentina')">
+        🇦🇷 Argentina
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Colombia')">
+        🇨🇴 Colombia
+    </button>
+
+    <!-- Africa -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('South Africa')">
+        🇿🇦 South Africa
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Egypt')">
+        🇪🇬 Egypt
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Nigeria')">
+        🇳🇬 Nigeria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Kenya')">
+        🇰🇪 Kenya
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Morocco')">
+        🇲🇦 Morocco
+    </button>
+
+    <!-- Oceania & others -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Australia')">
+        🇦🇺 Australia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('New Zealand')">
+        🇳🇿 New Zealand
+    </button>
+
+    <!-- More popular additions to reach ~100 -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Ukraine')">
+        🇺🇦 Ukraine
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Czechia')">
+        🇨🇿 Czechia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Hungary')">
+        🇭🇺 Hungary
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Romania')">
+        🇷🇴 Romania
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Bulgaria')">
+        🇧🇬 Bulgaria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Croatia')">
+        🇭🇷 Croatia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Ireland')">
+        🇮🇪 Ireland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Denmark')">
+        🇩🇰 Denmark
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Finland')">
+        🇫🇮 Finland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Iceland')">
+        🇮🇸 Iceland
+    </button>
+    <!-- ... you can continue adding more like Chile 🇨🇱, Peru 🇵🇪, Qatar 🇶🇦, Kuwait 🇰🇼, Jordan 🇯🇴, etc. to go beyond 100 if needed -->
+</div>
+
+            <!-- District Selection View -->
+            <div id="districtView" class="hidden">
+                <button class="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-800 text-sm font-medium transition-all" onclick="backToCountries()">← Back</button>
+                <h3 class="text-xl font-semibold text-gray-800 mb-5">Select District</h3>
+                <div class="flex flex-col gap-3">
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Dhaka')">Dhaka</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Chittagong')">Chittagong</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Khulna')">Khulna</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Rajshahi')">Rajshahi</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Barisal')">Barisal</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Sylhet')">Sylhet</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Rangpur')">Rangpur</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Mymensingh')">Mymensingh</button>
+                </div>
+            </div>
+
+            <!-- Coming Soon View -->
+            <div id="comingSoonView" class="hidden">
+                <button class="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-800 text-sm font-medium transition-all" onclick="backToCountries()">← Back</button>
+                <div class="text-center py-10">
+                    <p class="text-2xl font-semibold text-blue-600 mb-3">🔄 Coming Soon</p>
+                    <p class="text-sm text-gray-500">This feature will be available soon. Please check back later!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="relative min-h-screen flex items-center pt-10 overflow-hidden">
+    <div class="shape-blur shape-1"></div>
+    <div class="shape-blur shape-2"></div>
+
+    <div class="max-w-7xl mx-auto w-full px-6 py-20 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Left Content -->
+        <div class="space-y-8">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-200 bg-blue-50 text-sm font-semibold text-brand-primary">
+            <span class="w-2 h-2 rounded-full bg-brand-primary"></span>
+            World-wide biggest online service platform.
+          </div>
+
+          <div class="space-y-4">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight">
+              Lucky Service
+              <span class="text-gradient-primary block">World🎉</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-lg leading-relaxed font-medium">
+            Hello Friends! The whole world is here. Join the biggest community for savings, services, gifts, and halal financial solutions.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 pt-4">
+             <button onclick="window.location.href='/login'" class="btn-primary flex items-center justify-center gap-2 text-base">
+               
+              <i data-lucide="rocket" class="w-5 h-5"></i>
+              Saving By Servicing
+            </button> 
+            <button onclick="openModal()" class="btn-secondary flex items-center justify-center gap-2 text-base">
+              <i data-lucide="play" class="w-5 h-5"></i>
+              Get Service
+            </button>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="grid grid-cols-3 gap-1 pt-8 border-t border-gray-200">
+            <div class="stat-item">
+              <div class="stat-number">5K+</div>
+              <div class="stat-label">Active Members</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">10+</div>
+              <div class="stat-label">Services</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Support</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Visual -->
+        <div class="relative h-96 lg:h-[500px] hidden lg:flex items-center justify-center">
+          <div class="absolute inset-0 gradient-primary rounded-3xl opacity-10 blur-3xl animate-float" style="animation-delay: 0.5s;"></div>
+          <div class="relative w-full h-full rounded-3xl gradient-primary p-1 overflow-hidden flex items-center justify-center">
+            <div class="w-full h-full rounded-3xl bg-white flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-6xl mb-4">🌍</div>
+                <p class="text-2xl font-bold text-gray-900">Global Network</p>
+                <p class="text-gray-600 mt-2">Connected Communities</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section id="features" class="py-24 bg-gradient-to-b from-white to-blue-50 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-20">
+        <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-brand-primary bg-blue-100 mb-4">Our Services</span>
+        <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-900">
+          Everything You Need, <span class="text-gradient-primary">On One Platform</span>
+        </h2>
+        <p class="text-lg text-gray-600 leading-relaxed">
+          From savings to spiritual journeys, access world-class services designed for your growth and prosperity.
+        </p>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="card-hover bg-white rounded-2xl p-8 space-y-5">
+          <div class="feature-icon bg-gradient-to-br from-green-100 to-green-50">
+            <i data-lucide="piggy-bank" class="w-7 h-7 text-green-600"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Lucky FDO</h3>
+            <p class="text-gray-600 leading-relaxed">Grow your wealth with flexible savings plans from 500 TK to 5,000 TK. Earn together with our community.</p>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="card-hover bg-white rounded-2xl p-8 space-y-5">
+          <div class="feature-icon bg-gradient-to-br from-blue-100 to-blue-50">
+            <i data-lucide="globe-2" class="w-7 h-7 text-blue-600"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Lucky Services</h3>
+            <p class="text-gray-600 leading-relaxed">Access professional services from around the world in one trusted ecosystem.</p>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="card-hover bg-white rounded-2xl p-8 space-y-5">
+          <div class="feature-icon bg-gradient-to-br from-red-100 to-red-50">
+            <i data-lucide="gift" class="w-7 h-7 text-red-600"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Lucky Gifts</h3>
+            <p class="text-gray-600 leading-relaxed">Earn exclusive gifts, smartphones, watches, and even Hajj packages as you grow.</p>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="card-hover bg-white rounded-2xl p-8 space-y-5">
+          <div class="feature-icon bg-gradient-to-br from-green-100 to-green-50">
+            <i data-lucide="hand-coins" class="w-7 h-7 text-green-600"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Halal Loan</h3>
+            <p class="text-gray-600 leading-relaxed">Shariah-compliant financial products for your peace of mind and prosperity.</p>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="card-hover bg-white rounded-2xl p-8 space-y-5">
+          <div class="feature-icon bg-gradient-to-br from-purple-100 to-purple-50">
+            <i data-lucide="shield-check" class="w-7 h-7 text-purple-600"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Saving by Servicing</h3>
+            <p class="text-gray-600 leading-relaxed">Save money while using professional services. Get rewarded for being part of our ecosystem.</p>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="card-hover bg-white rounded-2xl p-8 space-y-5">
+          <div class="feature-icon bg-gradient-to-br from-pink-100 to-pink-50">
+            <i data-lucide="users" class="w-7 h-7 text-pink-600"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Friendship World</h3>
+            <p class="text-gray-600 leading-relaxed">Build genuine friendships with like-minded people in a trusted, supportive global community.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS SECTION -->
+  <section id="testimonials" class="py-24 bg-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-brand-primary bg-blue-100 mb-4">Success Stories</span>
+        <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-900">
+          Loved by <span class="text-gradient-primary">Thousands</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="testimonial-card">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+          </div>
+          <p class="text-gray-700 font-medium mb-6 leading-relaxed">&quot;Lucky Service World changed how I save. I&apos;ve earned amazing rewards while helping my community grow. Truly incredible!&quot;</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-primary to-brand-accent"></div>
+            <div>
+              <p class="font-bold text-gray-900">Fatima Ahmed</p>
+              <p class="text-sm text-gray-500">Savings Member</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="testimonial-card">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+          </div>
+          <p class="text-gray-700 font-medium mb-6 leading-relaxed">&quot;The halal financial solutions are exactly what I needed. Shariah-compliant and completely transparent. Highly recommended!&quot;</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600"></div>
+            <div>
+              <p class="font-bold text-gray-900">Mohamed Hassan</p>
+              <p class="text-sm text-gray-500">Loan Member</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="testimonial-card">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+            <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+          </div>
+          <p class="text-gray-700 font-medium mb-6 leading-relaxed">&quot;Best platform for connecting with people globally. I&apos;ve made real friends and accomplished my financial goals together.&quot;</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+            <div>
+              <p class="font-bold text-gray-900">Aisha Khan</p>
+              <p class="text-sm text-gray-500">Community Member</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="py-24 bg-gradient-to-r from-blue-950 via-blue-900 to-blue-950 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full -mr-48 -mt-48"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-white opacity-5 rounded-full -ml-48 -mb-48"></div>
+
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
+        Ready to Transform Your Future?
+      </h2>
+      <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
+        Join thousands of members who are saving, earning, and building meaningful connections in the world&apos;s most trusted platform.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="document.getElementById('signup-modal').classList.add('active')" class="bg-white text-brand-primary font-bold py-4 px-10 rounded-lg hover:shadow-2xl transition-all transform hover:scale-105 text-lg">
+          Join Free Today
+        </button>
+        <button class="border-2 border-white text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all text-lg">
+          Schedule a Call
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer" class="bg-gray-900 text-gray-400 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center text-white">
+              <i data-lucide="globe" class="w-6 h-6"></i>
+            </div>
+            <span class="text-white font-bold text-lg">Lucky Service</span>
+          </div>
+          <p class="text-sm leading-relaxed">Empowering communities with trust, savings, and friendship.</p>
+        </div>
+
+        <!-- Links 1 -->
+        <div>
+          <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide">Services</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Savings Plans</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Halal Loans</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Rewards</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Community</a></li>
+          </ul>
+        </div>
+
+        <!-- Links 2 -->
+        <div>
+          <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide">Company</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Press</a></li>
+          </ul>
+        </div>
+
+        <!-- Links 3 -->
+        <div>
+          <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide">Legal</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+        <p>&copy; 2026 Lucky Service World. All rights reserved.</p>
+        <div class="flex gap-6 mt-4 md:mt-0">
+          <a href="#" class="hover:text-white transition-colors">Twitter</a>
+          <a href="#" class="hover:text-white transition-colors">Facebook</a>
+          <a href="#" class="hover:text-white transition-colors">Instagram</a>
+          <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SIGNUP MODAL -->
+  <div id="signup-modal" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+    <div class="modal-content">
+      <button class="close-btn" onclick="document.getElementById('signup-modal').classList.remove('active')">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl gradient-primary flex items-center justify-center">
+          <i data-lucide="rocket" class="w-8 h-8 text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Start Your Journey</h2>
+        <p class="text-gray-600">Join our global community today</p>
+      </div>
+
+      <form class="space-y-4">
+        <div>
+          <input type="text" placeholder="Full Name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-primary transition-colors">
+        </div>
+        <div>
+          <input type="email" placeholder="Email Address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-primary transition-colors">
+        </div>
+        <div>
+          <input type="tel" placeholder="Phone Number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-primary transition-colors">
+        </div>
+        <div>
+          <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-primary transition-colors">
+            <option>I&apos;m interested in...</option>
+            <option>Savings Plans</option>
+            <option>Halal Loans</option>
+            <option>Rewards & Gifts</option>
+            <option>Community</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary w-full mt-6">Create Account</button>
+      </form>
+
+      <p class="text-sm text-gray-500 text-center mt-6">
+        By joining, you agree to our <a href="#" class="text-brand-primary hover:underline">Terms & Privacy</a>
+      </p>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+      
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-messaging.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCd9VsPWHai-_xZrpuMUs98VYFGyogBfNA",
+
+  authDomain: "luckyshop-69.firebaseapp.com",
+
+  projectId: "luckyshop-69",
+
+  storageBucket: "luckyshop-69.firebasestorage.app",
+
+  messagingSenderId: "855170830346",
+
+  appId: "1:855170830346:web:690f001606d65dd9974ff3",
+
+  measurementId: "G-D3GJKFLTVT"
+
+};
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const messaging = getMessaging(app);
+
+
+  async function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Service worker registered:', registration);
+    } catch (error) {
+      console.error('Service worker registration failed:', error);
+    }
+  }
+}
+
+async function requestNotificationPermission() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      return await getToken(messaging, { vapidKey: 'BGtIPZKOUBNFCTJBE4JuZHdxVvKDmIQ0ux-3G7tfN2BdjgZMvdjRbLGtcelSag7P-fLlMSZNtMiq_wGiu-f8zdQ' });
+    } else {
+      console.error('Unable to get permission to notify.');
+    }
+  } catch (err) {
+    console.error('An error occurred while requesting notification permission.', err);
+  }
+  return null;
+}
+
+async function initializeMessaging() {
+  await registerServiceWorker();
+
+  const newToken = await requestNotificationPermission();
+  const storedToken = localStorage.getItem('fcmToken');
+
+  // Send token to backend only if it’s new or has changed
+  if (newToken && newToken !== storedToken) {
+    console.log('New or updated token:', newToken);
+    localStorage.setItem('fcmToken', newToken); // Store the new token locally
+
+    // Send the token to your backend
+    await fetch(`/?token=${newToken}`);
+  }
+}
+
+onMessage(messaging, (payload) => {
+  console.log('Message received: ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: payload.notification.icon,
+  };
+
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      const notification = new Notification(notificationTitle, notificationOptions);
+      notification.onclick = (event) => {
+        event.preventDefault();
+        window.open(payload.notification.click_action, '_blank');
+        notification.close();
+      };
+    }
+  } else {
+    alert("This browser does not support system notifications.");
+  }
+});
+
+setTimeout(initializeMessaging, 2000);
+
+
+</script>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  <script>
+   
+    lucide.createIcons();
+
+  
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in-up');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.stagger-item, .card-hover, .testimonial-card').forEach(el => {
+      observer.observe(el);
+    });
+
+  
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.add('hidden');
+      });
+    });
+    
+    
+    
+    
+
+    
+    
+    
+    
+        let selectedCountry = null;
+
+        function openModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.remove('hidden');
+            showCountryView();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.add('hidden');
+            selectedCountry = null;
+        }
+
+        function selectCountry(country) {
+            selectedCountry = country;
+
+            if (country === 'Bangladesh') {
+                showDistrictView();
+            } else {
+                showComingSoonView();
+            }
+        }
+
+        function selectDistrict(district) {
+            const url = `/shop?country=${encodeURIComponent(selectedCountry)}&district=${encodeURIComponent(district)}`;
+            window.location.href = url;
+        }
+
+        function showCountryView() {
+            document.getElementById('countryView').classList.remove('hidden');
+            document.getElementById('districtView').classList.add('hidden');
+            document.getElementById('comingSoonView').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = 'Select Country';
+        }
+
+        function showDistrictView() {
+            document.getElementById('countryView').classList.add('hidden');
+            document.getElementById('districtView').classList.remove('hidden');
+            document.getElementById('comingSoonView').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = 'Select Location';
+        }
+
+        function showComingSoonView() {
+            document.getElementById('countryView').classList.add('hidden');
+            document.getElementById('districtView').classList.add('hidden');
+            document.getElementById('comingSoonView').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = selectedCountry;
+        }
+
+        function backToCountries() {
+            selectedCountry = null;
+            showCountryView();
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        
+        
+        const triggerBtn = document.getElementById('giftModal_triggerBtn');
+        const closeBtn = document.getElementById('giftModal_closeBtn');
+        const modalContainer = document.getElementById('giftModal_container');
+        const backdropOverlay = document.getElementById('giftModal_backdrop');
+
+        triggerBtn.addEventListener('click', () => {
+            modalContainer.classList.remove('giftModal_hidden');
+            backdropOverlay.classList.remove('giftModal_hidden');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closegiftModal = () => {
+            modalContainer.classList.add('giftModal_hidden');
+            backdropOverlay.classList.add('giftModal_hidden');
+            document.body.style.overflow = 'auto';
+        };
+
+        closeBtn.addEventListener('click', closegiftModal);
+
+        backdropOverlay.addEventListener('click', closegiftModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closegiftModal();
+            }
+        });
+        
+        
+           const luckySavingModal = document.getElementById('luckySavingModal');
+        const luckySavingOpenBtn = document.getElementById('luckySavingOpenBtn');
+        const luckySavingCloseBtn = document.getElementById('luckySavingCloseBtn');
+
+        luckySavingOpenBtn.addEventListener('click', () => {
+            luckySavingModal.classList.remove('hidden');
+        });
+
+        luckySavingCloseBtn.addEventListener('click', () => {
+            luckySavingModal.classList.add('hidden');
+        });
+
+        luckySavingModal.addEventListener('click', (e) => {
+            if (e.target === luckySavingModal) {
+                luckySavingModal.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                luckySavingModal.classList.add('hidden');
+            }
+        });
+        
+    
+    
+    
+    
+    
+    
+  </script>
+</body>
+</html>

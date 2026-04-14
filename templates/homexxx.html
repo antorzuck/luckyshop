@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucky Service World - Biggest Online Service Platform</title>
+  <meta name="description" content="Lucky Service World - the world's biggest online service platform for savings, gifts, halal loans, and friendship community." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'] },
+          colors: {
+            brand: {
+              red: '#e11d5a',
+              green: '#16a34a',
+              orange: '#f97316',
+              blue: '#3b82f6',
+              pink: '#ec4899',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+
+    .text-gradient-hero {
+      background: linear-gradient(135deg, #e11d5a, #ec4899, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .bg-gradient-hero {
+      background: linear-gradient(135deg, #e11d5a, #ec4899, #f97316);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(225, 29, 90, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(225, 29, 90, 0.6); }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-fade-up { animation: fade-up 0.6s ease-out forwards; }
+    .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+    /* Modal */
+    .modal-overlay {
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .modal-content {
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Feature card hover */
+    .feature-card { transition: all 0.3s ease; }
+    .feature-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .feature-card .glow { opacity: 0; transition: opacity 0.3s; }
+    .feature-card:hover .glow { opacity: 1; }
+    .feature-card .icon-wrap { transition: transform 0.3s; }
+    .feature-card:hover .icon-wrap { transform: scale(1.1); }
+  </style>
+</head>
+<body class="bg-white text-gray-900 antialiased">
+
+
+
+
+
+
+
+
+
+
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Colombia')">
+        🇨🇴 Colombia
+    </button>
+
+    <!-- Africa -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('South Africa')">
+        🇿🇦 South Africa
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Egypt')">
+        🇪🇬 Egypt
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Nigeria')">
+        🇳🇬 Nigeria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Kenya')">
+        🇰🇪 Kenya
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Morocco')">
+        🇲🇦 Morocco
+    </button>
+
+    <!-- Oceania & others -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Australia')">
+        🇦🇺 Australia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('New Zealand')">
+        🇳🇿 New Zealand
+    </button>
+
+    <!-- More popular additions to reach ~100 -->
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Ukraine')">
+        🇺🇦 Ukraine
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Czechia')">
+        🇨🇿 Czechia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Hungary')">
+        🇭🇺 Hungary
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Romania')">
+        🇷🇴 Romania
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Bulgaria')">
+        🇧🇬 Bulgaria
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Croatia')">
+        🇭🇷 Croatia
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Ireland')">
+        🇮🇪 Ireland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Denmark')">
+        🇩🇰 Denmark
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Finland')">
+        🇫🇮 Finland
+    </button>
+    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectCountry('Iceland')">
+        🇮🇸 Iceland
+    </button>
+    <!-- ... you can continue adding more like Chile 🇨🇱, Peru 🇵🇪, Qatar 🇶🇦, Kuwait 🇰🇼, Jordan 🇯🇴, etc. to go beyond 100 if needed -->
+</div>
+
+            <!-- District Selection View -->
+            <div id="districtView" class="hidden">
+                <button class="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-800 text-sm font-medium transition-all" onclick="backToCountries()">← Back</button>
+                <h3 class="text-xl font-semibold text-gray-800 mb-5">Select District</h3>
+                <div class="flex flex-col gap-3">
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Dhaka')">Dhaka</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Chittagong')">Chittagong</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Khulna')">Khulna</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Rajshahi')">Rajshahi</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Barisal')">Barisal</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Sylhet')">Sylhet</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Rangpur')">Rangpur</button>
+                    <button class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 text-left font-medium text-gray-800 transition-all" onclick="selectDistrict('Mymensingh')">Mymensingh</button>
+                </div>
+            </div>
+
+            <!-- Coming Soon View -->
+            <div id="comingSoonView" class="hidden">
+                <button class="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-800 text-sm font-medium transition-all" onclick="backToCountries()">← Back</button>
+                <div class="text-center py-10">
+                    <p class="text-2xl font-semibold text-blue-600 mb-3">🔄 Coming Soon</p>
+                    <p class="text-sm text-gray-500">This feature will be available soon. Please check back later!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+      <div class="flex items-center gap-2 font-bold text-lg">
+        <i data-lucide="globe" class="w-6 h-6 text-[#e11d5a]"></i>
+        <span class="text-gradient-hero">LuckyServiceWorld</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
+        <a href="#hero" class="hover:text-[#e11d5a] transition-colors">Home</a>
+        <a href="#features" class="hover:text-[#e11d5a] transition-colors">Services</a>
+        <a href="#footer" class="hover:text-[#e11d5a] transition-colors">About</a>
+      </div>
+      <div class="hidden md:block">
+        <button class="bg-gradient-hero text-white rounded-xl px-6 py-2 font-semibold hover:opacity-90 transition-opacity">Join Now</button>
+      </div>
+      <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden text-gray-900">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-4 space-y-3">
+      <a href="#hero" class="block font-medium">Home</a>
+      <a href="#features" class="block font-medium">Services</a>
+      <a href="#footer" class="block font-medium">About</a>
+      <button onclick="window.location.href='/login'" class="w-full bg-gradient-hero text-white rounded-xl py-2 font-semibold">Join Now</button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-pink-50 via-white to-green-50"></div>
+    <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-pink-100 blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-green-100 blur-3xl animate-pulse" style="animation-delay:1s"></div>
+    <div class="absolute top-1/3 right-1/4 w-48 h-48 rounded-full bg-orange-100 blur-3xl animate-pulse" style="animation-delay:2s"></div>
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image:radial-gradient(#1e293b 1px,transparent 1px);background-size:30px 30px"></div>
+
+    <div class="max-w-7xl relative z-10 mx-auto px-4 py-20 w-full">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8 animate-fade-up">
+          <div class="inline-flex items-center gap-2 rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-[#e11d5a]">
+            <i data-lucide="globe" class="w-4 h-4 animate-spin-slow"></i>
+            World's Biggest Online Service Platform
+          </div>
+
+          <h1 class="text-5xl md:text-7xl font-black leading-tight">
+            <span class="text-gradient-hero">Lucky Service</span><br />
+            <span class="text-gray-900">World</span>
+            <span class="inline-block ml-2 animate-float">🤝</span>
+          </h1>
+
+          <p class="text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed">
+            Hello Friends! The whole world is here. Join the biggest community for savings, services, gifts, and halal financial solutions.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <button onclick="openModal()" class="bg-gradient-hero text-white text-lg px-8 py-3 rounded-xl shadow-lg animate-pulse-glow hover:scale-105 transition-transform font-semibold inline-flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5"></i> Get Started
+            </button>
+            <button onclick="document.getElementById('gifts-modal').classList.add('active')" class="text-lg px-8 py-3 rounded-xl border-2 border-orange-300 hover:bg-orange-50 hover:border-orange-400 transition-all font-semibold inline-flex items-center gap-2 group">
+              <i data-lucide="gift" class="w-5 h-5 text-orange-500"></i> See Gifts
+            </button>
+          </div>
+
+          <div class="flex gap-8 pt-4">
+            <div class="text-center"><div class="text-2xl font-bold text-gradient-hero">50K+</div><div class="text-sm text-gray-500">Members</div></div>
+            <div class="text-center"><div class="text-2xl font-bold text-gradient-hero">100+</div><div class="text-sm text-gray-500">Services</div></div>
+            <div class="text-center"><div class="text-2xl font-bold text-gradient-hero">24/7</div><div class="text-sm text-gray-500">Support</div></div>
+          </div>
+        </div>
+
+        <div class="relative flex justify-center animate-float" style="animation-delay:0.5s">
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-hero rounded-full blur-3xl opacity-20 scale-75 animate-pulse"></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/921/921490.png" alt="Lucky Service World Global Network" width="400" height="400" class="relative z-10 w-full max-w-md drop-shadow-2xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="py-24 relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-pink-50 blur-3xl"></div>
+    <div class="max-w-7xl relative z-10 mx-auto px-4">
+      <div class="text-center mb-16 space-y-4">
+        <span class="inline-block rounded-full bg-pink-100 px-4 py-1 text-sm font-semibold text-[#e11d5a]">Our Services</span>
+        <h2 class="text-4xl md:text-5xl font-bold">Everything You Need, <span class="text-gradient-hero">One Platform</span></h2>
+        <p class="text-gray-500 text-lg max-w-2xl mx-auto">Discover world-class services designed to help you save, earn, and grow together.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="feature-card relative rounded-2xl border border-gray-200 bg-white p-8 space-y-4 hover:border-green-300">
+          <div class="glow absolute inset-0 rounded-2xl bg-green-50"></div>
+          <div class="icon-wrap relative w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center">
+            <i data-lucide="piggy-bank" class="w-7 h-7 text-green-600"></i>
+          </div>
+          <h3 class="relative text-xl font-bold">Lucky Saving</h3>
+          <p class="relative text-gray-500 leading-relaxed">Save from 500 TK to 5,000 TK with our trusted savings plans.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="feature-card relative rounded-2xl border border-gray-200 bg-white p-8 space-y-4 hover:border-blue-300">
+          <div class="glow absolute inset-0 rounded-2xl bg-blue-50"></div>
+          <div class="icon-wrap relative w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
+            <i data-lucide="globe-2" class="w-7 h-7 text-blue-500"></i>
+          </div>
+          <h3 class="relative text-xl font-bold">Lucky World</h3>
+          <p class="relative text-gray-500 leading-relaxed">Access services from around the globe, all in one platform.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="feature-card relative rounded-2xl border border-gray-200 bg-white p-8 space-y-4 hover:border-orange-300">
+          <div class="glow absolute inset-0 rounded-2xl bg-orange-50"></div>
+          <div class="icon-wrap relative w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
+            <i data-lucide="gift" class="w-7 h-7 text-orange-500"></i>
+          </div>
+          <h3 class="relative text-xl font-bold">Lucky Gifts</h3>
+          <p class="relative text-gray-500 leading-relaxed">Earn exciting gifts and rewards as you grow with our community.</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="feature-card relative rounded-2xl border border-gray-200 bg-white p-8 space-y-4 hover:border-green-300">
+          <div class="glow absolute inset-0 rounded-2xl bg-green-50"></div>
+          <div class="icon-wrap relative w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center">
+            <i data-lucide="hand-coins" class="w-7 h-7 text-green-600"></i>
+          </div>
+          <h3 class="relative text-xl font-bold">Halal Loan</h3>
+          <p class="relative text-gray-500 leading-relaxed">Shariah-compliant financial solutions for your needs.</p>
+        </div>
+        <!-- Feature 5 -->
+        <div class="feature-card relative rounded-2xl border border-gray-200 bg-white p-8 space-y-4 hover:border-pink-300">
+          <div class="glow absolute inset-0 rounded-2xl bg-pink-50"></div>
+          <div class="icon-wrap relative w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center">
+            <i data-lucide="shield" class="w-7 h-7 text-[#e11d5a]"></i>
+          </div>
+          <h3 class="relative text-xl font-bold">Saving by Servicing</h3>
+          <p class="relative text-gray-500 leading-relaxed">Save money while using our wide range of professional services.</p>
+        </div>
+        <!-- Feature 6 -->
+        <div class="feature-card relative rounded-2xl border border-gray-200 bg-white p-8 space-y-4 hover:border-pink-300">
+          <div class="glow absolute inset-0 rounded-2xl bg-pink-50"></div>
+          <div class="icon-wrap relative w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center">
+            <i data-lucide="users" class="w-7 h-7 text-pink-500"></i>
+          </div>
+          <h3 class="relative text-xl font-bold">Friendship World</h3>
+          <p class="relative text-gray-500 leading-relaxed">Build meaningful connections in a trusted global community.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="footer" class="relative bg-gradient-hero py-20 overflow-hidden">
+    <div class="absolute top-0 left-0 w-64 h-64 rounded-full bg-white/5 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3"></div>
+    <div class="max-w-7xl relative z-10 mx-auto px-4">
+      <div class="text-center space-y-8 text-white">
+        <div class="flex items-center justify-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+            <i data-lucide="globe" class="w-7 h-7"></i>
+          </div>
+          <span class="text-3xl font-black">LuckyServiceWorld</span>
+        </div>
+        <p class="text-2xl md:text-3xl font-bold max-w-lg mx-auto leading-snug">We want to create a<br/>friendship world 🌍</p>
+        <p class="text-white/60 text-sm max-w-sm mx-auto">World-wide the biggest online service platform — connecting communities with trust, savings, and love.</p>
+        <div class="flex items-center justify-center gap-6 pt-4 text-sm text-white/50">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Contact</a>
+        </div>
+        <div class="flex items-center justify-center gap-1 text-sm text-white/40 pt-2">
+          Made with <i data-lucide="heart" class="w-4 h-4 fill-current text-white/60"></i> Lucky Service World © 2026
+        </div>
+      </div>
+    </div>
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all">
+      <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </button>
+  </footer>
+
+  <!-- ===== GIFTS MODAL ===== -->
+  <div id="gifts-modal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto p-6">
+      <button onclick="document.getElementById('gifts-modal').classList.remove('active')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="text-center mb-4">
+        <div class="mx-auto w-14 h-14 rounded-2xl bg-gradient-hero flex items-center justify-center mb-2">
+          <i data-lucide="gift" class="w-7 h-7 text-white"></i>
+        </div>
+        <h2 class="text-2xl font-bold">Lucky <span class="text-gradient-hero">Gifts</span></h2>
+        <p class="text-gray-500 text-sm mt-1">Save & earn these amazing rewards! 🎁</p>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Gift items -->
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="smartphone" class="w-5 h-5 text-blue-500"></i></div>
+          <div class="flex-1 font-semibold text-sm">Smartphone</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">Silver</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="watch" class="w-5 h-5 text-green-600"></i></div>
+          <div class="flex-1 font-semibold text-sm">Smart Watch</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">Silver</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="headphones" class="w-5 h-5 text-orange-500"></i></div>
+          <div class="flex-1 font-semibold text-sm">Wireless Headphones</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-600">Bronze</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-pink-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="laptop" class="w-5 h-5 text-pink-500"></i></div>
+          <div class="flex-1 font-semibold text-sm">Laptop</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-600">Gold</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="gem" class="w-5 h-5 text-orange-500"></i></div>
+          <div class="flex-1 font-semibold text-sm">Gold Jewelry</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-600">Gold</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="trophy" class="w-5 h-5 text-green-600"></i></div>
+          <div class="flex-1 font-semibold text-sm">Umrah Package</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-600">Platinum</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-pink-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="crown" class="w-5 h-5 text-[#e11d5a]"></i></div>
+          <div class="flex-1 font-semibold text-sm">Hajj Package</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-pink-100 text-[#e11d5a]">Diamond</span>
+        </div>
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-md transition-all group">
+          <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="car" class="w-5 h-5 text-blue-500"></i></div>
+          <div class="flex-1 font-semibold text-sm">Motorbike</div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-600">Platinum</span>
+        </div>
+      </div>
+
+      <p class="text-center text-xs text-gray-400 mt-4">* Gifts depend on your savings plan & duration</p>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons(); 
+    
+    
+    let selectedCountry = null;
+
+        function openModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.remove('hidden');
+            showCountryView();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.add('hidden');
+            selectedCountry = null;
+        }
+
+        function selectCountry(country) {
+            selectedCountry = country;
+
+            if (country === 'Bangladesh') {
+                showDistrictView();
+            } else {
+                showComingSoonView();
+            }
+        }
+
+        function selectDistrict(district) {
+            const url = `/shop?country=${encodeURIComponent(selectedCountry)}&district=${encodeURIComponent(district)}`;
+            window.location.href = url;
+        }
+
+        function showCountryView() {
+            document.getElementById('countryView').classList.remove('hidden');
+            document.getElementById('districtView').classList.add('hidden');
+            document.getElementById('comingSoonView').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = 'Select Country';
+        }
+
+        function showDistrictView() {
+            document.getElementById('countryView').classList.add('hidden');
+            document.getElementById('districtView').classList.remove('hidden');
+            document.getElementById('comingSoonView').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = 'Select Location';
+        }
+
+        function showComingSoonView() {
+            document.getElementById('countryView').classList.add('hidden');
+            document.getElementById('districtView').classList.add('hidden');
+            document.getElementById('comingSoonView').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = selectedCountry;
+        }
+
+        function backToCountries() {
+            selectedCountry = null;
+            showCountryView();
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+  </script>
+</body>
+</html>

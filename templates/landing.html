@@ -1,421 +1,482 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucky Shoppings - Saving by Shopping</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
-    
-    <script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucky Service World - Global Platform for Savings, Services & Community</title>
+  <meta name="description" content="Join Lucky Servicedamn broWorld - the trusted global platform connecting millions for savings, services, gifts, halal loans, and meaningful friendships." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            fancy: ['Pacifico', 'cursive'],
-            sans: ['Poppins', 'sans-serif'],
+            sans: ['Sora', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
           },
           colors: {
-            'hero-pink': '#ec4899',
-            'banner-purple': '#8b5cf6',
-            'cyan-main': '#06b6d4',
-            'gold': '#fbbf24',
+            brand: {
+              primary: '#1e40af',
+              accent: '#dc2626',
+              success: '#16a34a',
+              light: '#eff6ff',
+            }
           }
         }
       }
     }
   </script>
-  
-    <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .float-animation {
-            animation: float 3s ease-in-out infinite;
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #ec4899 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .prize-glow {
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-        
-         * {
+
+  <style>
+    * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
     html, body {
+      font-family: 'Sora', sans-serif;
+      background: #ffffff;
+      color: #1a202c;
       overflow-x: hidden;
-      width: 100%;
     }
 
-    .text-glow {
-      text-shadow: 
-        0 0 10px rgba(236, 72, 153, 0.8),
-        0 0 20px rgba(236, 72, 153, 0.6),
-        0 0 40px rgba(236, 72, 153, 0.4),
-        0 0 80px rgba(236, 72, 153, 0.3);
-      animation: glow-pulse 2s ease-in-out infinite alternate;
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Gradients */
+    .gradient-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #1e40af 100%);
+    }
+
+    .gradient-accent {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #dc2626 100%);
+    }
+
+    .text-gradient-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Animations */
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slide-in-right {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
     }
 
     @keyframes glow-pulse {
-      from {
-        text-shadow: 
-          0 0 10px rgba(255, 255, 255, 0.9),
-          0 0 20px rgba(236, 72, 153, 0.8),
-          0 0 40px rgba(236, 72, 153, 0.6),
-          0 0 80px rgba(236, 72, 153, 0.4);
-      }
-      to {
-        text-shadow: 
-          0 0 15px rgba(255, 255, 255, 1),
-          0 0 30px rgba(236, 72, 153, 1),
-          0 0 60px rgba(236, 72, 153, 0.8),
-          0 0 100px rgba(236, 72, 153, 0.6);
-      }
+      0%, 100% { box-shadow: 0 0 30px rgba(30, 64, 175, 0.2); }
+      50% { box-shadow: 0 0 60px rgba(30, 64, 175, 0.4); }
     }
 
-    @keyframes bounce-soft {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+    .animate-fade-in-up {
+      animation: fade-in-up 0.8s ease-out forwards;
     }
 
-    .animate-bounce-soft {
-      animation: bounce-soft 1.5s ease-in-out infinite;
+    .animate-fade-in {
+      animation: fade-in 0.8s ease-out forwards;
     }
 
-    .gradient-hero {
-      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    .animate-slide-in-right {
+      animation: slide-in-right 0.8s ease-out forwards;
     }
 
-    .gradient-banner {
-      background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 50%, #7c3aed 100%);
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
     }
 
-    .gradient-cyan {
-      background: linear-gradient(180deg, #06b6d4 0%, #0891b2 100%);
+    .animate-glow {
+      animation: glow-pulse 2s ease-in-out infinite;
     }
 
-    .cta-button {
+    /* Stagger animations */
+    .stagger-item:nth-child(1) { animation-delay: 0s; }
+    .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+    .stagger-item:nth-child(3) { animation-delay: 0.4s; }
+    .stagger-item:nth-child(4) { animation-delay: 0.6s; }
+    .stagger-item:nth-child(5) { animation-delay: 0.8s; }
+    .stagger-item:nth-child(6) { animation-delay: 1s; }
+
+    /* Glass effect */
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 10px 30px rgba(30, 64, 175, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(30, 64, 175, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #1e40af;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: 2px solid #1e40af;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-secondary:hover {
+      background: #eff6ff;
+      transform: translateY(-2px);
+    }
+
+    /* Card hover effect */
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+      border-color: #1e40af;
+    }
+
+    /* Feature icon */
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.3s ease;
     }
 
-    .cta-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 40px rgba(251, 191, 36, 0.4);
+    .card-hover:hover .feature-icon {
+      transform: scale(1.15) rotate(-5deg);
     }
-    
-    
-     @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(0);
-            }
-        }
-        .animate-slide-up {
-            animation: slideUp 0.4s ease-out;
-        } 
-        
-                /* Unique modal slide-up animation */
-        @keyframes giftModal_slideUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
 
-        @keyframes giftModal_fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+    /* Counter animation */
+    .counter {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-        .giftModal_slideUp {
-            animation: giftModal_slideUp 0.4s ease-out;
-        }
+    /* Section spacing */
+    section {
+      position: relative;
+      z-index: 1;
+    }
 
-        .giftModal_fadeIn {
-            animation: giftModal_fadeIn 0.3s ease-out;
-        }
+    /* Navbar */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    }
 
-        .giftModal_hidden {
-            display: none !important;
-        }
+    /* Hero shapes */
+    .shape-blur {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(80px);
+      opacity: 0.1;
+    }
 
-        /* Added colorful gradient backgrounds for modal header and cards */
-        .giftModal_header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+    .shape-1 {
+      width: 400px;
+      height: 400px;
+      background: #1e40af;
+      top: -100px;
+      right: -100px;
+    }
 
-        .giftModal_badge {
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-    </style>
+    .shape-2 {
+      width: 300px;
+      height: 300px;
+      background: #dc2626;
+      bottom: -50px;
+      left: -100px;
+    }
+
+    /* Testimonial */
+    .testimonial-card {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Stats section */
+    .stat-item {
+      text-align: center;
+      padding: 24px;
+    }
+
+    .stat-number {
+      font-size: 40px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #f1f5f9;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: #64748b;
+    }
+
+    .close-btn:hover {
+      background: #e2e8f0;
+      color: #1a202c;
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="text-md font-bold text-pink-500">Lucky</span><span class="text-md font-bold text-blue-900">Shoppings</span>
-            </div>
-            <div class="flex gap-3">
+<body>
 
-                {% if not request.user.is_authenticated %}
-                <a href="/register">
-                <button class="bg-pink-400 hover:bg-pink-500 text-white px-5 py-2 rounded-full font-semibold">Register</button></a>
-
-               <a href="/login"> <button class="bg-blue-900 hover:bg-blue-950 text-white px-5 py-2 rounded-full font-semibold">Login</button></a>
-               {% else %}
-               <a href="/dashboard">
-                <button class="bg-pink-400 hover:bg-pink-500 text-white px-6 py-2 rounded-full font-semibold">Dashboard</button></a>
-                {% endif %}
-            </div>
+  <!-- NAVBAR -->
+  <nav class="">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-20">
+      <div class="flex items-center gap-3 font-bold text-xl">
+        <div class="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white">
+            <a href="/">
+          <i data-lucide="globe" class="w-6 h-6"></i></a>
         </div>
-    </header>
+        <span class="text-gradient-primary hidden sm:inline">Lucky Service</span>
+      </div>
+
+      <div class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#hero" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">Home</a>
+        <a href="#features" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">Services</a>
+        <a href="#testimonials" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">Community</a>
+        <a href="#footer" class="text-gray-600 hover:text-brand-primary font-medium transition-colors">About</a>
+      </div>
+
+      <button class="btn-primary hidden md:block">Join Community</button>
+      
+      
+      <div>
+     
+     
+     
+
+      <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden p-2">
+        <i data-lucide="menu" class="w-6 h-6 text-gray-900"></i>
+      </button></div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 px-6 py-4 space-y-3">
+      <a href="#hero" class="block text-gray-600 font-medium hover:text-brand-primary">Home</a>
+      <a href="#features" class="block text-gray-600 font-medium hover:text-brand-primary">Services</a>
+      <a href="#testimonials" class="block text-gray-600 font-medium hover:text-brand-primary">Community</a>
+      <a href="/register">
+      <button class="btn-primary w-full">Create Account</button></a>
+    </div>
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="mt-20">
  {% block body %}
 
  {% endblock %}
-    <footer class="bg-gray-900 text-white text-center py-8 mt-12">
-        <p>&copy; 2025 Lucky Shoppings. Saving by Shopping</p>
-        <p class="text-sm text-gray-400">luckyshopping.com</p>
-    </footer>
-    
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-messaging.js";
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyCd9VsPWHai-_xZrpuMUs98VYFGyogBfNA",
-
-  authDomain: "luckyshop-69.firebaseapp.com",
-
-  projectId: "luckyshop-69",
-
-  storageBucket: "luckyshop-69.firebasestorage.app",
-
-  messagingSenderId: "855170830346",
-
-  appId: "1:855170830346:web:690f001606d65dd9974ff3",
-
-  measurementId: "G-D3GJKFLTVT"
-
-};
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const messaging = getMessaging(app);
+</div>
 
 
-  async function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      console.log('Service worker registered:', registration);
-    } catch (error) {
-      console.error('Service worker registration failed:', error);
-    }
-  }
-}
-
-async function requestNotificationPermission() {
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      console.log('Notification permission granted.');
-      return await getToken(messaging, { vapidKey: 'BGtIPZKOUBNFCTJBE4JuZHdxVvKDmIQ0ux-3G7tfN2BdjgZMvdjRbLGtcelSag7P-fLlMSZNtMiq_wGiu-f8zdQ' });
-    } else {
-      console.error('Unable to get permission to notify.');
-    }
-  } catch (err) {
-    console.error('An error occurred while requesting notification permission.', err);
-  }
-  return null;
-}
-
-async function initializeMessaging() {
-  await registerServiceWorker();
-
-  const newToken = await requestNotificationPermission();
-  const storedToken = localStorage.getItem('fcmToken');
-
-  // Send token to backend only if it’s new or has changed
-  if (newToken && newToken !== storedToken) {
-    console.log('New or updated token:', newToken);
-    localStorage.setItem('fcmToken', newToken); // Store the new token locally
-
-    // Send the token to your backend
-    await fetch(`/?token=${newToken}`);
-  }
-}
-
-onMessage(messaging, (payload) => {
-  console.log('Message received: ', payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon,
-  };
-
-  if ("Notification" in window) {
-    if (Notification.permission === "granted") {
-      const notification = new Notification(notificationTitle, notificationOptions);
-      notification.onclick = (event) => {
-        event.preventDefault();
-        window.open(payload.notification.click_action, '_blank');
-        notification.close();
-      };
-    }
-  } else {
-    alert("This browser does not support system notifications.");
-  }
-});
-
-setTimeout(initializeMessaging, 2000);
 
 
-</script>
 
-    <script>
-        let selectedCountry = null;
 
-        function openModal() {
-            const modal = document.getElementById('modalOverlay');
-            modal.classList.remove('hidden');
-            showCountryView();
-        }
 
-        function closeModal() {
-            const modal = document.getElementById('modalOverlay');
-            modal.classList.add('hidden');
-            selectedCountry = null;
-        }
 
-        function selectCountry(country) {
-            selectedCountry = country;
 
-            if (country === 'Bangladesh') {
-                showDistrictView();
-            } else {
-                showComingSoonView();
-            }
-        }
 
-        function selectDistrict(district) {
-            const url = `/shop?country=${encodeURIComponent(selectedCountry)}&district=${encodeURIComponent(district)}`;
-            window.location.href = url;
-        }
 
-        function showCountryView() {
-            document.getElementById('countryView').classList.remove('hidden');
-            document.getElementById('districtView').classList.add('hidden');
-            document.getElementById('comingSoonView').classList.add('hidden');
-            document.getElementById('modalTitle').textContent = 'Select Country';
-        }
+  <!-- FOOTER -->
+  <footer id="footer" class="bg-gray-900 text-gray-400 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center text-white">
+              <i data-lucide="globe" class="w-6 h-6"></i>
+            </div>
+            <span class="text-white font-bold text-lg">Lucky Service</span>
+          </div>
+          <p class="text-sm leading-relaxed">Empowering communities with trust, savings, and friendship.</p>
+        </div>
 
-        function showDistrictView() {
-            document.getElementById('countryView').classList.add('hidden');
-            document.getElementById('districtView').classList.remove('hidden');
-            document.getElementById('comingSoonView').classList.add('hidden');
-            document.getElementById('modalTitle').textContent = 'Select Location';
-        }
+        <!-- Links 1 -->
+        <div>
+          <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide">Services</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Savings Plans</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Halal Loans</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Rewards</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Community</a></li>
+          </ul>
+        </div>
 
-        function showComingSoonView() {
-            document.getElementById('countryView').classList.add('hidden');
-            document.getElementById('districtView').classList.add('hidden');
-            document.getElementById('comingSoonView').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = selectedCountry;
-        }
+        <!-- Links 2 -->
+        <div>
+          <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide">Company</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Press</a></li>
+          </ul>
+        </div>
 
-        function backToCountries() {
-            selectedCountry = null;
-            showCountryView();
-        }
+        <!-- Links 3 -->
+        <div>
+          <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide">Legal</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+      </div>
 
-        document.getElementById('modalOverlay').addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-        
-        
-        
-        const triggerBtn = document.getElementById('giftModal_triggerBtn');
-        const closeBtn = document.getElementById('giftModal_closeBtn');
-        const modalContainer = document.getElementById('giftModal_container');
-        const backdropOverlay = document.getElementById('giftModal_backdrop');
-
-        triggerBtn.addEventListener('click', () => {
-            modalContainer.classList.remove('giftModal_hidden');
-            backdropOverlay.classList.remove('giftModal_hidden');
-            document.body.style.overflow = 'hidden';
-        });
-
-        const closegiftModal = () => {
-            modalContainer.classList.add('giftModal_hidden');
-            backdropOverlay.classList.add('giftModal_hidden');
-            document.body.style.overflow = 'auto';
-        };
-
-        closeBtn.addEventListener('click', closegiftModal);
-
-        backdropOverlay.addEventListener('click', closegiftModal);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closegiftModal();
-            }
-        });
-        
-        
-           const luckySavingModal = document.getElementById('luckySavingModal');
-        const luckySavingOpenBtn = document.getElementById('luckySavingOpenBtn');
-        const luckySavingCloseBtn = document.getElementById('luckySavingCloseBtn');
-
-        luckySavingOpenBtn.addEventListener('click', () => {
-            luckySavingModal.classList.remove('hidden');
-        });
-
-        luckySavingCloseBtn.addEventListener('click', () => {
-            luckySavingModal.classList.add('hidden');
-        });
-
-        luckySavingModal.addEventListener('click', (e) => {
-            if (e.target === luckySavingModal) {
-                luckySavingModal.classList.add('hidden');
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                luckySavingModal.classList.add('hidden');
-            }
-        });
-        
-        
-        
-    </script> 
-    
-    
-    
-</body>
-</html>
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+        <p>&copy; 2026 Lucky Service World. All rights reserved.</p>
+        <div class="flex gap-6 mt-4 md:mt-0">
+          <a href="#" class="hover:text-white transition-colors">Twitter</a>
+          <a href="#" class="hover:text-white transition-colors">Facebook</a>
+          <a href="#" class="hover:text-white transition-colors">Instagram</a>
+          <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  
+  <script>
+       lucide.createIcons();
+  </script>

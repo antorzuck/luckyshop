@@ -395,12 +395,13 @@ def create_payment(request):
     if not username:
         return JsonResponse({"error": "Username and amount required"}, status=400)
 
-    url = "https://pay.luckyserviceworld.com/api/create-charge"
+    url = "https://payment.luckyserviceworld.com/api/checkout/redirect"
 
     payload = {
         "full_name": username,
-        "email_mobile": f"{username}@gmail.com",
-        "amount": "1",
+        "email_address": f"{username}@gmail.com",
+        "mobile_number" : "01558687790",
+        "amount": "30",
         "metadata": {
             "username": username
         },
@@ -414,7 +415,7 @@ def create_payment(request):
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "mh-piprapay-api-key": "1987542710694a4f49e196116168253371733401808694a4f49e19651915710269"
+        "mhs-piprapay-api-key" : "22422a3487049ba2271aaa80d2904dc13a78dd6a9d94d61ee1"
     }
 
     try:
@@ -422,7 +423,7 @@ def create_payment(request):
         data = response.json()
 
         # ✅ Redirect to payment page
-        if data.get("status") is True and data.get("pp_url"):
+        if data.get("pp_url"):
             return redirect(data["pp_url"])
 
         return JsonResponse({"error": "Payment creation failed", "response": data}, status=400)
@@ -531,10 +532,9 @@ def home(request):
         print("pay data", request.POST)
     print(" YaAAYYYYData", request.GET)
 
-    print(request.GET.get('token'))
-
-    #tok = Token.objects.get_or_create(code=request.GET.get('token'))
-    #tok.save()
+    if request.GET.get('token'):
+        tok = Token.objects.get_or_create(code=request.GET.get('token'))
+        tok.save()
     
 
 
@@ -681,11 +681,13 @@ def create_lottery(request):
         LuckyFund.objects.create(
         number=phone,
         package = LuckyPackage.objects.get(id=1),
-        profile = profile
+        profile = profile,
+        agent= Profile.objects.get(user=request.user)
     )
         LuckyGift.objects.create(
         number=phone,
-        profile = profile
+        profile = profile,
+        agent= Profile.objects.get(user=request.user)
     )
 
     try:
