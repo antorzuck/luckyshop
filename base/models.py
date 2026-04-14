@@ -103,6 +103,7 @@ class Profile(models.Model):
     is_agent = models.BooleanField(default=False)
     reset_code = models.CharField(max_length=100, null=True, blank=True)
     referred_by = models.ForeignKey(User, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
+    old_vr = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user.username)
@@ -671,41 +672,34 @@ class Affiliate(BaseModel):
     
 
 
-
 @receiver(post_save, sender=Profile)
 def create_referral(sender, instance, created, **kwargs):
     print("hmmmm")
     if not created and instance.is_verified:
+        if instance.old_vr:
+            return
+
         print("faaaaaaaah")
         LuckyFund.objects.create(
         number=instance.number,
         package = LuckyPackage.objects.get(id=1),
-        profile = instance
-    )
+        profile = instance)
+
         LuckyGift.objects.create(
         number=instance.number,
-        profile = instance
-    )
+        profile = instance)
 
-
-    fund_models = [
+        fund_models = [
         HonorableFund, AdminFund, ShopkeeperFund,
         GovernmentFund, OrganizerFund, UnemploymentFund,
-        ScholarshipFund, PoorFund
-    ]
+        ScholarshipFund, PoorFund]
 
-    for model in fund_models:
-        fund, created = model.objects.get_or_create(id=1)
-        fund.amount += 1
-        fund.save()
-
-
-
-
-
-
-
-
+        for model in fund_models:
+            fund, created = model.objects.get_or_create(id=1)
+            fund.amount += 1
+            fund.save()
+        instance.old_vr = True
+        instance.save()
 
 
 
